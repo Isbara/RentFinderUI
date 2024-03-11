@@ -1,0 +1,67 @@
+/* Add this CSS in a separate stylesheet or use a CSS-in-JS solution */
+
+/* ReviewList component styles */
+.review-list-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px; /* Adjust the width as needed */
+    max-height: 400px; /* Set a max height for scrollable content */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+    z-index: 999; /* Adjust the z-index as needed */
+  }
+  
+  .review-item {
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    max-width: 250px; /* Set a max width for the review item */
+    margin: 0 auto; /* Center the review item horizontally */
+  }
+  
+  .review-content {
+    display: flex;
+    flex-direction: column; /* Display elements in a column layout */
+  }
+  
+  .review-description {
+    margin-bottom: 10px;
+  }
+  
+  .algorithm-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .algorithm-result,
+  .algorithm-userScore {
+    margin: 0;
+  }
+  
+  /* RespondList component styles */
+  .respond-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+  
+  .respond-list li {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 600px) {
+    .review-item,
+    .respond-list li {
+      width: 100%;
+    }
+  }
+  
