@@ -1,11 +1,18 @@
 // RegisterPage.js
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 
 const RegisterPage = () => {
+
+    let navigate = useNavigate();
+
     const [formData, setFormData] = useState({
-        username: '',
+        name: '',
+        surname: '',
         email: '',
-        password: ''
+        password: '',
+        phoneNumber: '',
+        dateOfBirth: ''
     });
 
     const handleInputChange = (e) => {
@@ -18,21 +25,38 @@ const RegisterPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        // Add logic to handle form submission (e.g., send data to backend)
+        connectRegister();
     };
+
+    const connectRegister = async() => {
+        const result = await fetch('http://localhost:8080/user/register',{method: 'POST', body: JSON.stringify(formData),  headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8'}});
+        const resultInJson = await result.text();
+        console.log(resultInJson);
+        navigate("/login");
+    }
 
     return (
         <div className="register-page">
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="username">Username:</label>
+                    <label htmlFor="name">Name:</label>
                     <input
                         type="text"
-                        id="username"
-                        name="username"
-                        value={formData.username}
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="surname">Surname:</label>
+                    <input
+                        type="surname"
+                        id="surname"
+                        name="surname"
+                        value={formData.surname}
                         onChange={handleInputChange}
                         required
                     />
@@ -59,10 +83,31 @@ const RegisterPage = () => {
                         required
                     />
                 </div>
+                <div className="form-group">
+                    <label htmlFor="phoneNumber">Phone number:</label>
+                    <input
+                        type="phoneNumber"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+               <div className="form-group">
+                    <label htmlFor="dateOfBirth">Date of birth:</label>
+                    <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleInputChange}
+                        required
+                    />
+               </div>
                 <button type="submit">Register</button>
             </form>
         </div>
     );
-};
-
+}
 export default RegisterPage;
