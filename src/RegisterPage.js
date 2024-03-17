@@ -1,14 +1,19 @@
 // RegisterPage.js
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 
 const RegisterPage = () => {
-    const [formData, setFormData] = useState({
-        username: '',
-        email: '',
-        password: ''
-    });
-    const [errors, setErrors] = useState({});
 
+    let navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+        phoneNumber: '',
+        dateOfBirth: ''
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -20,52 +25,38 @@ const RegisterPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // Perform validation
-        const validationErrors = {};
-        if (!formData.username) {
-            validationErrors.username = 'Username is required';
-        } else if (formData.username.length < 3) {
-            validationErrors.username = 'Username must be at least 3 characters long';
-        }
-        if (!formData.email) {
-            validationErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            validationErrors.email = 'Email is invalid';
-        }
-        if (!formData.password) {
-            validationErrors.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            validationErrors.password = 'Password must be at least 6 characters long';
-        } else if (!/[0-9]/.test(formData.password)) {
-            validationErrors.password = 'Password must contain at least one number';
-        } else if (!/[!@#$%^&*]/.test(formData.password)) {
-            validationErrors.password = 'Password must contain at least one symbol (!@#$%^&*)';
-        } else if (!/[A-Z]/.test(formData.password)) {
-            validationErrors.password = 'Password must contain at least one uppercase letter';
-        }
-
-        // Set errors if there are any
-        setErrors(validationErrors);
-
-        // If there are no errors, proceed with form submission
-        if (Object.keys(validationErrors).length === 0) {
-            console.log('Form submitted:', formData);
-            // Add logic to handle form submission (e.g., send data to backend)
-        }
+        connectRegister();
     };
+
+    const connectRegister = async() => {
+        const result = await fetch('http://localhost:8080/user/register',{method: 'POST', body: JSON.stringify(formData),  headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8'}});
+        const resultInJson = await result.text();
+        console.log(resultInJson);
+        navigate("/login");
+    }
 
     return (
         <div className="register-page">
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="username">Username:</label>
+                    <label htmlFor="name">Name:</label>
                     <input
                         type="text"
-                        id="username"
-                        name="username"
-                        value={formData.username}
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="surname">Surname:</label>
+                    <input
+                        type="surname"
+                        id="surname"
+                        name="surname"
+                        value={formData.surname}
                         onChange={handleInputChange}
                         required
                     />
@@ -92,11 +83,31 @@ const RegisterPage = () => {
                         required
                     />
                 </div>
+                <div className="form-group">
+                    <label htmlFor="phoneNumber">Phone number:</label>
+                    <input
+                        type="phoneNumber"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+               <div className="form-group">
+                    <label htmlFor="dateOfBirth">Date of birth:</label>
+                    <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleInputChange}
+                        required
+                    />
+               </div>
                 <button type="submit">Register</button>
             </form>
         </div>
     );
-};
-
-
+}
 export default RegisterPage;
