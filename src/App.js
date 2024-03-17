@@ -4,6 +4,8 @@ import {jwtDecode} from "jwt-decode";
 import RegisterPage from "./RegisterPage";
 import LoginPage from "./LoginPage";
 import MainPage from "./MainPage";
+import ProfilePage from "./ProfilePage"
+import SupportPage from "./SupportPage"
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['jwt']);
@@ -30,6 +32,8 @@ function App() {
           <Route exact path="/" element={<MainPage/>}/>
           <Route exact path="/register" element={<RegisterPage/>}/>
           <Route exact path="/login" element={<LoginPage onLogin={saveToken}/>}/>
+          <Route exact path="/support" element={<SupportPage/>}/>
+          <Route exact path="/profile" element={<ProfilePage/>}/>
         </Routes>
       </div>
     </Router>

@@ -15,10 +15,10 @@ function HeaderNotLogged() {
                             <Link to="/" className="nav-link">Home Page</Link>
                         </li>
                         <li className="nav-item">
-                            <Link to="/login" className="nav-link">Login</Link>
+                            <Link to="/support" className="nav-link">Contact Support</Link>
                         </li>
                         <li className="nav-item">
-                            <Link to="/register" className="nav-link">Register</Link>
+                            <Link to="/profile" className="nav-link">Profile Page</Link>
                         </li>
                     </ul>
                 </div>
