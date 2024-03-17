@@ -7,6 +7,8 @@ const RegisterPage = () => {
         email: '',
         password: ''
     });
+    const [errors, setErrors] = useState({});
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -18,8 +20,39 @@ const RegisterPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        // Add logic to handle form submission (e.g., send data to backend)
+
+        // Perform validation
+        const validationErrors = {};
+        if (!formData.username) {
+            validationErrors.username = 'Username is required';
+        } else if (formData.username.length < 3) {
+            validationErrors.username = 'Username must be at least 3 characters long';
+        }
+        if (!formData.email) {
+            validationErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            validationErrors.email = 'Email is invalid';
+        }
+        if (!formData.password) {
+            validationErrors.password = 'Password is required';
+        } else if (formData.password.length < 6) {
+            validationErrors.password = 'Password must be at least 6 characters long';
+        } else if (!/[0-9]/.test(formData.password)) {
+            validationErrors.password = 'Password must contain at least one number';
+        } else if (!/[!@#$%^&*]/.test(formData.password)) {
+            validationErrors.password = 'Password must contain at least one symbol (!@#$%^&*)';
+        } else if (!/[A-Z]/.test(formData.password)) {
+            validationErrors.password = 'Password must contain at least one uppercase letter';
+        }
+
+        // Set errors if there are any
+        setErrors(validationErrors);
+
+        // If there are no errors, proceed with form submission
+        if (Object.keys(validationErrors).length === 0) {
+            console.log('Form submitted:', formData);
+            // Add logic to handle form submission (e.g., send data to backend)
+        }
     };
 
     return (
@@ -64,5 +97,6 @@ const RegisterPage = () => {
         </div>
     );
 };
+
 
 export default RegisterPage;

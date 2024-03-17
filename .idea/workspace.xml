@@ -6,6 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
+=======
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RegisterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/RegisterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,9 +62,13 @@
       <workItem from="1710173404923" duration="56000" />
       <workItem from="1710251423276" duration="1193000" />
       <workItem from="1710259444406" duration="3177000" />
+<<<<<<< Updated upstream
       <workItem from="1710409054032" duration="897000" />
       <workItem from="1710416142234" duration="466000" />
       <workItem from="1710417031861" duration="3000" />
+=======
+      <workItem from="1710409054032" duration="594000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
