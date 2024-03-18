@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import App from './App'
 
 
-
 function HeaderNotLogged() {
     const handleLogout = () => {
         App.removeToken();
@@ -26,8 +25,10 @@ function HeaderNotLogged() {
                             <Link to="/profile" className="nav-link">Profile Page</Link>
                         </li>
                         <li className="nav-item">
+                            <Link to="/">
                             <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
-                        </li>
+                            </Link>
+                            </li>
 
                     </ul>
                 </div>
