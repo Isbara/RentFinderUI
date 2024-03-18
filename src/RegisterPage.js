@@ -19,7 +19,8 @@ const RegisterPage = () => {
         email: '',
         password: '',
         phoneNumber: '',
-        dateOfBirth: ''
+        dateOfBirth: '',
+        unique:''
     });
 
     const handleInputChange = (e) => {
@@ -34,6 +35,8 @@ const RegisterPage = () => {
         });
     };
 
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
@@ -42,14 +45,32 @@ const RegisterPage = () => {
     };
 
     const connectRegister = async () => {
-        const result = await fetch('http://localhost:8080/user/register', {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8' }
-        });
-        const resultInJson = await result.text();
-        console.log(resultInJson);
-        navigate("/login");
+        try {
+            const result = await fetch('http://localhost:8080/user/register', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8'}
+            });
+            if (!result.ok) {
+                const errorResponse = await result.json();
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    unique: 'This email already exists.' // Set the error message for the unique field
+                }));
+            } else {
+                const resultInJson = await result.text();
+                console.log(resultInJson);
+                navigate("/login");
+            }
+        }
+        catch (error)
+        {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                unique: "An unexpected error occurred. Please try again." // Set the error message for the unique field
+            }));
+
+        }
     }
 
     const validateForm = () => {
@@ -150,6 +171,7 @@ const RegisterPage = () => {
                                             required
                                         />
                                         {errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
+                                        {errors.unique && <div className="invalid-feedback d-block">{errors.unique}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="password">Password:</label>

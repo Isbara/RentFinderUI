@@ -46,7 +46,7 @@ function LoginPage({ onLogin }) {
        }
        catch (error)
        {
-           setError("An unexpected error occurred. Please try again later.")
+           setError("An unexpected error occurred. Please try again.")
        }
     }
 
