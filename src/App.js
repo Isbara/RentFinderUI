@@ -18,12 +18,14 @@ function App() {
   }
 
   const removeToken = () => {
-    removeCookie(cookie["jwt-cookie"]);
+    removeCookie('jwt');
   }
+  App.removeToken=removeToken
 
   const getToken = () => {
     return cookie.jwt;
   }
+  App.getToken=getToken
 
   return (
     <Router>

@@ -1,14 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import App from './App'
+
+
 
 function HeaderNotLogged() {
+    const handleLogout = () => {
+        App.removeToken();
+    };
     return (
         <header className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container">
                 <img src="/Logo.png" alt="Logo" width="230" height="50" />
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
-                        <img src="../public/Logo.png" alt="Logo" />
                         <li className="nav-item">
                             <Link to="/" className="nav-link">Home Page</Link>
                         </li>
@@ -18,6 +23,10 @@ function HeaderNotLogged() {
                         <li className="nav-item">
                             <Link to="/profile" className="nav-link">Profile Page</Link>
                         </li>
+                        <li className="nav-item">
+                            <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
+                        </li>
+
                     </ul>
                 </div>
             </div>
