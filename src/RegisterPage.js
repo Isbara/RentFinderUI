@@ -28,7 +28,6 @@ const RegisterPage = () => {
             ...formData,
             [name]: value
         });
-        // Clear error message when the user starts typing
         setErrors({
             ...errors,
             [name]: ''

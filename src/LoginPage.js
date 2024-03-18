@@ -20,23 +20,39 @@ function LoginPage({ onLogin }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setError('');
         connectLogin();
     };
+    const [error, setError] = useState("")
 
     const connectLogin = async () => {
-        const result = await fetch('http://localhost:8080/user/login', {
-            method: 'POST',
-            body: JSON.stringify(loginData),
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8' }
-        });
-        if (result.status === 200) {
-            const resultInJson = await result.json();
-            console.log(resultInJson.token);
-            onLogin(resultInJson.token);
-            navigate("/");
-        } else
-            navigate("/login");
+
+
+       try {
+           const result = await fetch('http://localhost:8080/user/login', {
+               method: 'POST',
+               body: JSON.stringify(loginData),
+               headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8'}
+           });
+           if (!result.ok) {
+               const errorResponse = await result.json();
+               setError(errorResponse.msg)
+           } else {
+               const resultInJson = await result.json();
+               console.log(resultInJson.token);
+               onLogin(resultInJson.token);
+               navigate("/");
+           }
+       }
+       catch (error)
+       {
+           setError("An unexpected error occurred. Please try again later.")
+       }
     }
+
+    
+    
+    
     return (
         <div>
              <HeaderNotLogged />
@@ -48,6 +64,7 @@ function LoginPage({ onLogin }) {
                                 <h2 className="card-title text-center mb-4">Login</h2>
                                 <form onSubmit={handleSubmit}>
                                     <div className="form-group">
+
                                         <label htmlFor="email">Email:</label>
                                         <input
                                             type="email"
@@ -71,6 +88,7 @@ function LoginPage({ onLogin }) {
                                             required
                                         />
                                     </div>
+                                    {error && <div className="invalid-feedback d-block">{error}</div>}
                                     <button type="submit" className="btn btn-primary btn-block mt-3">Login</button>
                                 </form>
                             </div>
