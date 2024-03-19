@@ -39,7 +39,6 @@ function LoginPage({ onLogin }) {
                setError(errorResponse.msg)
            } else {
                const resultInJson = await result.json();
-               console.log(resultInJson.token);
                onLogin(resultInJson.token);
                navigate("/");
            }

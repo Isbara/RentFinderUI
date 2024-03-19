@@ -55,7 +55,7 @@ const RegisterPage = () => {
                 const errorResponse = await result.json();
                 setErrors(prevErrors => ({
                     ...prevErrors,
-                    unique: 'This email already exists.' // Set the error message for the unique field
+                    unique: errorResponse.msg // Set the error message for the unique field
                 }));
             } else {
                 const resultInJson = await result.text();

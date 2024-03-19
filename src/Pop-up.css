@@ -1,0 +1,18 @@
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.close span {
+    font-size: 1.5rem; /* Adjust as needed */
+    color: #000; /* Adjust the color */
+}
