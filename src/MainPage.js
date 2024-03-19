@@ -10,4 +10,7 @@ function MainPage({getToken}){
                 {isLoggedIn ? <HeaderLogged /> : <HeaderNotLogged />}
             </div>
     )
+
+
+    
 } export default MainPage;
