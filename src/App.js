@@ -6,7 +6,7 @@ import LoginPage from "./LoginPage";
 import MainPage from "./MainPage";
 import ProfilePage from "./ProfilePage"
 import SupportPage from "./SupportPage"
-
+import PropertyPage from "./PropertyPage"
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['jwt']);
 
@@ -36,6 +36,7 @@ function App() {
           <Route exact path="/login" element={<LoginPage onLogin={saveToken}/>}/>
           <Route exact path="/support" element={<SupportPage/>}/>
           <Route exact path="/profile" element={<ProfilePage/>}/>
+          <Route exact path="/property" element={<PropertyPage/>}/>
         </Routes>
       </div>
     </Router>

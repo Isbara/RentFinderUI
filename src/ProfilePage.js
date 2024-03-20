@@ -3,6 +3,7 @@ import HeaderLogged from './HeaderLogged';
 import App from './App';
 import './Pop-up.css';
 
+
 function ProfilePage() {
     const [userDetails, setUserDetails] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -22,6 +23,10 @@ function ProfilePage() {
         price: '',
         placeOffers: ''
     });
+    const [userProperties, setuserProperties] = useState([]);
+
+
+
 
     useEffect(() => {
         const connectUserDetails = async (token) => {
@@ -47,8 +52,32 @@ function ProfilePage() {
             }
         };
 
+        const fetchProperties = async (token) => {
+            try {
+                const response = await fetch("http://localhost:8080/property/getUserProperties", {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch properties');
+                }
+                const data = await response.json();
+                console.log(data)
+                setuserProperties(data);
+                console.log(userProperties)
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        };
+
+
         const token = App.getToken();
         connectUserDetails(token);
+        fetchProperties(token)
     },[]);
 
     const connectProperty = async () => {
@@ -93,6 +122,7 @@ function ProfilePage() {
             connectProperty();
             setShowModal(false);
             setpopUpErrors({});
+            window.location.reload();
         }
     };
 
@@ -154,8 +184,16 @@ function ProfilePage() {
                             <div className="card-body">
                                 <h5 className="card-title">Current Properties</h5>
                                 <ul className="list-group">
-                                    <li className="list-group-item">Property 1</li>
-                                    <li className="list-group-item">Property 2</li>
+                                    {userProperties.map(property => (
+                                        <li key={property.propertyID} className="list-group-item">
+                                            <p>Address: {property.address}</p>
+                                            <p>Description: {property.description}</p>
+                                            <p>Flat No: {property.flatNo}</p>
+                                            <p>Place Offers: {property.placeOffers}</p>
+                                            <p>Price: {property.price}</p>
+                                            <p>Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
@@ -221,6 +259,7 @@ function ProfilePage() {
 
         </div>
     );
+
 }
 
 export default ProfilePage;
