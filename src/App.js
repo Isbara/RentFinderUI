@@ -34,7 +34,7 @@ function App() {
           <Route exact path="/" element={<MainPage getToken={getToken}/>}/>
           <Route exact path="/register" element={<RegisterPage/>}/>
           <Route exact path="/login" element={<LoginPage onLogin={saveToken}/>}/>
-          <Route exact path="/support" element={<SupportPage/>}/>
+          <Route exact path="/support" element={<SupportPage getToken={getToken}/>}/>
           <Route exact path="/profile" element={<ProfilePage/>}/>
           <Route exact path="/property" element={<PropertyPage/>}/>
         </Routes>
