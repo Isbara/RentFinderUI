@@ -4,11 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Added contact support page">
+    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Minor import change on MainPage with function pass.">
+      <change afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/LoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/LoginPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ProfilePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HeaderLogged.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HeaderNotLogged.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/LoginPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pop-up.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Pop-up.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ProfilePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RegisterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/RegisterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SupportPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/SupportPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logo.svg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +73,10 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Turgut\Documents\GitHub\RentFinderUI\public" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Turgut\Documents\GitHub\RentFinderUI\src\Styles" />
+      <recent name="C:\Users\Turgut\Documents\GitHub\RentFinderUI\src\Pages" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType">
@@ -82,6 +98,19 @@
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="RentFinderUI" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="RentFinderUI" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
       <module name="RentFinderUI" />
@@ -143,19 +172,6 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="RentFinderUI" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="RentFinderUI" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -180,15 +196,9 @@
       <workItem from="1710837261659" duration="10622000" />
       <workItem from="1710875428893" duration="751000" />
       <workItem from="1710939885142" duration="6866000" />
+      <workItem from="1711011666663" duration="751000" />
+      <workItem from="1711097319473" duration="5145000" />
     </task>
-    <task id="LOCAL-00001" summary="Added contact support page">
-      <created>1710994179089</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1710994179089</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -204,9 +214,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added contact support page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added contact support page" />
   </component>
 </project>

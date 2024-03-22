@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import {useNavigate } from 'react-router-dom'; // Import Link from react-router-dom
-import HeaderLogged from './HeaderLogged';
-import HeaderNotLogged from './HeaderNotLogged';
+import {useNavigate } from 'react-router-dom';
+import Header from '../Components/Header';
 
-function MainPage({ getToken }) {
+function SupportPage({ getToken }) {
     const token = getToken();
     const bearer = 'Bearer ' + token;
     const isLoggedIn = token;
@@ -64,7 +63,7 @@ function MainPage({ getToken }) {
 
     return (
             <div>
-                {isLoggedIn ? <HeaderLogged /> : <HeaderNotLogged />}
+                <Header isLoggedIn={isLoggedIn}/>
                 <div className="container mt-5">
                     <div className="row justify-content-center">
                         <div className="col-md-6">
@@ -121,4 +120,4 @@ function MainPage({ getToken }) {
             </div>
     );
 };
-export default MainPage;
+export default SupportPage;

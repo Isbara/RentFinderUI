@@ -1,12 +1,13 @@
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import {CookiesProvider, useCookies} from "react-cookie";
 import {jwtDecode} from "jwt-decode";
-import RegisterPage from "./RegisterPage";
-import LoginPage from "./LoginPage";
-import MainPage from "./MainPage";
-import ProfilePage from "./ProfilePage";
-import SupportPage from "./SupportPage";
-import PropertyPage from "./PropertyPage";
+import RegisterPage from "./Pages/RegisterPage";
+import LoginPage from "./Pages/LoginPage";
+import MainPage from "./Pages/MainPage";
+import ProfilePage from "./Pages/ProfilePage";
+import SupportPage from "./Pages/SupportPage";
+import PropertyPage from "./Pages/PropertyPage";
+
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['jwt']);
 
@@ -33,11 +34,11 @@ function App() {
       <div className="App">
         <Routes>
           <Route exact path="/" element={<MainPage getToken={getToken}/>}/>
-          <Route exact path="/register" element={<RegisterPage/>}/>
+          <Route exact path="/register" element={<RegisterPage getToken={getToken}/>}/>
           <Route exact path="/login" element={<LoginPage onLogin={saveToken}/>}/>
           <Route exact path="/support" element={<SupportPage getToken={getToken}/>}/>
-          <Route exact path="/profile" element={<ProfilePage/>}/>
-          <Route exact path="/property" element={<PropertyPage/>}/>
+          <Route exact path="/profile" element={<ProfilePage getToken={getToken}/>}/>
+          <Route exact path="/property/:id" element={<PropertyPage getToken={getToken}/>}/>
         </Routes>
       </div>
     </Router>

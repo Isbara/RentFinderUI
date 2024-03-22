@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import HeaderLogged from './HeaderLogged';
-import App from './App';
-import './Pop-up.css';
+import Header from '../Components/Header';
+import App from '../App';
+import '../Styles/Pop-up.css';
 
 
-function ProfilePage() {
+function ProfilePage({ getToken }) {
+    const token = getToken();
+    const isLoggedIn = token;
     const [userDetails, setUserDetails] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -73,8 +75,6 @@ function ProfilePage() {
                 console.error('Error:', error.message);
             }
         };
-
-        const token = App.getToken();
         connectUserDetails(token);
         fetchProperties(token);
     },[]);
@@ -242,7 +242,7 @@ function ProfilePage() {
 
     return (
         <div>
-            <HeaderLogged />
+            <Header isLoggedIn={isLoggedIn}/>
             <div className="container">
                 <div className="row">
                     <div className="col-md-4">

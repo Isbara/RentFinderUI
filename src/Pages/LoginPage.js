@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import HeaderNotLogged from './HeaderNotLogged';
+import Header from '../Components/Header';
+import App from '../App'
 
 function LoginPage({ onLogin }) {
+    
     let navigate = useNavigate();
     const [response, setResponse] = useState("");
     const [trigger,setTrigger] = useState(false);
@@ -60,7 +62,7 @@ function LoginPage({ onLogin }) {
     
     return (
         <div>
-             <HeaderNotLogged />
+            <Header isLoggedIn={false}/>  {/* Logine geliyorsa her türlü login olamamıştır dedim bu page'de token çekemedim, token'ı varsa login page'e ve register page'e dönmesini engellemeliyiz*/}
             <div className="container mt-5">
                 <div className="row justify-content-center">
                     <div className="col-md-6">

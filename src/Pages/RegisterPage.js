@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import HeaderNotLogged from './HeaderNotLogged';
-const RegisterPage = () => {
+import Header from '../Components/Header';
+
+const RegisterPage = ({ getToken }) => {
     let navigate = useNavigate();
+    const token = getToken();
+    const isLoggedIn = token;
 
     const [formData, setFormData] = useState({
         name: '',
@@ -125,7 +128,7 @@ const RegisterPage = () => {
 
     return (
         <div>
-            <HeaderNotLogged/>
+            <Header isLoggedIn={isLoggedIn}/>
             <div className="container mt-5">
                 <div className="row justify-content-center">
                     <div className="col-md-6">
