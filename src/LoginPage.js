@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HeaderNotLogged from './HeaderNotLogged';
 
 function LoginPage({ onLogin }) {
     let navigate = useNavigate();
+    const [response, setResponse] = useState("");
+    const [trigger,setTrigger] = useState(false);
+    useEffect(() => {
+        if(trigger){
+            console.log(response);
+            onLogin(response);
+            navigate("/");
+        }
+    },[response]);
 
     const [loginData, setLoginData] = useState({
         email: '',
@@ -18,16 +27,17 @@ function LoginPage({ onLogin }) {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         setError('');
-        connectLogin();
+        const resultInJson = await connectLogin();
+        setTrigger(true);
+        console.log(resultInJson.token);
+        setResponse(resultInJson.token);
     };
     const [error, setError] = useState("")
 
     const connectLogin = async () => {
-
-
        try {
            const result = await fetch('http://localhost:8080/user/login', {
                method: 'POST',
@@ -36,21 +46,17 @@ function LoginPage({ onLogin }) {
            });
            if (!result.ok) {
                const errorResponse = await result.json();
-               setError(errorResponse.msg)
+               setError(errorResponse.msg);
            } else {
                const resultInJson = await result.json();
-               onLogin(resultInJson.token);
-               navigate("/");
+               return resultInJson;
            }
        }
        catch (error)
        {
-           setError("An unexpected error occurred. Please try again.")
+           setError("An unexpected error occurred. Please try again.");
        }
     }
-
-    
-    
     
     return (
         <div>

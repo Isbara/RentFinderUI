@@ -40,7 +40,7 @@ function MainPage({ getToken }) {
                     <h2 className="mb-4">All Properties</h2>
                     <ul className="list-group">
                         {allProperties.map(property => (
-                            <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item">
+                            <Link key={property.propertyID} to={`/property`} className="list-group-item">
                                 <div>
                                     <p><strong>Address:</strong> {property.address}</p>
                                     <p><strong>Description:</strong> {property.description}</p>

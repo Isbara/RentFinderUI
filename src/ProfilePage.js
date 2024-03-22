@@ -7,6 +7,9 @@ import './Pop-up.css';
 function ProfilePage() {
     const [userDetails, setUserDetails] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [propertyID, setPropertyID] = useState(0);
     const [propertyDetails, setPropertyDetails] = useState({
         propertyType: '',
         flatNo: '',
@@ -24,9 +27,6 @@ function ProfilePage() {
         placeOffers: ''
     });
     const [userProperties, setuserProperties] = useState([]);
-
-
-
 
     useEffect(() => {
         const connectUserDetails = async (token) => {
@@ -46,7 +46,7 @@ function ProfilePage() {
 
                 const userData = await response.json();
                 setUserDetails(userData);
-                console.log(userData)
+                console.log(userData);
             } catch (error) {
                 console.error('Error:', error.message);
             }
@@ -66,24 +66,23 @@ function ProfilePage() {
                     throw new Error('Failed to fetch properties');
                 }
                 const data = await response.json();
-                console.log(data)
+                console.log(data);
                 setuserProperties(data);
-                console.log(userProperties)
+                console.log(userProperties);
             } catch (error) {
                 console.error('Error:', error.message);
             }
         };
 
-
         const token = App.getToken();
         connectUserDetails(token);
-        fetchProperties(token)
+        fetchProperties(token);
     },[]);
 
     const connectProperty = async () => {
-        const token=App.getToken()
+        const token=App.getToken();
         try {
-            const token=App.getToken()
+            const token=App.getToken();
             const bearerToken = "Bearer " + token;
             const result = await fetch('http://localhost:8080/property/addProperty', {
                 method: 'POST',
@@ -99,6 +98,61 @@ function ProfilePage() {
                // const errorResponse = await result.json();
             } else {
              const resultInJson = await result.json();
+             console.log(resultInJson);
+                // Handle successful response, e.g., navigate to another page
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+    const connectUpdateProperty = async () => {
+        const token=App.getToken();
+        try {
+            const token=App.getToken();
+            const bearerToken = "Bearer " + token;
+            const IDLink = propertyID;
+            const result = await fetch('http://localhost:8080/property/updateProperty/' + IDLink, {
+                method: 'PUT',
+                body: JSON.stringify(propertyDetails),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!result.ok) {
+               // const errorResponse = await result.json();
+            } else {
+             const resultInJson = await result.json();
+             console.log(resultInJson);
+                // Handle successful response, e.g., navigate to another page
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+    const connectDeleteProperty = async () => {
+        const token=App.getToken();
+        try {
+            const token=App.getToken();
+            const bearerToken = "Bearer " + token;
+            const IDLink = propertyID;
+            const result = await fetch('http://localhost:8080/property/deleteProperty/' + IDLink, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!result.ok) {
+               // const errorResponse = await result.json();
+            } else {
+             const resultInJson = await result.text();
              console.log(resultInJson);
                 // Handle successful response, e.g., navigate to another page
             }
@@ -124,6 +178,33 @@ function ProfilePage() {
             setpopUpErrors({});
             window.location.reload();
         }
+    };
+
+    const handleUpdate = (key) => {
+        setPropertyID(key);
+        setShowUpdateModal(true);
+    }
+
+    const handleDelete = (key) => {
+        setPropertyID(key);
+        setShowDeleteModal(true);
+    }
+
+    const handleUpdatePopUpSubmit = (e) => {
+        e.preventDefault();
+        if (validatePopUpForm()) {
+            connectUpdateProperty();
+            setShowUpdateModal(false);
+            setpopUpErrors({});
+            window.location.reload();
+        }
+    };
+
+    const handleDeletePopUp = (e) => {
+        e.preventDefault();
+        connectDeleteProperty();
+        setShowDeleteModal(false);
+        window.location.reload();
     };
 
     const validatePopUpForm = () => {
@@ -192,6 +273,8 @@ function ProfilePage() {
                                             <p>Place Offers: {property.placeOffers}</p>
                                             <p>Price: {property.price}</p>
                                             <p>Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
+                                            <button type="button" className="btn btn-primary" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
+                                            <button type="button" className="btn btn-primary" onClick={() => handleDelete(property.propertyID)}>Delete</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -251,6 +334,82 @@ function ProfilePage() {
                                     </div>
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showUpdateModal && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Update Property</h5>
+                                <button type="button" className="close" onClick={() => setShowUpdateModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={handleUpdatePopUpSubmit}>
+                                    <div className="form-group">
+                                        <label htmlFor="propertyType">Property Type:</label>
+                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required>
+                                            <option value="E">Select Property Type</option>
+                                            <option value="R">Apartment Room</option>
+                                            <option value="A">Apartment</option>
+                                            <option value="H">House</option>
+                                        </select>
+                                        {popUpErrors.propertyType && <div className="invalid-feedback d-block">{popUpErrors.propertyType}</div>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="flatNo">Flat No:</label>
+                                        <input type="number" className={`form-control ${popUpErrors.flatNo && 'is-invalid'}`} id="flatNo" name="flatNo" value={propertyDetails.flatNo} onChange={handleInputChange} required />
+                                        {popUpErrors.flatNo && <div className="invalid-feedback d-block">{popUpErrors.flatNo}</div>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="address">Address:</label>
+                                        <input type="text" className={`form-control ${popUpErrors.address && 'is-invalid'}`} id="address" name="address" value={propertyDetails.address} onChange={handleInputChange} required />
+                                        {popUpErrors.address && <div className="invalid-feedback d-block">{popUpErrors.address}</div>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="description">Description:</label>
+                                        <textarea className={`form-control ${popUpErrors.description && 'is-invalid'}`} id="description" name="description" value={propertyDetails.description} onChange={handleInputChange} required />
+                                        {popUpErrors.description && <div className="invalid-feedback d-block">{popUpErrors.description}</div>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="price">Price:</label>
+                                        <input type="number" className={`form-control ${popUpErrors.price && 'is-invalid'}`} id="price" name="price" value={propertyDetails.price} onChange={handleInputChange} required />
+                                        {popUpErrors.price && <div className="invalid-feedback d-block">{popUpErrors.price}</div>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="placeOffers">Place Offers:</label>
+                                        <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} required />
+                                        {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showDeleteModal && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">CONFIRM DELETION</h5>
+                                <button type="button" className="close" onClick={() => setShowDeleteModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Are you sure you would like to delete this property ?</p>
+                                <div style={{display: "flex"}}>
+                                <button type="button" style={{ marginRight: "auto" }} className="btn btn-success" onClick={handleDeletePopUp}>Yes</button>
+                                <button type="button" style={{ marginLeft: "auto" }} className="btn btn-danger" onClick={() => setShowDeleteModal(false)}>No</button>
+                                </div>
                             </div>
                         </div>
                     </div>

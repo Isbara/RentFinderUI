@@ -4,17 +4,18 @@ import {jwtDecode} from "jwt-decode";
 import RegisterPage from "./RegisterPage";
 import LoginPage from "./LoginPage";
 import MainPage from "./MainPage";
-import ProfilePage from "./ProfilePage"
-import SupportPage from "./SupportPage"
-import PropertyPage from "./PropertyPage"
+import ProfilePage from "./ProfilePage";
+import SupportPage from "./SupportPage";
+import PropertyPage from "./PropertyPage";
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['jwt']);
 
-  const saveToken = (token) => {
-    setCookie("jwt", token, {path: "/"});
-    const decoded = jwtDecode(cookie.jwt);
-    console.log(cookie.jwt);
-    console.log(decoded.sub);
+  const saveToken = async(token) => {
+    await setCookie("jwt", token, {path: "/"});
+//    console.log(cookie.jwt);
+//    const decoded = jwtDecode(cookie.jwt);
+//    console.log(cookie.jwt);
+//    console.log(decoded.sub);
   }
 
   const removeToken = () => {
