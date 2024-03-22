@@ -11,6 +11,7 @@ function ProfilePage({ getToken }) {
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showReservationModel,setShowReservationModal]=useState(false);
     const [propertyID, setPropertyID] = useState(0);
     const [propertyDetails, setPropertyDetails] = useState({
         propertyType: '',
@@ -29,6 +30,7 @@ function ProfilePage({ getToken }) {
         placeOffers: ''
     });
     const [userProperties, setuserProperties] = useState([]);
+
 
     useEffect(() => {
         const connectUserDetails = async (token) => {
@@ -180,6 +182,7 @@ function ProfilePage({ getToken }) {
         }
     };
 
+
     const handleUpdate = (key) => {
         setPropertyID(key);
         setShowUpdateModal(true);
@@ -274,7 +277,8 @@ function ProfilePage({ getToken }) {
                                             <p>Price: {property.price}</p>
                                             <p>Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
                                             <button type="button" className="btn btn-primary" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
-                                            <button type="button" className="btn btn-primary" onClick={() => handleDelete(property.propertyID)}>Delete</button>
+                                            <button type="button" className="btn btn-primary mx-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
+                                            <button type="button" className="btn btn-danger" onClick={() => setShowReservationModal(true)}>Reservations</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -415,6 +419,11 @@ function ProfilePage({ getToken }) {
                     </div>
                 </div>
             )}
+
+            {showReservationModel&& (
+                {/* We should show that specific properties all reservations, we should write a backend endpoint*/}
+            )}
+
 
         </div>
     );

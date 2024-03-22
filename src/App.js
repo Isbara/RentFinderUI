@@ -7,6 +7,7 @@ import MainPage from "./Pages/MainPage";
 import ProfilePage from "./Pages/ProfilePage";
 import SupportPage from "./Pages/SupportPage";
 import PropertyPage from "./Pages/PropertyPage";
+import ReservationPage from "./Pages/ReservationPage"
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['jwt']);
@@ -39,6 +40,7 @@ function App() {
           <Route exact path="/support" element={<SupportPage getToken={getToken}/>}/>
           <Route exact path="/profile" element={<ProfilePage getToken={getToken}/>}/>
           <Route exact path="/property/:id" element={<PropertyPage getToken={getToken}/>}/>
+          <Route exact path="/reservation" element={<ReservationPage getToken={getToken}/>}/>
         </Routes>
       </div>
     </Router>
