@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import App from '../App';
 import '../Styles/Pop-up.css';
 
 
 function ProfilePage({ getToken }) {
+    let navigate = useNavigate();
+
     const token = getToken();
     const isLoggedIn = token;
     const [userDetails, setUserDetails] = useState(null);
@@ -12,8 +15,16 @@ function ProfilePage({ getToken }) {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showReservationModel,setShowReservationModal]=useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [propertyID, setPropertyID] = useState(0);
     const [reservations, setReservations] = useState(null);
+    const [userUpdateDetails, setUserUpdateDetails] = useState({
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+        phoneNumber: ''
+    });
     const [propertyDetails, setPropertyDetails] = useState({
         propertyType: '',
         flatNo: '',
@@ -164,12 +175,11 @@ function ProfilePage({ getToken }) {
         }
     };
 
-    const connectPropertyReservations = async() => {
-        const IDLink = propertyID;
+    const connectPropertyReservations = async(key) => {
         const token=App.getToken();
         const bearerToken = "Bearer " + token;
         try {
-            const response = await fetch("http://localhost:8080/property/getReservations/" + IDLink, {
+            const response = await fetch("http://localhost:8080/property/getReservations/" + key, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -189,9 +199,45 @@ function ProfilePage({ getToken }) {
         }
     };
 
+    const connectUpdateUser = async () => {
+        const token=App.getToken();
+        try {
+            const token=App.getToken();
+            const bearerToken = "Bearer " + token;
+            const result = await fetch('http://localhost:8080/user/update', {
+                method: 'PUT',
+                body: JSON.stringify(userUpdateDetails),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!result.ok) {
+               // const errorResponse = await result.json();
+            } else {
+             const resultInJson = await result.text();
+             console.log(resultInJson);
+                // Handle successful response, e.g., navigate to another page
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setPropertyDetails({ ...propertyDetails, [name]: value });
+        setpopUpErrors({
+            ...popUpErrors,
+            [name]: ''
+        });
+    };
+
+    const handleUpdateInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserUpdateDetails({ ...userUpdateDetails, [name]: value });
         setpopUpErrors({
             ...popUpErrors,
             [name]: ''
@@ -238,9 +284,18 @@ function ProfilePage({ getToken }) {
 
     const handleReservation = (key) => {
         setPropertyID(key);
-        connectPropertyReservations();
+        connectPropertyReservations(key);
         setShowReservationModal(true);
     }
+
+    const handleEditPopUpSubmit = (e) => {
+        e.preventDefault();
+        connectUpdateUser();
+        setShowEditModal(false);
+        setpopUpErrors({});
+        App.removeToken();
+        navigate("/");
+    };
 
     const validatePopUpForm = () => {
         let isValid = true;
@@ -290,7 +345,7 @@ function ProfilePage({ getToken }) {
                                     <li>Email: {userDetails?.email}</li>
                                     <li>Phone Number: {userDetails?.phoneNumber}</li>
                                 </ul>
-                                <button className="btn btn-primary mt-3">Edit Details</button>
+                                <button className="btn btn-primary mt-3" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
                             </div>
                         </div>
                     </div>
@@ -468,23 +523,64 @@ function ProfilePage({ getToken }) {
                                         <div className="col-md-12">
                                             <div className="card">
                                                 {reservations ? (reservations.map(reservation => {
-                                                    <div>
-                                                        <h5 className="card-title">Reservation{reservation?.reservationID}</h5>
+                                                return(
+                                                    <div key={reservation?.reservationID}>
+                                                        <h5 className="card-title">Reservation {reservation?.reservationID}</h5>
                                                         <div className="card-body">
-                                                            <li key={reservation?.reservationID}>
+                                                            <ul>
                                                                 <p>Number of people: {reservation?.numberOfPeople}</p>
                                                                 <p>Start date: {reservation?.startDate}</p>
                                                                 <p>End date: {reservation?.endDate}</p>
                                                                 <p>Status: {reservation?.status}</p>
                                                                 <p>Approval: {reservation?.approval}</p>
-                                                            </li>
+                                                            </ul>
                                                         </div>
-                                                    </div>
+                                                    </div>)
                                                 })):(<p>There is no reservation for this property.</p>)}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showEditModal && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edit Profile Details</h5>
+                                <button type="button" className="close" onClick={() => setShowEditModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={handleEditPopUpSubmit}>
+                                    <div className="form-group">
+                                        <label htmlFor="name">Name:</label>
+                                        <input type="text" id="name" name="name" value={userUpdateDetails.name} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="surname">Surname:</label>
+                                        <input type="text" id="surname" name="surname" value={userUpdateDetails.surname} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="email">Email:</label>
+                                        <input type="text" id="email" name="email" value={userUpdateDetails.email} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="password">Password:</label>
+                                        <input type="password" id="password" name="password" value={userUpdateDetails.password} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="phoneNumber">Phone Number:</label>
+                                        <input type="number" id="phoneNumber" name="phoneNumber" value={userUpdateDetails.phoneNumber} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                </form>
                             </div>
                         </div>
                     </div>
