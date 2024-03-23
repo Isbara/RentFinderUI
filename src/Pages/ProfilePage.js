@@ -13,6 +13,7 @@ function ProfilePage({ getToken }) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showReservationModel,setShowReservationModal]=useState(false);
     const [propertyID, setPropertyID] = useState(0);
+    const [reservations, setReservations] = useState(null);
     const [propertyDetails, setPropertyDetails] = useState({
         propertyType: '',
         flatNo: '',
@@ -163,6 +164,31 @@ function ProfilePage({ getToken }) {
         }
     };
 
+    const connectPropertyReservations = async() => {
+        const IDLink = propertyID;
+        const token=App.getToken();
+        const bearerToken = "Bearer " + token;
+        try {
+            const response = await fetch("http://localhost:8080/property/getReservations/" + IDLink, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch property reservations');
+            }
+            const propertyReservations = await response.json();
+            await setReservations(propertyReservations);
+            console.log(reservations);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setPropertyDetails({ ...propertyDetails, [name]: value });
@@ -210,6 +236,12 @@ function ProfilePage({ getToken }) {
         window.location.reload();
     };
 
+    const handleReservation = (key) => {
+        setPropertyID(key);
+        connectPropertyReservations();
+        setShowReservationModal(true);
+    }
+
     const validatePopUpForm = () => {
         let isValid = true;
         const updatedErrors = { ...popUpErrors };
@@ -253,10 +285,10 @@ function ProfilePage({ getToken }) {
                             <div className="card-body">
                                 <h5 className="card-title">User Details</h5>
                                 <ul className="list-group list-group-flush">
-                                    <li className="list-group-item">Name: {userDetails?.name}</li>
-                                    <li className="list-group-item">Surname: {userDetails?.surname}</li>
-                                    <li className="list-group-item">Email: {userDetails?.email}</li>
-                                    <li className="list-group-item">Phone Number: {userDetails?.phoneNumber}</li>
+                                    <li>Name: {userDetails?.name}</li>
+                                    <li>Surname: {userDetails?.surname}</li>
+                                    <li>Email: {userDetails?.email}</li>
+                                    <li>Phone Number: {userDetails?.phoneNumber}</li>
                                 </ul>
                                 <button className="btn btn-primary mt-3">Edit Details</button>
                             </div>
@@ -269,7 +301,7 @@ function ProfilePage({ getToken }) {
                                 <h5 className="card-title">Current Properties</h5>
                                 <ul className="list-group">
                                     {userProperties.map(property => (
-                                        <li key={property.propertyID} className="list-group-item">
+                                        <li key={property.propertyID}>
                                             <p>Address: {property.address}</p>
                                             <p>Description: {property.description}</p>
                                             <p>Flat No: {property.flatNo}</p>
@@ -278,7 +310,7 @@ function ProfilePage({ getToken }) {
                                             <p>Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
                                             <button type="button" className="btn btn-primary" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
                                             <button type="button" className="btn btn-primary mx-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
-                                            <button type="button" className="btn btn-danger" onClick={() => setShowReservationModal(true)}>Reservations</button>
+                                            <button type="button" className="btn btn-danger" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -421,15 +453,44 @@ function ProfilePage({ getToken }) {
             )}
 
             {showReservationModel&& (
-                {/* We should show that specific properties all reservations, we should write a backend endpoint*/}
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Current Reservations</h5>
+                                <button type="button" className="close" onClick={() => setShowReservationModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div className="card">
+                                                {reservations ? (reservations.map(reservation => {
+                                                    <div>
+                                                        <h5 className="card-title">Reservation{reservation?.reservationID}</h5>
+                                                        <div className="card-body">
+                                                            <li key={reservation?.reservationID}>
+                                                                <p>Number of people: {reservation?.numberOfPeople}</p>
+                                                                <p>Start date: {reservation?.startDate}</p>
+                                                                <p>End date: {reservation?.endDate}</p>
+                                                                <p>Status: {reservation?.status}</p>
+                                                                <p>Approval: {reservation?.approval}</p>
+                                                            </li>
+                                                        </div>
+                                                    </div>
+                                                })):(<p>There is no reservation for this property.</p>)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
-
-
         </div>
     );
-
 }
-
 export default ProfilePage;
-
-
