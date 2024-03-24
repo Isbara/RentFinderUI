@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../Components/Header';
+import Rating from '../Components/Rating';
 
 function ReservationPage({ getToken }) {
     const token = getToken();
     const isLoggedIn = token;
     const [reservations, setReservations] = useState([]);
     const [description, setDescription] = useState('');
+    const [rating, setRating] = useState(0); // State to track the rating value
 
     useEffect(() => {
         fetchUserReservations();
@@ -32,20 +34,25 @@ function ReservationPage({ getToken }) {
         setDescription(e.target.value);
     };
 
+    const handleRatingChange = (value) => {
+        setRating(value);
+    };
+
     const handleSubmitComment = async (propertyID, reservationID) => {
-        console.log(propertyID)
-        console.log(reservationID)
-        console.log(description)
+        console.log(propertyID);
+        console.log(reservationID);
+        console.log(description);
+        console.log(rating); // Log the rating value
+
         try {
-            const response = await fetch("http://localhost:8080/review/" + propertyID + "/" + reservationID, {
+            const response = await fetch(`http://localhost:8080/review/${propertyID}/${reservationID}`, {
                 method: 'POST',
-                body: JSON.stringify({ description }),
+                body: JSON.stringify({ description, rating }), // Include rating in the request body
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
                     'Authorization': `Bearer ${token}`
-                },
-
+                }
             });
             if (response.ok) {
                 fetchUserReservations();
@@ -64,7 +71,8 @@ function ReservationPage({ getToken }) {
                 <h1 className="mb-4">User Reservations</h1>
                 <div className="row">
                     {reservations.map(reservation => {
-                        return(
+                        const hasReview = reservation.review !== null;
+                        return (
                             <div key={reservation?.reservationID} className="col-md-4 mb-4">
                                 <div className="card">
                                     <div className="card-body">
@@ -72,21 +80,26 @@ function ReservationPage({ getToken }) {
                                         <p className="card-text">Number of People: {reservation?.numberOfPeople}</p>
                                         <p className="card-text">Start Date: {reservation?.startDate}</p>
                                         <p className="card-text">End Date: {reservation?.endDate}</p>
-                                        <div className="form-group">
-                                            <textarea
-                                                className="form-control"
-                                                rows="3"
-                                                placeholder="Write your comment..."
-                                                value={description}
-                                                onChange={handleCommentChange}
-                                            ></textarea>
-                                        </div>
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={() => handleSubmitComment(reservation?.propertyID,reservation?.reservationID)}
-                                        >
-                                            Add Comment
-                                        </button>
+                                        {hasReview ? (
+                                            <p className="card-text">Review: {reservation.review.description}</p>
+                                        ) : (
+                                            <div>
+                                                <Rating value={rating} onChange={handleRatingChange} />
+                                                <textarea
+                                                    className="form-control mt-2"
+                                                    rows="3"
+                                                    placeholder="Write your comment..."
+                                                    value={description}
+                                                    onChange={handleCommentChange}
+                                                ></textarea>
+                                                <button
+                                                    className="btn btn-primary mt-2"
+                                                    onClick={() => handleSubmitComment(reservation?.propertyID, reservation?.reservationID)}
+                                                >
+                                                    Add Comment
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
