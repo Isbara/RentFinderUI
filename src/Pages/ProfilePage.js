@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import App from '../App';
 import '../Styles/Pop-up.css';
 
 
 function ProfilePage({ getToken }) {
+    let navigate = useNavigate();
+
     const token = getToken();
     const isLoggedIn = token;
     const [userDetails, setUserDetails] = useState(null);
@@ -12,7 +15,16 @@ function ProfilePage({ getToken }) {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showReservationModel,setShowReservationModal]=useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [propertyID, setPropertyID] = useState(0);
+    const [reservations, setReservations] = useState(null);
+    const [userUpdateDetails, setUserUpdateDetails] = useState({
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+        phoneNumber: ''
+    });
     const [propertyDetails, setPropertyDetails] = useState({
         propertyType: '',
         flatNo: '',
@@ -163,9 +175,69 @@ function ProfilePage({ getToken }) {
         }
     };
 
+    const connectPropertyReservations = async(key) => {
+        const token=App.getToken();
+        const bearerToken = "Bearer " + token;
+        try {
+            const response = await fetch("http://localhost:8080/property/getReservations/" + key, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch property reservations');
+            }
+            const propertyReservations = await response.json();
+            await setReservations(propertyReservations);
+            console.log(reservations);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+    const connectUpdateUser = async () => {
+        const token=App.getToken();
+        try {
+            const token=App.getToken();
+            const bearerToken = "Bearer " + token;
+            const result = await fetch('http://localhost:8080/user/update', {
+                method: 'PUT',
+                body: JSON.stringify(userUpdateDetails),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!result.ok) {
+               // const errorResponse = await result.json();
+            } else {
+             const resultInJson = await result.text();
+             console.log(resultInJson);
+                // Handle successful response, e.g., navigate to another page
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setPropertyDetails({ ...propertyDetails, [name]: value });
+        setpopUpErrors({
+            ...popUpErrors,
+            [name]: ''
+        });
+    };
+
+    const handleUpdateInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserUpdateDetails({ ...userUpdateDetails, [name]: value });
         setpopUpErrors({
             ...popUpErrors,
             [name]: ''
@@ -208,6 +280,21 @@ function ProfilePage({ getToken }) {
         connectDeleteProperty();
         setShowDeleteModal(false);
         window.location.reload();
+    };
+
+    const handleReservation = (key) => {
+        setPropertyID(key);
+        connectPropertyReservations(key);
+        setShowReservationModal(true);
+    }
+
+    const handleEditPopUpSubmit = (e) => {
+        e.preventDefault();
+        connectUpdateUser();
+        setShowEditModal(false);
+        setpopUpErrors({});
+        App.removeToken();
+        navigate("/");
     };
 
     const validatePopUpForm = () => {
@@ -253,12 +340,12 @@ function ProfilePage({ getToken }) {
                             <div className="card-body">
                                 <h5 className="card-title">User Details</h5>
                                 <ul className="list-group list-group-flush">
-                                    <li className="list-group-item">Name: {userDetails?.name}</li>
-                                    <li className="list-group-item">Surname: {userDetails?.surname}</li>
-                                    <li className="list-group-item">Email: {userDetails?.email}</li>
-                                    <li className="list-group-item">Phone Number: {userDetails?.phoneNumber}</li>
+                                    <li>Name: {userDetails?.name}</li>
+                                    <li>Surname: {userDetails?.surname}</li>
+                                    <li>Email: {userDetails?.email}</li>
+                                    <li>Phone Number: {userDetails?.phoneNumber}</li>
                                 </ul>
-                                <button className="btn btn-primary mt-3">Edit Details</button>
+                                <button className="btn btn-primary mt-3" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
                             </div>
                         </div>
                     </div>
@@ -269,7 +356,7 @@ function ProfilePage({ getToken }) {
                                 <h5 className="card-title">Current Properties</h5>
                                 <ul className="list-group">
                                     {userProperties.map(property => (
-                                        <li key={property.propertyID} className="list-group-item">
+                                        <li key={property.propertyID}>
                                             <p>Address: {property.address}</p>
                                             <p>Description: {property.description}</p>
                                             <p>Flat No: {property.flatNo}</p>
@@ -278,7 +365,7 @@ function ProfilePage({ getToken }) {
                                             <p>Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
                                             <button type="button" className="btn btn-primary" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
                                             <button type="button" className="btn btn-primary mx-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
-                                            <button type="button" className="btn btn-danger" onClick={() => setShowReservationModal(true)}>Reservations</button>
+                                            <button type="button" className="btn btn-danger" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
                                         </li>
                                     ))}
                                 </ul>
@@ -421,15 +508,85 @@ function ProfilePage({ getToken }) {
             )}
 
             {showReservationModel&& (
-                {/* We should show that specific properties all reservations, we should write a backend endpoint*/}
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Current Reservations</h5>
+                                <button type="button" className="close" onClick={() => setShowReservationModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div className="card">
+                                                {reservations ? (reservations.map(reservation => {
+                                                return(
+                                                    <div key={reservation?.reservationID}>
+                                                        <h5 className="card-title">Reservation {reservation?.reservationID}</h5>
+                                                        <div className="card-body">
+                                                            <ul>
+                                                                <p>Number of people: {reservation?.numberOfPeople}</p>
+                                                                <p>Start date: {reservation?.startDate}</p>
+                                                                <p>End date: {reservation?.endDate}</p>
+                                                                <p>Status: {reservation?.status}</p>
+                                                                <p>Approval: {reservation?.approval}</p>
+                                                            </ul>
+                                                        </div>
+                                                    </div>)
+                                                })):(<p>There is no reservation for this property.</p>)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
 
-
+            {showEditModal && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edit Profile Details</h5>
+                                <button type="button" className="close" onClick={() => setShowEditModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={handleEditPopUpSubmit}>
+                                    <div className="form-group">
+                                        <label htmlFor="name">Name:</label>
+                                        <input type="text" id="name" name="name" value={userUpdateDetails.name} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="surname">Surname:</label>
+                                        <input type="text" id="surname" name="surname" value={userUpdateDetails.surname} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="email">Email:</label>
+                                        <input type="text" id="email" name="email" value={userUpdateDetails.email} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="password">Password:</label>
+                                        <input type="password" id="password" name="password" value={userUpdateDetails.password} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="phoneNumber">Phone Number:</label>
+                                        <input type="number" id="phoneNumber" name="phoneNumber" value={userUpdateDetails.phoneNumber} onChange={handleUpdateInputChange} required />
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
-
 }
-
 export default ProfilePage;
-
-
