@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
+=======
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +186,10 @@
       <workItem from="1710875428893" duration="751000" />
       <workItem from="1710939885142" duration="6866000" />
       <workItem from="1711011666663" duration="751000" />
+<<<<<<< Updated upstream
       <workItem from="1711097319473" duration="14012000" />
+=======
+>>>>>>> Stashed changes
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>

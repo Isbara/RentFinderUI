@@ -35,6 +35,7 @@ function ReservationPage({ getToken }) {
     const handleSubmitComment = async (propertyID, reservationID) => {
         console.log(propertyID)
         console.log(reservationID)
+        console.log(description)
         try {
             const response = await fetch(`http://localhost:8080/review/${propertyID}/${reservationID}`, {
                 method: 'POST',
