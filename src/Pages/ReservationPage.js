@@ -83,7 +83,7 @@ function ReservationPage({ getToken }) {
                                         {hasReview ? (
                                             <div>
                                                 <p className="card-text">Review: {reservation.review.description}</p>
-                                                <p className="card-text">Algo Result: {reservation.review.algoResult ? "True" : "False"}</p>
+                                                <p className="card-text">Algo Result: {reservation.review.algoResult ? "Genuine" : "Fake"}</p>
                                             </div>
                                         ) : (
                                             <div>
