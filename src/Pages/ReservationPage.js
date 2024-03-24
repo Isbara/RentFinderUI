@@ -5,7 +5,7 @@ function ReservationPage({ getToken }) {
     const token = getToken();
     const isLoggedIn = token;
     const [reservations, setReservations] = useState([]);
-    const [comment, setComment] = useState('');
+    const [description, setComment] = useState('');
 
     useEffect(() => {
         fetchUserReservations();
@@ -33,15 +33,18 @@ function ReservationPage({ getToken }) {
     };
 
     const handleSubmitComment = async (propertyID, reservationID) => {
+        console.log(propertyID)
+        console.log(reservationID)
         try {
             const response = await fetch(`http://localhost:8080/review/${propertyID}/${reservationID}`, {
                 method: 'POST',
+                body: JSON.stringify({ description }),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ comment })
+
             });
             if (response.ok) {
                 fetchUserReservations();
@@ -72,13 +75,13 @@ function ReservationPage({ getToken }) {
                                             className="form-control"
                                             rows="3"
                                             placeholder="Write your comment..."
-                                            value={comment}
+                                            value={description}
                                             onChange={handleCommentChange}
                                         ></textarea>
                                     </div>
                                     <button
                                         className="btn btn-primary"
-                                        onClick={() => handleSubmitComment(reservation.reservationID,reservation.reserved.propertyID)}
+                                        onClick={() => handleSubmitComment(reservation.propertyID,reservation.reservationID)}
                                     >
                                         Add Comment
                                     </button>
