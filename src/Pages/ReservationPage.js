@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../Components/Header';
-import Rating from '../Components/Rating';
+import Rating from '../Components/Rating'; 
 
 function ReservationPage({ getToken }) {
     const token = getToken();
@@ -30,7 +30,7 @@ function ReservationPage({ getToken }) {
         }
     };
 
-    const handleCommentChange = (e) => {
+    const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
     };
 
@@ -38,7 +38,7 @@ function ReservationPage({ getToken }) {
         setRating(value);
     };
 
-    const handleSubmitComment = async (propertyID, reservationID) => {
+    const handleSubmitDescription = async (propertyID, reservationID) => {
         console.log(propertyID);
         console.log(reservationID);
         console.log(description);
@@ -81,7 +81,10 @@ function ReservationPage({ getToken }) {
                                         <p className="card-text">Start Date: {reservation?.startDate}</p>
                                         <p className="card-text">End Date: {reservation?.endDate}</p>
                                         {hasReview ? (
-                                            <p className="card-text">Review: {reservation.review.description}</p>
+                                            <div>
+                                                <p className="card-text">Review: {reservation.review.description}</p>
+                                                <p className="card-text">Algo Result: {reservation.review.algoResult ? "True" : "False"}</p>
+                                            </div>
                                         ) : (
                                             <div>
                                                 <Rating value={rating} onChange={handleRatingChange} />
@@ -90,11 +93,11 @@ function ReservationPage({ getToken }) {
                                                     rows="3"
                                                     placeholder="Write your comment..."
                                                     value={description}
-                                                    onChange={handleCommentChange}
+                                                    onChange={handleDescriptionChange}
                                                 ></textarea>
                                                 <button
                                                     className="btn btn-primary mt-2"
-                                                    onClick={() => handleSubmitComment(reservation?.propertyID, reservation?.reservationID)}
+                                                    onClick={() => handleSubmitDescription(reservation?.propertyID, reservation?.reservationID)}
                                                 >
                                                     Add Comment
                                                 </button>
