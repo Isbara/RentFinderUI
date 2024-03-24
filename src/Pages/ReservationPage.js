@@ -5,6 +5,7 @@ function ReservationPage({ getToken }) {
     const token = getToken();
     const isLoggedIn = token;
     const [reservations, setReservations] = useState([]);
+    const [comment, setComment] = useState('');
 
     useEffect(() => {
         fetchUserReservations();
@@ -27,6 +28,31 @@ function ReservationPage({ getToken }) {
         }
     };
 
+    const handleCommentChange = (e) => {
+        setComment(e.target.value);
+    };
+
+    const handleSubmitComment = async (propertyID, reservationID) => {
+        try {
+            const response = await fetch(`http://localhost:8080/review/${propertyID}/${reservationID}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ comment })
+            });
+            if (response.ok) {
+                fetchUserReservations();
+            } else {
+                console.error('Failed to add comment');
+            }
+        } catch (error) {
+            console.error('Error adding comment:', error);
+        }
+    };
+
     return (
         <div>
             <Header isLoggedIn={isLoggedIn} />
@@ -37,11 +63,25 @@ function ReservationPage({ getToken }) {
                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                             <div className="card">
                                 <div className="card-body">
-                                    <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5> {/* If we remove JSON Ignore from backend we can achieve reserver and reserved place from here*/}
+                                    <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
                                     <p className="card-text">Number of People: {reservation.numberOfPeople}</p>
                                     <p className="card-text">Start Date: {reservation.startDate}</p>
                                     <p className="card-text">End Date: {reservation.endDate}</p>
-                                    {/* Add more reservation details as needed */}
+                                    <div className="form-group">
+                                        <textarea
+                                            className="form-control"
+                                            rows="3"
+                                            placeholder="Write your comment..."
+                                            value={comment}
+                                            onChange={handleCommentChange}
+                                        ></textarea>
+                                    </div>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => handleSubmitComment(reservation.reservationID,reservation.reserved.propertyID)}
+                                    >
+                                        Add Comment
+                                    </button>
                                 </div>
                             </div>
                         </div>

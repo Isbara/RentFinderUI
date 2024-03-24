@@ -340,21 +340,20 @@ function ProfilePage({ getToken }) {
                             <div className="card-body">
                                 <h5 className="card-title">User Details</h5>
                                 <ul className="list-group list-group-flush">
-                                    <li>Name: {userDetails?.name}</li>
-                                    <li>Surname: {userDetails?.surname}</li>
-                                    <li>Email: {userDetails?.email}</li>
-                                    <li>Phone Number: {userDetails?.phoneNumber}</li>
+                                    <li className="list-group-item">Name: {userDetails?.name}</li>
+                                    <li className="list-group-item">Surname: {userDetails?.surname}</li>
+                                    <li className="list-group-item">Email: {userDetails?.email}</li>
+                                    <li className="list-group-item">Phone Number: {userDetails?.phoneNumber}</li>
                                 </ul>
                                 <button className="btn btn-primary mt-3" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
                             </div>
                         </div>
                     </div>
-
                     <div className="col-md-8">
                         <div className="card">
                             <div className="card-body">
                                 <h5 className="card-title">Current Properties</h5>
-                                <ul className="list-group">
+                                <ul className="list-group" style={{ listStyleType: "none" }}>
                                     {userProperties.map(property => (
                                         <li key={property.propertyID}>
                                             <p>Address: {property.address}</p>
@@ -531,8 +530,9 @@ function ProfilePage({ getToken }) {
                                                                 <p>Number of people: {reservation?.numberOfPeople}</p>
                                                                 <p>Start date: {reservation?.startDate}</p>
                                                                 <p>End date: {reservation?.endDate}</p>
-                                                                <p>Status: {reservation?.status}</p>
-                                                                <p>Approval: {reservation?.approval}</p>
+                                                                <p>Status: {reservation?.status === null ? 'Unknown' : (reservation?.status ? 'Stayed' : 'Not Stayed')}</p>
+                                                                <p>Approval: {reservation?.approval === null ? 'Unknown' : (reservation?.approval ? 'Approved' : 'Not Approved')}</p>
+
                                                             </ul>
                                                         </div>
                                                     </div>)
