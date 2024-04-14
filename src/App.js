@@ -48,3 +48,12 @@ function App() {
 }
 
 export default App;
+
+
+export function add(x, y) {
+  return x + y;
+}
+
+export function total(subtotal,total){
+  return '$'+add(subtotal,total);
+}
