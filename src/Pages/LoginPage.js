@@ -34,8 +34,8 @@ function LoginPage({ onLogin }) {
         setError('');
         const resultInJson = await connectLogin();
         setTrigger(true);
-        console.log(resultInJson.token);
-        setResponse(resultInJson.token);
+        if(typeof(resultInJson)!=='undefined')
+            setResponse(resultInJson.token);
     };
     const [error, setError] = useState("")
 
@@ -55,7 +55,7 @@ function LoginPage({ onLogin }) {
            }
        }
        catch (error)
-       {
+       {    console.log("catched error")
            setError("An unexpected error occurred. Please try again.");
        }
     }

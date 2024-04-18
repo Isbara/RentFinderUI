@@ -18,11 +18,12 @@ function ProfilePage({ getToken }) {
     const [showEditModal, setShowEditModal] = useState(false);
     const [propertyID, setPropertyID] = useState(0);
     const [reservations, setReservations] = useState(null);
-    const [userUpdateDetails, setUserUpdateDetails] = useState({
+    const [showEmailInUsePopup, setShowEmailInUsePopup] = useState(false);
+
+    const [userUpdateErrors, setUserUpdateErrors] = useState({
         name: '',
         surname: '',
         email: '',
-        password: '',
         phoneNumber: ''
     });
     const [propertyDetails, setPropertyDetails] = useState({
@@ -199,14 +200,14 @@ function ProfilePage({ getToken }) {
         }
     };
 
-    const connectUpdateUser = async () => {
+    const connectUpdateUser = async () => { //When email is changed this should return a new jwt token for the user, otherwise it won't let the user do any operations
         const token=App.getToken();
         try {
             const token=App.getToken();
             const bearerToken = "Bearer " + token;
             const result = await fetch('http://localhost:8080/user/update', {
                 method: 'PUT',
-                body: JSON.stringify(userUpdateDetails),
+                body: JSON.stringify(userDetails),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -215,7 +216,7 @@ function ProfilePage({ getToken }) {
             });
 
             if (!result.ok) {
-               // const errorResponse = await result.json();
+                setShowEmailInUsePopup(true);
             } else {
              const resultInJson = await result.text();
              console.log(resultInJson);
@@ -237,9 +238,9 @@ function ProfilePage({ getToken }) {
 
     const handleUpdateInputChange = (e) => {
         const { name, value } = e.target;
-        setUserUpdateDetails({ ...userUpdateDetails, [name]: value });
-        setpopUpErrors({
-            ...popUpErrors,
+        setUserDetails({ ...userDetails, [name]: value });
+        setUserUpdateErrors({
+            ...userUpdateErrors,
             [name]: ''
         });
     };
@@ -289,12 +290,15 @@ function ProfilePage({ getToken }) {
     }
 
     const handleEditPopUpSubmit = (e) => {
-        e.preventDefault();
-        connectUpdateUser();
-        setShowEditModal(false);
-        setpopUpErrors({});
-        App.removeToken();
-        navigate("/");
+        if(validateUserUpdateForm()) {
+            e.preventDefault();
+            connectUpdateUser();
+            setShowEditModal(false);
+            setpopUpErrors({});
+            navigate("/profile");
+        }
+        else
+            e.preventDefault()
     };
 
     const validatePopUpForm = () => {
@@ -329,6 +333,32 @@ function ProfilePage({ getToken }) {
         setpopUpErrors(updatedErrors);
         return isValid;
     };
+
+    const validateUserUpdateForm = () => {
+        let isValid = true;
+        const updatedErrors = { ...userUpdateErrors };
+
+        if (!userDetails.name || userDetails.name.length < 3) {
+            updatedErrors.name = 'Name should be at least 3 characters long';
+            isValid = false;
+        }
+        if (!userDetails.surname || userDetails.surname.length < 3) {
+            updatedErrors.surname = 'Surname should be at least 13 characters long';
+            isValid = false;
+        }
+        if (!userDetails.email || !/^\S+@\S+\.\S+$/.test(userDetails.email)) {
+            updatedErrors.email = 'Invalid email address';
+            isValid = false;
+        }
+        if (!/^[0-9]+$/.test(userDetails.phoneNumber) || userDetails.phoneNumber.length !== 10) {
+            updatedErrors.phoneNumber = 'Phone number must be a valid 10-digit number.';
+            isValid = false;
+        }
+
+        setUserUpdateErrors(updatedErrors);
+        return isValid;
+    };
+
 
     return (
         <div>
@@ -561,26 +591,68 @@ function ProfilePage({ getToken }) {
                                 <form onSubmit={handleEditPopUpSubmit}>
                                     <div className="form-group">
                                         <label htmlFor="name">Name:</label>
-                                        <input type="text" id="name" name="name" value={userUpdateDetails.name} onChange={handleUpdateInputChange} required />
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            value={userDetails.name}
+                                            onChange={handleUpdateInputChange}
+                                            required
+                                        />
+                                        {userUpdateErrors.name && <div className="invalid-feedback d-block">{userUpdateErrors.name}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="surname">Surname:</label>
-                                        <input type="text" id="surname" name="surname" value={userUpdateDetails.surname} onChange={handleUpdateInputChange} required />
+                                        <input
+                                            type="text"
+                                            id="surname"
+                                            name="surname"
+                                            value={userDetails.surname}
+                                            onChange={handleUpdateInputChange}
+                                            required
+                                        />
+                                        {userUpdateErrors.surname && <div className="invalid-feedback d-block">{userUpdateErrors.surname}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="email">Email:</label>
-                                        <input type="text" id="email" name="email" value={userUpdateDetails.email} onChange={handleUpdateInputChange} required />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="password">Password:</label>
-                                        <input type="password" id="password" name="password" value={userUpdateDetails.password} onChange={handleUpdateInputChange} required />
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={userDetails.email}
+                                            onChange={handleUpdateInputChange}
+                                            required
+                                        />
+                                        {userUpdateErrors.email && <div className="invalid-feedback d-block">{userUpdateErrors.email}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="phoneNumber">Phone Number:</label>
-                                        <input type="number" id="phoneNumber" name="phoneNumber" value={userUpdateDetails.phoneNumber} onChange={handleUpdateInputChange} required />
+                                        <input
+                                            type="tel"
+                                            id="phoneNumber"
+                                            name="phoneNumber"
+                                            value={userDetails.phoneNumber}
+                                            onChange={handleUpdateInputChange}
+                                            required
+                                        />
+                                        {userUpdateErrors.phoneNumber && <div className="invalid-feedback d-block">{userUpdateErrors.phoneNumber}</div>}
                                     </div>
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showEmailInUsePopup && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-body">
+                                <p>This email is already in use.</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowEmailInUsePopup(false)}>Close</button>
                             </div>
                         </div>
                     </div>
