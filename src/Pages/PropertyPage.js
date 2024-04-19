@@ -159,6 +159,9 @@ function PropertyPage({ getToken }) {
                                 <p className="card-text">Place Offers: {property.placeOffers}</p>
                                 <p className="card-text">Price: {property.price}</p>
                                 <p className="card-text">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
+                                {property.image && (
+                                    <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid" style={{ maxWidth: '100%' }} />
+                                )}
                             </div>
                         </div>
                         <button className="btn btn-success mt-3" onClick={() => setShowModal(true)}>Reserve Property</button>

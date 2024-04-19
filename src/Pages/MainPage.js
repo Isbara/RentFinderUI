@@ -41,14 +41,21 @@ function MainPage({ getToken }) {
                         <ul className="list-group">
                             {allProperties.map(property => (
                                 <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item">
-                                    <div>
-                                        <p><strong>Address:</strong> {property.address}</p>
-                                        <p><strong>Description:</strong> {property.description}</p>
-                                        <p><strong>Flat No:</strong> {property.flatNo}</p>
-                                        <p><strong>Place Offers:</strong> {property.placeOffers}</p>
-                                        <p><strong>Price:</strong> {property.price}</p>
-                                        <p><strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
-                                    </div>
+                                    <div className="card-body">
+                                        <h5 className="card-title">Property Details</h5>
+                                        <ul className="list-group list-group-flush">
+                                            <li className="list-group-item"><strong>Address:</strong> {property.address}</li>
+                                            <li className="list-group-item"><strong>Description:</strong> {property.description}</li>
+                                            <li className="list-group-item"><strong>Flat No:</strong> {property.flatNo}</li>
+                                            <li className="list-group-item"><strong>Place Offers:</strong> {property.placeOffers}</li>
+                                            <li className="list-group-item"><strong>Price:</strong> {property.price}</li>
+                                            <li className="list-group-item"><strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</li>
+                                        </ul>
+                                        {property.image && (
+                                            <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px' }} />
+                                        )}
+                                        </div>
+
                                 </Link>
                             ))}
                         </ul>

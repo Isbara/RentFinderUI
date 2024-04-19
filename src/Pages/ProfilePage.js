@@ -32,7 +32,8 @@ function ProfilePage({ getToken }) {
         address: '',
         description: '',
         price: '',
-        placeOffers: ''
+        placeOffers: '',
+        image:''
     });
     const [popUpErrors, setpopUpErrors] = useState({
         propertyType: '',
@@ -95,13 +96,16 @@ function ProfilePage({ getToken }) {
     },[]);
 
     const connectProperty = async () => {
-        const token=App.getToken();
+        const token = App.getToken();
         try {
-            const token=App.getToken();
-            const bearerToken = "Bearer " + token;
+            const requestData = {
+                ...propertyDetails,
+                // Ensure that the image data is stripped of its prefix before sending it
+                image: propertyDetails.image.split(',')[1] // Remove the data URI prefix
+            };
             const result = await fetch('http://localhost:8080/property/addProperty', {
                 method: 'POST',
-                body: JSON.stringify(propertyDetails),
+                body: JSON.stringify(requestData),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -110,11 +114,11 @@ function ProfilePage({ getToken }) {
             });
 
             if (!result.ok) {
-               // const errorResponse = await result.json();
+                // Handle error response
             } else {
-             const resultInJson = await result.json();
-             console.log(resultInJson);
-                // Handle successful response, e.g., navigate to another page
+                const resultInJson = await result.json();
+                console.log(resultInJson);
+                // Handle successful response
             }
         } catch (error) {
             console.error('Error:', error.message);
@@ -124,12 +128,17 @@ function ProfilePage({ getToken }) {
     const connectUpdateProperty = async () => {
         const token=App.getToken();
         try {
+            const requestData = {
+                ...propertyDetails,
+                // Ensure that the image data is stripped of its prefix before sending it
+                image: propertyDetails.image.split(',')[1] // Remove the data URI prefix
+            };
             const token=App.getToken();
             const bearerToken = "Bearer " + token;
             const IDLink = propertyID;
             const result = await fetch('http://localhost:8080/property/updateProperty/' + IDLink, {
                 method: 'PUT',
-                body: JSON.stringify(propertyDetails),
+                body: JSON.stringify(requestData),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -138,10 +147,10 @@ function ProfilePage({ getToken }) {
             });
 
             if (!result.ok) {
-               // const errorResponse = await result.json();
+                // const errorResponse = await result.json();
             } else {
-             const resultInJson = await result.json();
-             console.log(resultInJson);
+                const resultInJson = await result.json();
+                console.log(resultInJson);
                 // Handle successful response, e.g., navigate to another page
             }
         } catch (error) {
@@ -165,10 +174,10 @@ function ProfilePage({ getToken }) {
             });
 
             if (!result.ok) {
-               // const errorResponse = await result.json();
+                // const errorResponse = await result.json();
             } else {
-             const resultInJson = await result.text();
-             console.log(resultInJson);
+                const resultInJson = await result.text();
+                console.log(resultInJson);
                 // Handle successful response, e.g., navigate to another page
             }
         } catch (error) {
@@ -218,14 +227,47 @@ function ProfilePage({ getToken }) {
             if (!result.ok) {
                 setShowEmailInUsePopup(true);
             } else {
-             const resultInJson = await result.text();
-             console.log(resultInJson);
+                const resultInJson = await result.text();
+                console.log(resultInJson);
                 // Handle successful response, e.g., navigate to another page
             }
         } catch (error) {
             console.error('Error:', error.message);
         }
     };
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0]; // Get the first selected file
+
+        // Check if a file is selected
+        if (file) {
+            // Check if the selected file type is allowed
+            if (
+                file.type === "image/jpeg" ||
+                file.type === "image/jpg" ||
+                file.type === "image/png"
+            ) {
+                console.log("hey")
+                const reader = new FileReader();
+
+                // Set up the onload callback function to read the file as a Data URL
+                reader.onload = () => {
+                    const imageDataUrl = reader.result;
+                    console.log(imageDataUrl);
+
+                    // Update propertyDetails state with the Data URL
+                    setPropertyDetails({ ...propertyDetails, image: imageDataUrl });
+                };
+
+                // Read the selected file as Data URL
+                reader.readAsDataURL(file);
+            } else {
+                // File type not allowed, handle accordingly (e.g., display an error message)
+                console.log("Only JPEG, JPG, and PNG images are allowed.");
+            }
+        }
+    };
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -385,17 +427,27 @@ function ProfilePage({ getToken }) {
                                 <h5 className="card-title">Current Properties</h5>
                                 <ul className="list-group" style={{ listStyleType: "none" }}>
                                     {userProperties.map(property => (
-                                        <li key={property.propertyID}>
-                                            <p>Address: {property.address}</p>
-                                            <p>Description: {property.description}</p>
-                                            <p>Flat No: {property.flatNo}</p>
-                                            <p>Place Offers: {property.placeOffers}</p>
-                                            <p>Price: {property.price}</p>
-                                            <p>Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
-                                            <button type="button" className="btn btn-primary" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
-                                            <button type="button" className="btn btn-primary mx-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
-                                            <button type="button" className="btn btn-danger" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
+                                        <li key={property.propertyID} className="list-group-item">
+                                            <div className="d-flex w-100 justify-content-between">
+                                                <h5 className="mb-1">Address: {property.address}</h5>
+                                                <small>Flat No: {property.flatNo}</small>
+                                            </div>
+                                            <p className="mb-1">Description: {property.description}</p>
+                                            <p className="mb-1">Place Offers: {property.placeOffers}</p>
+                                            <p className="mb-1">Price: {property.price}</p>
+                                            <p className="mb-1">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
+                                            {property.image && (
+                                                <div>
+                                                    <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid" style={{ maxWidth: '300px' }} />
+                                                    <div className="mt-3">
+                                                        <button type="button" className="btn btn-primary mr-1" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
+                                                        <button type="button" className="btn btn-danger mr-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
+                                                        <button type="button" className="btn btn-secondary" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </li>
+
                                     ))}
                                 </ul>
                             </div>
@@ -452,6 +504,20 @@ function ProfilePage({ getToken }) {
                                         <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} required />
                                         {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
                                     </div>
+                                    <div>
+                                        <input
+                                            type="file"
+                                            accept="image/jpeg, image/jpg, image/png"
+                                            onChange={handleImageChange}
+                                        />
+                                        {propertyDetails.image && (
+                                            <div>
+                                                <h2>Preview:</h2>
+                                                <img src={propertyDetails.image} alt="Uploaded" style={{ maxWidth: '100%' }} />
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
                             </div>
@@ -507,6 +573,20 @@ function ProfilePage({ getToken }) {
                                         <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} required />
                                         {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
                                     </div>
+                                    <div className="form-group">
+                                        <label htmlFor="image">Image:</label>
+                                        <input
+                                            type="file"
+                                            accept="image/jpeg, image/jpg, image/png"
+                                            onChange={handleImageChange}
+                                        />
+                                        {propertyDetails.image && (
+                                            <div>
+                                                <h2>Preview:</h2>
+                                                <img src={propertyDetails.image} alt="Uploaded" style={{ maxWidth: '100%' }} />
+                                            </div>
+                                        )}
+                                    </div>
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
                             </div>
@@ -527,8 +607,8 @@ function ProfilePage({ getToken }) {
                             <div className="modal-body">
                                 <p>Are you sure you would like to delete this property ?</p>
                                 <div style={{display: "flex"}}>
-                                <button type="button" style={{ marginRight: "auto" }} className="btn btn-success" onClick={handleDeletePopUp}>Yes</button>
-                                <button type="button" style={{ marginLeft: "auto" }} className="btn btn-danger" onClick={() => setShowDeleteModal(false)}>No</button>
+                                    <button type="button" style={{ marginRight: "auto" }} className="btn btn-success" onClick={handleDeletePopUp}>Yes</button>
+                                    <button type="button" style={{ marginLeft: "auto" }} className="btn btn-danger" onClick={() => setShowDeleteModal(false)}>No</button>
                                 </div>
                             </div>
                         </div>
@@ -552,20 +632,20 @@ function ProfilePage({ getToken }) {
                                         <div className="col-md-12">
                                             <div className="card">
                                                 {reservations ? (reservations.map(reservation => {
-                                                return(
-                                                    <div key={reservation?.reservationID}>
-                                                        <h5 className="card-title">Reservation {reservation?.reservationID}</h5>
-                                                        <div className="card-body">
-                                                            <ul>
-                                                                <p>Number of people: {reservation?.numberOfPeople}</p>
-                                                                <p>Start date: {reservation?.startDate}</p>
-                                                                <p>End date: {reservation?.endDate}</p>
-                                                                <p>Status: {reservation?.status === null ? 'Unknown' : (reservation?.status ? 'Stayed' : 'Not Stayed')}</p>
-                                                                <p>Approval: {reservation?.approval === null ? 'Unknown' : (reservation?.approval ? 'Approved' : 'Not Approved')}</p>
+                                                    return(
+                                                        <div key={reservation?.reservationID}>
+                                                            <h5 className="card-title">Reservation {reservation?.reservationID}</h5>
+                                                            <div className="card-body">
+                                                                <ul>
+                                                                    <p>Number of people: {reservation?.numberOfPeople}</p>
+                                                                    <p>Start date: {reservation?.startDate}</p>
+                                                                    <p>End date: {reservation?.endDate}</p>
+                                                                    <p>Status: {reservation?.status === null ? 'Unknown' : (reservation?.status ? 'Stayed' : 'Not Stayed')}</p>
+                                                                    <p>Approval: {reservation?.approval === null ? 'Unknown' : (reservation?.approval ? 'Approved' : 'Not Approved')}</p>
 
-                                                            </ul>
-                                                        </div>
-                                                    </div>)
+                                                                </ul>
+                                                            </div>
+                                                        </div>)
                                                 })):(<p>There is no reservation for this property.</p>)}
                                             </div>
                                         </div>
