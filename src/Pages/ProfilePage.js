@@ -41,7 +41,8 @@ function ProfilePage({ getToken }) {
         address: '',
         description: '',
         price: '',
-        placeOffers: ''
+        placeOffers: '',
+        image:''
     });
     const [userProperties, setuserProperties] = useState([]);
 
@@ -371,6 +372,10 @@ function ProfilePage({ getToken }) {
             updatedErrors.placeOffers = 'Place Offers should have at least 10 characters';
             isValid = false;
         }
+        if(!propertyDetails.image)
+        {
+            updatedErrors.image='Please add an image'
+        }
 
         setpopUpErrors(updatedErrors);
         return isValid;
@@ -439,13 +444,13 @@ function ProfilePage({ getToken }) {
                                             {property.image && (
                                                 <div>
                                                     <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid" style={{ maxWidth: '300px' }} />
-                                                    <div className="mt-3">
-                                                        <button type="button" className="btn btn-primary mr-1" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
-                                                        <button type="button" className="btn btn-danger mr-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
-                                                        <button type="button" className="btn btn-secondary" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
-                                                    </div>
                                                 </div>
                                             )}
+                                            <div className="mt-3">
+                                                <button type="button" className="btn btn-primary mr-1" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
+                                                <button type="button" className="btn btn-danger mr-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
+                                                <button type="button" className="btn btn-secondary" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
+                                            </div>
                                         </li>
 
                                     ))}
@@ -470,77 +475,9 @@ function ProfilePage({ getToken }) {
                             <div className="modal-body">
                                 <form onSubmit={handlePopUpSubmit}>
                                     <div className="form-group">
-                                        <label htmlFor="propertyType">Property Type:</label>
-                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required>
-                                            <option value="E">Select Property Type</option>
-                                            <option value="R">Apartment Room</option>
-                                            <option value="A">Apartment</option>
-                                            <option value="H">House</option>
-                                        </select>
-                                        {popUpErrors.propertyType && <div className="invalid-feedback d-block">{popUpErrors.propertyType}</div>}
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="flatNo">Flat No:</label>
-                                        <input type="number" className={`form-control ${popUpErrors.flatNo && 'is-invalid'}`} id="flatNo" name="flatNo" value={propertyDetails.flatNo} onChange={handleInputChange} required />
-                                        {popUpErrors.flatNo && <div className="invalid-feedback d-block">{popUpErrors.flatNo}</div>}
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="address">Address:</label>
-                                        <input type="text" className={`form-control ${popUpErrors.address && 'is-invalid'}`} id="address" name="address" value={propertyDetails.address} onChange={handleInputChange} required />
-                                        {popUpErrors.address && <div className="invalid-feedback d-block">{popUpErrors.address}</div>}
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="description">Description:</label>
-                                        <textarea className={`form-control ${popUpErrors.description && 'is-invalid'}`} id="description" name="description" value={propertyDetails.description} onChange={handleInputChange} required />
-                                        {popUpErrors.description && <div className="invalid-feedback d-block">{popUpErrors.description}</div>}
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="price">Price:</label>
-                                        <input type="number" className={`form-control ${popUpErrors.price && 'is-invalid'}`} id="price" name="price" value={propertyDetails.price} onChange={handleInputChange} required />
-                                        {popUpErrors.price && <div className="invalid-feedback d-block">{popUpErrors.price}</div>}
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="placeOffers">Place Offers:</label>
-                                        <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} required />
-                                        {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
-                                    </div>
-                                    <div>
-                                        <input
-                                            type="file"
-                                            accept="image/jpeg, image/jpg, image/png"
-                                            onChange={handleImageChange}
-                                        />
-                                        {propertyDetails.image && (
-                                            <div>
-                                                <h2>Preview:</h2>
-                                                <img src={propertyDetails.image} alt="Uploaded" style={{ maxWidth: '100%' }} />
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <button type="submit" className="btn btn-primary">Submit</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {showUpdateModal && (
-                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Update Property</h5>
-                                <button type="button" className="close" onClick={() => setShowUpdateModal(false)}>
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <form onSubmit={handleUpdatePopUpSubmit}>
-                                    <div className="form-group">
-                                        <label htmlFor="propertyType">Property Type:</label>
-                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required>
+                                        <label 
+                                            htmlFor="propertyType">Property Type:</label>
+                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required lang="en">
                                             <option value="E">Select Property Type</option>
                                             <option value="R">Apartment Room</option>
                                             <option value="A">Apartment</option>
@@ -579,17 +516,111 @@ function ProfilePage({ getToken }) {
                                             type="file"
                                             accept="image/jpeg, image/jpg, image/png"
                                             onChange={handleImageChange}
+                                            required
+                                            onInvalid={(e) => e.target.setCustomValidity("Please select an image")}
+                                            onInput={(e) => e.target.setCustomValidity("")}
                                         />
+                                        {/* Error message for image validation */}
+                                        {popUpErrors.image && <div className="invalid-feedback d-block">{popUpErrors.image}</div>}
+
+                                        {/* Preview the uploaded image */}
                                         {propertyDetails.image && (
                                             <div>
                                                 <h2>Preview:</h2>
-                                                <img src={propertyDetails.image} alt="Uploaded" style={{ maxWidth: '100%' }} />
+                                                <img src={propertyDetails.image} alt="" style={{ maxWidth: '100%' }} />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Submit Button */}
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showUpdateModal && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Update Property</h5>
+                                <button type="button" className="close" onClick={() => setShowUpdateModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={handleUpdatePopUpSubmit}>
+                                    {/* Property Type */}
+                                    <div className="form-group">
+                                        <label htmlFor="propertyType">Property Type:</label>
+                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required>
+                                            <option value="E">Select Property Type</option>
+                                            <option value="R">Apartment Room</option>
+                                            <option value="A">Apartment</option>
+                                            <option value="H">House</option>
+                                        </select>
+                                        {popUpErrors.propertyType && <div className="invalid-feedback d-block">{popUpErrors.propertyType}</div>}
+                                    </div>
+                                    {/* Flat No */}
+                                    <div className="form-group">
+                                        <label htmlFor="flatNo">Flat No:</label>
+                                        <input type="number" className={`form-control ${popUpErrors.flatNo && 'is-invalid'}`} id="flatNo" name="flatNo" value={propertyDetails.flatNo} onChange={handleInputChange} required />
+                                        {popUpErrors.flatNo && <div className="invalid-feedback d-block">{popUpErrors.flatNo}</div>}
+                                    </div>
+                                    {/* Address */}
+                                    <div className="form-group">
+                                        <label htmlFor="address">Address:</label>
+                                        <input type="text" className={`form-control ${popUpErrors.address && 'is-invalid'}`} id="address" name="address" value={propertyDetails.address} onChange={handleInputChange} required />
+                                        {popUpErrors.address && <div className="invalid-feedback d-block">{popUpErrors.address}</div>}
+                                    </div>
+                                    {/* Description */}
+                                    <div className="form-group">
+                                        <label htmlFor="description">Description:</label>
+                                        <textarea className={`form-control ${popUpErrors.description && 'is-invalid'}`} id="description" name="description" value={propertyDetails.description} onChange={handleInputChange} required />
+                                        {popUpErrors.description && <div className="invalid-feedback d-block">{popUpErrors.description}</div>}
+                                    </div>
+                                    {/* Price */}
+                                    <div className="form-group">
+                                        <label htmlFor="price">Price:</label>
+                                        <input type="number" className={`form-control ${popUpErrors.price && 'is-invalid'}`} id="price" name="price" value={propertyDetails.price} onChange={handleInputChange} required />
+                                        {popUpErrors.price && <div className="invalid-feedback d-block">{popUpErrors.price}</div>}
+                                    </div>
+                                    {/* Place Offers */}
+                                    <div className="form-group">
+                                        <label htmlFor="placeOffers">Place Offers:</label>
+                                        <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} required />
+                                        {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
+                                    </div>
+                                    {/* Image */}
+                                    <div className="form-group">
+                                        <label htmlFor="image">Image:</label>
+                                        <input
+                                            type="file"
+                                            accept="image/jpeg, image/jpg, image/png"
+                                            onChange={handleImageChange}
+                                            required
+                                            onInvalid={(e) => e.target.setCustomValidity("Please select an image")}
+                                            onInput={(e) => e.target.setCustomValidity("")}
+                                        />
+                                        {/* Error message for image validation */}
+                                        {popUpErrors.image && <div className="invalid-feedback d-block">{popUpErrors.image}</div>}
+
+                                        {/* Preview the uploaded image */}
+                                        {propertyDetails.image && (
+                                            <div>
+                                                <h2>Preview:</h2>
+                                                <img src={propertyDetails.image} alt="" style={{ maxWidth: '100%' }} />
                                             </div>
                                         )}
                                     </div>
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
                             </div>
+
                         </div>
                     </div>
                 </div>

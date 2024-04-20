@@ -7,7 +7,7 @@ function ReservationPage({ getToken }) {
     const isLoggedIn = token;
     const [reservations, setReservations] = useState([]);
     const [description, setDescription] = useState('');
-    const [rating, setRating] = useState(0); // State to track the rating value
+    const [userScore, setuserScore] = useState(0); // State to track the rating value
 
     useEffect(() => {
         fetchUserReservations();
@@ -34,20 +34,20 @@ function ReservationPage({ getToken }) {
         setDescription(e.target.value);
     };
 
-    const handleRatingChange = (value) => {
-        setRating(value);
+    const handleuserScoreChange = (value) => {
+        setuserScore(value);
     };
 
     const handleSubmitDescription = async (propertyID, reservationID) => {
         console.log(propertyID);
         console.log(reservationID);
         console.log(description);
-        console.log(rating); // Log the rating value
+        console.log(userScore); // Log the rating value
 
         try {
             const response = await fetch(`http://localhost:8080/review/${propertyID}/${reservationID}`, {
                 method: 'POST',
-                body: JSON.stringify({ description, rating }), // Include rating in the request body
+                body: JSON.stringify({ description, userScore }), // Include rating in the request body
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -87,7 +87,7 @@ function ReservationPage({ getToken }) {
                                             </div>
                                         ) : (
                                             <div>
-                                                <Rating value={rating} onChange={handleRatingChange} />
+                                                <Rating value={userScore} onChange={handleuserScoreChange} />
                                                 <textarea
                                                     className="form-control mt-2"
                                                     rows="3"
