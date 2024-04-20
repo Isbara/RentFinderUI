@@ -32,23 +32,23 @@ function App() {
   const isLoggedIn=!!getToken();
 
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route exact path="/" element={<MainPage getToken={getToken}/>}/>
-          <Route exact path="/register" element={<RegisterPage getToken={getToken}/>}/>
-          <Route exact path="/login" element={<LoginPage onLogin={saveToken}/>}/>
-          <Route exact path="/support" element={isLoggedIn ? <SupportPage getToken={getToken}/> : <Navigate to='/login'/>}/>
-          <Route exact path="/profile" element={isLoggedIn ? <ProfilePage getToken={getToken}/> : <Navigate to='/login'/>}/>
-          <Route exact path="/reservation" element={isLoggedIn ? <ReservationPage getToken={getToken}/> : <Navigate to='/login'/>}/>
-          <Route exact path="/property/:id" element={<PropertyPage getToken={getToken}/>}/>
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route exact path="/" element={<MainPage getToken={getToken}/>}/>
+            <Route exact path="/register" element={<RegisterPage getToken={getToken}/>}/>
+            <Route exact path="/login" element={<LoginPage onLogin={saveToken}/>}/>
+            <Route exact path="/support" element={isLoggedIn ? <SupportPage getToken={getToken}/> : <Navigate to='/login'/>}/>
+            <Route exact path="/profile" element={isLoggedIn ? <ProfilePage getToken={getToken}/> : <Navigate to='/login'/>}/>
+            <Route exact path="/reservation" element={isLoggedIn ? <ReservationPage getToken={getToken}/> : <Navigate to='/login'/>}/>
+            <Route exact path="/property/:id" element={<PropertyPage getToken={getToken}/>}/>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
 
 
 
-      </div>
-    </Router>
+        </div>
+      </Router>
   );
 }
 

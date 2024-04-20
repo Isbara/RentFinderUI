@@ -89,8 +89,7 @@ function PropertyPage({ getToken }) {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Authorization': `Bearer ${token}`
+                        'Content-Type': 'application/json; charset=UTF-8'
                     }
                 });
 
@@ -111,7 +110,7 @@ function PropertyPage({ getToken }) {
 
         // Call the fetchPropertyDetails function when the component mounts
         fetchPropertyDetails();
-    }, [id, token]);
+    }, [id]);
 
     const connectReservation = async () => {
         try {
