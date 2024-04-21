@@ -10,31 +10,24 @@ function ProfilePage({ getToken }) {
 
     const token = getToken();
     const isLoggedIn = token;
-    const [userDetails, setUserDetails] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showReservationModel,setShowReservationModal]=useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [propertyID, setPropertyID] = useState(0);
-    const [reservations, setReservations] = useState(null);
-    const [showEmailInUsePopup, setShowEmailInUsePopup] = useState(false);
 
+    //User
+    const [userDetails, setUserDetails] = useState(null);
+    const [userProperties, setuserProperties] = useState([]);
     const [userUpdateErrors, setUserUpdateErrors] = useState({
         name: '',
         surname: '',
         email: '',
         phoneNumber: ''
     });
-    const [propertyDetails, setPropertyDetails] = useState({
-        propertyType: '',
-        flatNo: '',
-        address: '',
-        description: '',
-        price: '',
-        placeOffers: '',
-        image:''
-    });
+
+    //Modal
+    const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showReservationModel,setShowReservationModal]=useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showEmailInUsePopup, setShowEmailInUsePopup] = useState(false);
     const [popUpErrors, setpopUpErrors] = useState({
         propertyType: '',
         flatNo: '',
@@ -44,147 +37,133 @@ function ProfilePage({ getToken }) {
         placeOffers: '',
         image:''
     });
-    const [userProperties, setuserProperties] = useState([]);
+
+    //Property
+    const [propertyID, setPropertyID] = useState(0);
+    const [reservations, setReservations] = useState(null);
+    const [propertyDetails, setPropertyDetails] = useState({
+        propertyType: '',
+        flatNo: '',
+        address: '',
+        description: '',
+        price: '',
+        placeOffers: '',
+        image:''
+    });
 
 
-    useEffect(() => {
-        const connectUserDetails = async (token) => {
-            try {
-                const response = await fetch("http://localhost:8080/user/getUserDetails", {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user details');
-                }
 
-                const userData = await response.json();
-                setUserDetails(userData);
-                console.log(userData);
-            } catch (error) {
-                console.error('Error:', error.message);
-            }
-        };
-
-        const fetchProperties = async (token) => {
-            try {
-                const response = await fetch("http://localhost:8080/property/getUserProperties", {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch properties');
-                }
-                const data = await response.json();
-                console.log(data);
-                setuserProperties(data);
-                console.log(userProperties);
-            } catch (error) {
-                console.error('Error:', error.message);
-            }
-        };
+    useEffect(() => { //Works just one time
         connectUserDetails(token);
         fetchProperties(token);
     },[]);
 
-    const connectProperty = async () => {
+
+
+    const fetchWithToken = async (url,body,method, token = null) => {
+        const bearerToken = token ? `Bearer ${token}` : null;
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': bearerToken
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                body: body,
+                headers: headers
+            });
+
+            if (!response.ok) {
+                // Handle non-successful response
+                throw new Error('Failed to fetch data');
+            }
+
+            return await response.json();
+        } catch (error) {
+            // Handle network errors or other exceptions
+            console.error('Error:', error.message);
+            throw error;
+        }
+    };
+
+    const connectUserDetails = async (token) => {
+        try {
+            const userData = await fetchWithToken('http://localhost:8080/user/getUserDetails',null, 'GET', token);
+            setUserDetails(userData);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+    const fetchProperties = async (token) => {
+        try {
+            const properties = await fetchWithToken("http://localhost:8080/property/getUserProperties",  null, 'GET', token);
+            setuserProperties(properties);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+
+        const connectProperty=async()=>{
+        const token=App.getToken();
+        try{
+            const requestData = {
+                ...propertyDetails,
+                image: propertyDetails.image.split(',')[1]
+            };
+            const result = await fetchWithToken("http://localhost:8080/property/addProperty",JSON.stringify(requestData),'POST',token);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+        }
+
+
+    const connectUpdateProperty = async () => {
         const token = App.getToken();
         try {
             const requestData = {
                 ...propertyDetails,
-                // Ensure that the image data is stripped of its prefix before sending it
                 image: propertyDetails.image.split(',')[1] // Remove the data URI prefix
             };
-            const result = await fetch('http://localhost:8080/property/addProperty', {
-                method: 'POST',
-                body: JSON.stringify(requestData),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const IDLink = propertyID;
+            const result = await fetchWithToken('http://localhost:8080/property/updateProperty/' + IDLink, JSON.stringify(requestData), 'PUT', token);
+            // Handle successful response
+            console.log(result);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+
+
+
+    const connectDeleteProperty = async () => {
+        try {
+            const token = App.getToken();
+            const IDLink = propertyID;
+            console.log(IDLink)
+            console.log("here")
+
+            const result = await fetchWithToken(`http://localhost:8080/property/deleteProperty/${IDLink}`, null, 'DELETE', token);
 
             if (!result.ok) {
-                // Handle error response
+                console.log("ıts not ok")
             } else {
-                const resultInJson = await result.json();
-                console.log(resultInJson);
+                const resultInText = await result.text();
+                console.log("result is ok ");
                 // Handle successful response
             }
         } catch (error) {
+            console.log("result is error")
             console.error('Error:', error.message);
         }
     };
 
-    const connectUpdateProperty = async () => {
-        const token=App.getToken();
-        try {
-            const requestData = {
-                ...propertyDetails,
-                // Ensure that the image data is stripped of its prefix before sending it
-                image: propertyDetails.image.split(',')[1] // Remove the data URI prefix
-            };
-            const token=App.getToken();
-            const bearerToken = "Bearer " + token;
-            const IDLink = propertyID;
-            const result = await fetch('http://localhost:8080/property/updateProperty/' + IDLink, {
-                method: 'PUT',
-                body: JSON.stringify(requestData),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': bearerToken
-                }
-            });
 
-            if (!result.ok) {
-                // const errorResponse = await result.json();
-            } else {
-                const resultInJson = await result.json();
-                console.log(resultInJson);
-                // Handle successful response, e.g., navigate to another page
-            }
-        } catch (error) {
-            console.error('Error:', error.message);
-        }
-    };
-
-    const connectDeleteProperty = async () => {
-        const token=App.getToken();
-        try {
-            const token=App.getToken();
-            const bearerToken = "Bearer " + token;
-            const IDLink = propertyID;
-            const result = await fetch('http://localhost:8080/property/deleteProperty/' + IDLink, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': bearerToken
-                }
-            });
-
-            if (!result.ok) {
-                // const errorResponse = await result.json();
-            } else {
-                const resultInJson = await result.text();
-                console.log(resultInJson);
-                // Handle successful response, e.g., navigate to another page
-            }
-        } catch (error) {
-            console.error('Error:', error.message);
-        }
-    };
 
     const connectPropertyReservations = async(key) => {
         const token=App.getToken();
@@ -209,6 +188,8 @@ function ProfilePage({ getToken }) {
             console.error('Error:', error.message);
         }
     };
+
+
 
     const connectUpdateUser = async () => { //When email is changed this should return a new jwt token for the user, otherwise it won't let the user do any operations
         const token=App.getToken();
@@ -270,6 +251,7 @@ function ProfilePage({ getToken }) {
     };
 
 
+    //Input change
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setPropertyDetails({ ...propertyDetails, [name]: value });
@@ -288,6 +270,8 @@ function ProfilePage({ getToken }) {
         });
     };
 
+
+    //Handle-pop-up-submit
     const handlePopUpSubmit = (e) => {
         e.preventDefault();
         if (validatePopUpForm()) {
@@ -297,17 +281,6 @@ function ProfilePage({ getToken }) {
             window.location.reload();
         }
     };
-
-
-    const handleUpdate = (key) => {
-        setPropertyID(key);
-        setShowUpdateModal(true);
-    }
-
-    const handleDelete = (key) => {
-        setPropertyID(key);
-        setShowDeleteModal(true);
-    }
 
     const handleUpdatePopUpSubmit = (e) => {
         e.preventDefault();
@@ -326,12 +299,6 @@ function ProfilePage({ getToken }) {
         window.location.reload();
     };
 
-    const handleReservation = (key) => {
-        setPropertyID(key);
-        connectPropertyReservations(key);
-        setShowReservationModal(true);
-    }
-
     const handleEditPopUpSubmit = (e) => {
         if(validateUserUpdateForm()) {
             e.preventDefault();
@@ -343,6 +310,27 @@ function ProfilePage({ getToken }) {
         else
             e.preventDefault()
     };
+
+
+
+    const handleUpdate = (key) => {
+        setPropertyID(key);
+        setShowUpdateModal(true);
+    }
+
+    const handleDelete = (key) => {
+        setPropertyID(key);
+        setShowDeleteModal(true);
+    }
+
+
+    const handleReservation = (key) => {
+        setPropertyID(key);
+        connectPropertyReservations(key);
+        setShowReservationModal(true);
+    }
+
+
 
     const validatePopUpForm = () => {
         let isValid = true;
@@ -475,7 +463,7 @@ function ProfilePage({ getToken }) {
                             <div className="modal-body">
                                 <form onSubmit={handlePopUpSubmit}>
                                     <div className="form-group">
-                                        <label 
+                                        <label
                                             htmlFor="propertyType">Property Type:</label>
                                         <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required lang="en">
                                             <option value="E">Select Property Type</option>
@@ -534,7 +522,7 @@ function ProfilePage({ getToken }) {
 
                                     {/* Submit Button */}
                                     <button type="submit" className="btn btn-primary">Submit</button>
-                                    
+
                                 </form>
                             </div>
                         </div>
@@ -673,7 +661,6 @@ function ProfilePage({ getToken }) {
                                                                     <p>End date: {reservation?.endDate}</p>
                                                                     <p>Status: {reservation?.status === null ? 'Unknown' : (reservation?.status ? 'Stayed' : 'Not Stayed')}</p>
                                                                     <p>Approval: {reservation?.approval === null ? 'Unknown' : (reservation?.approval ? 'Approved' : 'Not Approved')}</p>
-
                                                                 </ul>
                                                             </div>
                                                         </div>)

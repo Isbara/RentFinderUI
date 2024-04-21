@@ -8,26 +8,28 @@ function MainPage({ getToken }) {
 
     const [allProperties, setAllProperties] = useState([]);
 
-    useEffect(() => {
-        const fetchAllProperties = async () => {
-            try {
-                const response = await fetch("http://localhost:8080/property/getProperties", {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch all properties');
-                }
-                const data = await response.json();
-                setAllProperties(data);
-            } catch (error) {
-                console.error('Error:', error.message);
-            }
-        };
 
+
+    const fetchAllProperties = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/property/getProperties", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch all properties');
+            }
+            const data = await response.json();
+            setAllProperties(data);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+    useEffect(() => { // Will run only once
         fetchAllProperties();
     }, []);
 

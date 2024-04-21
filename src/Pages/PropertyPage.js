@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import '../Styles/Pop-up.css';
 
 function PropertyPage({ getToken }) {
+    const navigate = useNavigate(); 
     const token = getToken();
     const isLoggedIn = token;
     const [property, setProperty] = useState(null);
@@ -15,7 +16,6 @@ function PropertyPage({ getToken }) {
         numberOfPeople: '',
         startDate: '',
         endDate: ''
-
     });
 
     // State for reservation form errors
@@ -23,27 +23,25 @@ function PropertyPage({ getToken }) {
         numberOfPeople: '',
         startDate: '',
         endDate: ''
-
     });
 
     // Function to handle changes in the reservation form inputs
     const handleReservationInputChange = (e) => {
         const { name, value } = e.target;
         setReservationDetails({ ...reservationDetails, [name]: value });
-        setReservationErrors({ ...reservationErrors, [name]: '' });
+        setReservationErrors({ ...reservationErrors, [name]: '' }); // To clear previous errors
     };
 
     // Function to handle submission of the reservation form
     const handleReservationSubmit = (e) => {
         e.preventDefault();
         if (validateReservationForm()) {
-            connectReservation()
+            connectReservation();
             setReservationDetails({});
-            setShowModal(false); 
+            setShowModal(false);
         }
     };
 
-    
     // Function to validate the reservation form
     const validateReservationForm = () => {
         let isValid = true;
@@ -61,11 +59,9 @@ function PropertyPage({ getToken }) {
             isValid = false;
         }
 
-        if(reservationDetails.endDate<reservationDetails.startDate)
-        {
-            updatedErrors.endDate='End date should be later that start date';
-            isValid=false;
-
+        if (reservationDetails.endDate < reservationDetails.startDate) {
+            updatedErrors.endDate = 'End date should be later than start date';
+            isValid = false;
         }
 
         // Validate number of guests
@@ -80,37 +76,30 @@ function PropertyPage({ getToken }) {
         return isValid;
     };
 
-    // useEffect hook to fetch property details when the component mounts
-    useEffect(() => {
-        // Function to fetch property details from the API
-        const fetchPropertyDetails = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/property/getPropertyDetails/${id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    }
-                });
-
-                // Check if the response is successful
-                if (!response.ok) {
-                    throw new Error('Failed to fetch property details');
+    const fetchPropertyDetails = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/property/getPropertyDetails/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8'
                 }
+            });
 
-                // Extract property details from the response
-                const propertyData = await response.json();
-
-                // Set the property state with the fetched data
-                setProperty(propertyData);
-            } catch (error) {
-                console.error('Error:', error.message);
+            // Check if the response is successful
+            if (!response.ok) {
+                throw new Error('Failed to fetch property details');
             }
-        };
 
-        // Call the fetchPropertyDetails function when the component mounts
-        fetchPropertyDetails();
-    }, [id]);
+            // Extract property details from the response
+            const propertyData = await response.json();
+
+            // Set the property state with the fetched data
+            setProperty(propertyData);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
 
     const connectReservation = async () => {
         try {
@@ -135,16 +124,22 @@ function PropertyPage({ getToken }) {
             console.error('Error:', error.message);
         }
     };
-    
-    // Render loading message if property details are being fetched
+
+    // useEffect hook to fetch property details when the component mounts
+    useEffect(() => {
+        fetchPropertyDetails();
+    }, [id]);
+
+
     if (!property) {
-        return <div>Loading...</div>;
+        navigate("/");  //Wont navigate I didn't understand why
+        return null;
     }
 
     // Render property details once fetched
     return (
         <div>
-            <Header isLoggedIn={isLoggedIn}/>
+            <Header isLoggedIn={isLoggedIn} />
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 mx-auto">
@@ -180,8 +175,7 @@ function PropertyPage({ getToken }) {
                                     <form onSubmit={handleReservationSubmit}>
                                         <div className="form-group">
                                             <label htmlFor="startDate">Start Date:</label>
-                                            <input type="date" className={`form-control ${reservationErrors.startDate && 'is-invalid'}`} id="startDate" name="startDate" value={reservationDetails.startDate} onChange={handleReservationInputChange} required
-                                            />
+                                            <input type="date" className={`form-control ${reservationErrors.startDate && 'is-invalid'}`} id="startDate" name="startDate" value={reservationDetails.startDate} onChange={handleReservationInputChange} required />
                                             {reservationErrors.startDate && <div className="invalid-feedback d-block">{reservationErrors.startDate}</div>}
                                         </div>
                                         <div className="form-group">
