@@ -28,6 +28,9 @@ function ProfilePage({ getToken }) {
     const [showReservationModel,setShowReservationModal]=useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showEmailInUsePopup, setShowEmailInUsePopup] = useState(false);
+    const [showApprovalDecision,setshowApprovalDecision]=useState(false);
+    const [showStatusDecision,setshowStatusDecision]=useState(false);
+
     const [popUpErrors, setpopUpErrors] = useState({
         propertyType: '',
         flatNo: '',
@@ -51,6 +54,7 @@ function ProfilePage({ getToken }) {
         image:''
     });
 
+    const [currentReservationID, setCurrentReservationID] = useState(null);
 
 
 
@@ -189,6 +193,51 @@ function ProfilePage({ getToken }) {
         }
     };
 
+    const connectUpdateApproval = async(key,decision) => {
+        const token=App.getToken();
+        const bearerToken = "Bearer " + token;
+        try {
+            const response = await fetch("http://localhost:8080/reservation/approval/"+key, {
+                method: 'PUT',
+                body: JSON.stringify(decision),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch property reservations');
+            }
+            console.log(response)
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+    const connectUpdateStatus = async(key,decision) => {
+        const token=App.getToken();
+        const bearerToken = "Bearer " + token;
+        try {
+            const response = await fetch("http://localhost:8080/reservation/status/"+key, {
+                method: 'PUT',
+                body: JSON.stringify(decision),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch property reservations');
+            }
+            console.log(response)
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
 
 
     const connectUpdateUser = async () => { //When email is changed this should return a new jwt token for the user, otherwise it won't let the user do any operations
@@ -310,6 +359,70 @@ function ProfilePage({ getToken }) {
         else
             e.preventDefault()
     };
+    const handleApprove = (reservationID) => {
+        connectUpdateApproval(currentReservationID,true)
+        setshowApprovalDecision(false);
+        setReservations(prevState => ({
+            ...prevState,
+            [currentReservationID]: {
+                ...prevState[currentReservationID],
+                approval: true
+            }
+        }));
+        window.location.reload();
+    }
+
+    const handleReject = (reservationID) => {
+        connectUpdateApproval(currentReservationID,false)
+        setshowApprovalDecision(false);
+        setReservations(prevState => ({
+            ...prevState,
+            [currentReservationID]: {
+                ...prevState[currentReservationID],
+                approval: false,
+                status: false
+            }
+        }));
+        window.location.reload();
+    }
+
+    const handleApprovalClick = (reservationID) => {
+        setCurrentReservationID(reservationID);
+        setshowApprovalDecision(true);
+    };
+
+
+    const handleStatusApprove = (reservationID) => {
+        connectUpdateStatus(currentReservationID,true)
+        setshowStatusDecision(false);
+        setReservations(prevState => ({
+            ...prevState,
+            [currentReservationID]: {
+                ...prevState[currentReservationID],
+                status: true
+            }
+        }));
+        window.location.reload();
+    }
+
+    const handleStatusReject = (reservationID) => {
+        connectUpdateStatus (currentReservationID,false)
+        setshowStatusDecision(false);
+        setReservations(prevState => ({
+            ...prevState,
+            [currentReservationID]: {
+                ...prevState[currentReservationID],
+                status: false
+            }
+        }));
+        window.location.reload();
+    }
+
+    const handleStatusClick = (reservationID) => {
+        setCurrentReservationID(reservationID);
+        setshowStatusDecision(true);
+    };
+
 
 
 
@@ -435,9 +548,9 @@ function ProfilePage({ getToken }) {
                                                 </div>
                                             )}
                                             <div className="mt-3">
-                                                <button type="button" className="btn btn-primary mr-1" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
-                                                <button type="button" className="btn btn-danger mr-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
-                                                <button type="button" className="btn btn-secondary" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
+                                                <button type="button" className="btn btn-primary mx-1" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
+                                                <button type="button" className="btn btn-danger mx-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
+                                                <button type="button" className="btn btn-secondary mx-1" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
                                             </div>
                                         </li>
 
@@ -648,28 +761,46 @@ function ProfilePage({ getToken }) {
                             <div className="modal-body">
                                 <div className="container">
                                     <div className="row">
-                                        <div className="col-md-12">
-                                            <div className="card">
-                                                {reservations ? (reservations.map(reservation => {
-                                                    return(
-                                                        <div key={reservation?.reservationID}>
-                                                            <h5 className="card-title">Reservation {reservation?.reservationID}</h5>
-                                                            <div className="card-body">
-                                                                <ul>
-                                                                    <p>Number of people: {reservation?.numberOfPeople}</p>
-                                                                    <p>Start date: {reservation?.startDate}</p>
-                                                                    <p>End date: {reservation?.endDate}</p>
-                                                                    <p>Status: {reservation?.status === null ? 'Unknown' : (reservation?.status ? 'Stayed' : 'Not Stayed')}</p>
-                                                                    <p>Approval: {reservation?.approval === null ? 'Unknown' : (reservation?.approval ? 'Approved' : 'Not Approved')}</p>
-                                                                </ul>
-                                                            </div>
-                                                        </div>)
-                                                })):(<p>There is no reservation for this property.</p>)}
-                                            </div>
+                                        <div className="col-md-12">{reservations && reservations.length > 0 ? (
+                                            // Map over reservations if there are any
+                                            Object.keys(reservations).map(reservationID => {
+                                                const reservation = reservations[reservationID];
+                                                return (
+                                                    <div className="card mb-5" key={reservationID}>
+                                                        <h5 className="card-title">Reservation {reservation.reservationID}</h5>
+                                                        <div className="card-body">
+                                                            <ul>
+                                                                <p>Number of people: {reservation.numberOfPeople}</p>
+                                                                <p>Start date: {formatDate(reservation.startDate)}</p>
+                                                                <p>End date: {formatDate(reservation.endDate)}</p>
+                                                                <p>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</p>
+                                                                <p>Status: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</p>
+                                                                {reservation.approval == null && (
+                                                                    <button className="btn btn-success" onClick={() => handleApprovalClick(reservation.reservationID)}>
+                                                                        Approval
+                                                                    </button>
+                                                                )}
+                                                                {reservation.status == null && reservation.approval !== false && (
+                                                                    <button className={`btn btn-success mx-3 ${reservation.approval === null ? 'disabled' : ''}`} onClick={() => handleStatusClick(reservation.reservationID)} disabled={reservation.approval === null}>
+                                                                        Status
+                                                                    </button>
+                                                                )}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            // Show a message if there are no reservations
+                                            <p>There are no reservations for this property.</p>
+                                        )}
+
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -756,7 +887,63 @@ function ProfilePage({ getToken }) {
                     </div>
                 </div>
             )}
+
+            {showApprovalDecision && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edit Profile Details</h5>
+                                <button type="button" className="close" onClick={() => setshowApprovalDecision(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Are you approving the customer's visit?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={handleApprove}>Yes</button>
+                                <button type="button" className="btn btn-secondary" onClick={handleReject}>No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showStatusDecision && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edit Profile Details</h5>
+                                <button type="button" className="close" onClick={() => setshowStatusDecision(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Did the customer stayed in the place in the specified date?  </p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={handleStatusApprove}>Yes</button>
+                                <button type="button" className="btn btn-secondary" onClick={handleStatusReject}>No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
         </div>
     );
 }
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const year = date.getUTCFullYear();
+    return `${day}-${month}-${year}`;
+}
+
+
 export default ProfilePage;

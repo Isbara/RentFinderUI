@@ -71,15 +71,71 @@ function ReservationPage({ getToken }) {
                 <h1 className="mb-4">User Reservations</h1>
                 <div className="row">
                     {reservations.map(reservation => {
+                        const approve=reservation.approval;
+                        const status=reservation.status;
                         const hasReview = reservation.review !== null;
-                        return (
+
+                        if (approve == null) {
+                            return (
+                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
+                                            <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
+                                            <p>Status: Waiting for approval from the property owner.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        } else if (approve === false) {
+                            return (
+                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
+                                            <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
+                                            <p>Status: Property owner rejected your request! </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        } else if (status === false) {
+                            return (
+                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
+                                            <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
+                                            <p>Status: Property owner rejects that you stayed at their property</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        } else if (status == null) {
+                            return (
+                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
+                                            <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
+                                            <p>Status: Waiting for property owner's confirmation for writing request</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        } else
+                        {return (
                             <div key={reservation?.reservationID} className="col-md-4 mb-4">
                                 <div className="card">
                                     <div className="card-body">
                                         <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
                                         <p className="card-text">Number of People: {reservation?.numberOfPeople}</p>
-                                        <p className="card-text">Start Date: {reservation?.startDate}</p>
-                                        <p className="card-text">End Date: {reservation?.endDate}</p>
+                                        <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
+                                        <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                         {hasReview ? (
                                             <div>
                                                 <p className="card-text">Review: {reservation.review.description}</p>
@@ -106,12 +162,26 @@ function ReservationPage({ getToken }) {
                                     </div>
                                 </div>
                             </div>
-                        )
+                        )}
+
+
+
+
+
+
                     })}
                 </div>
             </div>
         </div>
     );
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const year = date.getUTCFullYear();
+    return `${day}-${month}-${year}`;
 }
 
 export default ReservationPage;

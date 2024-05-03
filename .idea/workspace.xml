@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
+      <change beforePath="$PROJECT_DIR$/.idea/RentFinderUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RentFinderUI.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/LoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/LoginPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ProfilePage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +198,14 @@
       <workItem from="1713463448189" duration="7672000" />
       <workItem from="1713520998719" duration="14876000" />
       <workItem from="1713614539120" duration="11993000" />
-      <workItem from="1713701415869" duration="13153000" />
+      <workItem from="1713701415869" duration="13479000" />
+      <workItem from="1713796726557" duration="702000" />
+      <workItem from="1713885121363" duration="1423000" />
+      <workItem from="1713952291268" duration="1919000" />
+      <workItem from="1714395017795" duration="1123000" />
+      <workItem from="1714668338723" duration="25000" />
+      <workItem from="1714668376339" duration="4108000" />
+      <workItem from="1714728218235" duration="12858000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>

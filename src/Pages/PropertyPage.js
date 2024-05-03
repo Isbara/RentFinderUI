@@ -46,6 +46,8 @@ function PropertyPage({ getToken }) {
     const validateReservationForm = () => {
         let isValid = true;
         const updatedErrors = { ...reservationErrors };
+        const date = new Date();
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
         // Validate start date
         if (!reservationDetails.startDate) {
@@ -70,7 +72,11 @@ function PropertyPage({ getToken }) {
             isValid = false;
         }
 
-        // Additional validation logic can be added here
+        if(reservationDetails.startDate<formattedDate)
+        {
+            updatedErrors.startDate='Start date can not be before current date';
+            isValid=false;
+        }
 
         setReservationErrors(updatedErrors);
         return isValid;
