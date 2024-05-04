@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../Components/Header';
-import Rating from '../Components/Rating'; 
+import Rating from '../Components/Rating';
 
 function ReservationPage({ getToken }) {
     const token = getToken();
     const isLoggedIn = token;
     const [reservations, setReservations] = useState([]);
-    const [description, setDescription] = useState('');
-    const [userScore, setuserScore] = useState(0); // State to track the rating value
 
     useEffect(() => {
         fetchUserReservations();
@@ -24,21 +22,29 @@ function ReservationPage({ getToken }) {
                 }
             });
             const data = await response.json();
-            await setReservations(data);
+            setReservations(data);
         } catch (error) {
             console.error('Error fetching user reservations:', error);
         }
     };
 
-    const handleDescriptionChange = (e) => {
-        setDescription(e.target.value);
+    const handleDescriptionChange = (index, value) => {
+        setReservations(prevState => {
+            const updatedReservations = [...prevState];
+            updatedReservations[index].description = value;
+            return updatedReservations;
+        });
     };
 
-    const handleuserScoreChange = (value) => {
-        setuserScore(value);
+    const handleUserScoreChange = (index, value) => {
+        setReservations(prevState => {
+            const updatedReservations = [...prevState];
+            updatedReservations[index].userScore = value;
+            return updatedReservations;
+        });
     };
 
-    const handleSubmitDescription = async (propertyID, reservationID) => {
+    const handleSubmitDescription = async (propertyID, reservationID, description, userScore) => {
         console.log(propertyID);
         console.log(reservationID);
         console.log(description);
@@ -70,17 +76,17 @@ function ReservationPage({ getToken }) {
             <div className="container mt-4">
                 <h1 className="mb-4">User Reservations</h1>
                 <div className="row">
-                    {reservations.map(reservation => {
-                        const approve=reservation.approval;
-                        const status=reservation.status;
+                    {reservations.map((reservation, index) => {
+                        const approve = reservation.approval;
+                        const status = reservation.status;
                         const hasReview = reservation.review !== null;
 
                         if (approve == null) {
                             return (
-                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                <div key={reservation.reservationID} className="col-md-4 mb-4">
                                     <div className="card">
                                         <div className="card-body">
-                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
                                             <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                             <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                             <p>Status: Waiting for approval from the property owner.</p>
@@ -90,10 +96,10 @@ function ReservationPage({ getToken }) {
                             );
                         } else if (approve === false) {
                             return (
-                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                <div key={reservation.reservationID} className="col-md-4 mb-4">
                                     <div className="card">
                                         <div className="card-body">
-                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
                                             <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                             <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                             <p>Status: Property owner rejected your request! </p>
@@ -103,10 +109,10 @@ function ReservationPage({ getToken }) {
                             );
                         } else if (status === false) {
                             return (
-                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                <div key={reservation.reservationID} className="col-md-4 mb-4">
                                     <div className="card">
                                         <div className="card-body">
-                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
                                             <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                             <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                             <p>Status: Property owner rejects that you stayed at their property</p>
@@ -116,10 +122,10 @@ function ReservationPage({ getToken }) {
                             );
                         } else if (status == null) {
                             return (
-                                <div key={reservation?.reservationID} className="col-md-4 mb-4">
+                                <div key={reservation.reservationID} className="col-md-4 mb-4">
                                     <div className="card">
                                         <div className="card-body">
-                                            <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
+                                            <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
                                             <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                             <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                             <p>Status: Waiting for property owner's confirmation for writing request</p>
@@ -127,48 +133,44 @@ function ReservationPage({ getToken }) {
                                     </div>
                                 </div>
                             );
-                        } else
-                        {return (
-                            <div key={reservation?.reservationID} className="col-md-4 mb-4">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title">Reservation ID: {reservation?.reservationID}</h5>
-                                        <p className="card-text">Number of People: {reservation?.numberOfPeople}</p>
-                                        <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
-                                        <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
-                                        {hasReview ? (
-                                            <div>
-                                                <p className="card-text">Review: {reservation.review.description}</p>
-                                                <p className="card-text">Algo Result: {reservation.review.algoResult ? "Genuine" : "Fake"}</p>
-                                            </div>
-                                        ) : (
-                                            <div>
-                                                <Rating value={userScore} onChange={handleuserScoreChange} />
-                                                <textarea
-                                                    className="form-control mt-2"
-                                                    rows="3"
-                                                    placeholder="Write your comment..."
-                                                    value={description}
-                                                    onChange={handleDescriptionChange}
-                                                ></textarea>
-                                                <button
-                                                    className="btn btn-primary mt-2"
-                                                    onClick={() => handleSubmitDescription(reservation?.propertyID, reservation?.reservationID)}
-                                                >
-                                                    Add Comment
-                                                </button>
-                                            </div>
-                                        )}
+                        } else {
+                            return (
+                                <div key={reservation.reservationID} className="col-md-4 mb-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
+                                            <p className="card-text">Number of People: {reservation.numberOfPeople}</p>
+                                            <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
+                                            <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
+                                            {hasReview ? (
+                                                <div>
+                                                    <p className="card-text">User score: {reservation.review.userScore}</p> {/* Add this line */}
+                                                    <p className="card-text">Review: {reservation.review.description}</p>
+                                                    <p className="card-text">Algo Result: {reservation.review.algoResult ? "Genuine" : "Fake"}</p>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <Rating value={reservation.userScore || 0} onChange={(value) => handleUserScoreChange(index, value)} />
+                                                    <textarea
+                                                        className="form-control mt-2"
+                                                        rows="3"
+                                                        placeholder="Write your comment..."
+                                                        value={reservation.description || ''}
+                                                        onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                                                    ></textarea>
+                                                    <button
+                                                        className="btn btn-primary mt-2"
+                                                        onClick={() => handleSubmitDescription(reservation.propertyID, reservation.reservationID, reservation.description, reservation.userScore)}
+                                                    >
+                                                        Add Comment
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-
-
-
-
-
-
+                            );
+                        }
                     })}
                 </div>
             </div>

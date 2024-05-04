@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import '../Styles/Pop-up.css';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 function PropertyPage({ getToken }) {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const token = getToken();
     const isLoggedIn = token;
     const [property, setProperty] = useState(null);
+    const [review, setReview] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const { id } = useParams();
+    const [currentSlide, setCurrentSlide] = useState(0);
 
     // State for reservation details
     const [reservationDetails, setReservationDetails] = useState({
@@ -72,10 +75,9 @@ function PropertyPage({ getToken }) {
             isValid = false;
         }
 
-        if(reservationDetails.startDate<formattedDate)
-        {
-            updatedErrors.startDate='Start date can not be before current date';
-            isValid=false;
+        if (reservationDetails.startDate < formattedDate) {
+            updatedErrors.startDate = 'Start date can not be before current date';
+            isValid = false;
         }
 
         setReservationErrors(updatedErrors);
@@ -107,6 +109,33 @@ function PropertyPage({ getToken }) {
         }
     };
 
+    const fetchReviews = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/review/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            // Check if the response is successful
+            if (!response.ok) {
+                throw new Error('Failed to fetch property details');
+            }
+
+            // Extract property details from the response
+            const reviewData = await response.json();
+
+            // Set the property state with the fetched data
+            setReview(reviewData);
+            console.log(reviewData)
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
     const connectReservation = async () => {
         try {
             const result = await fetch(`http://localhost:8080/reservation/makeReservation/${id}`, {
@@ -131,9 +160,12 @@ function PropertyPage({ getToken }) {
         }
     };
 
+
+
     // useEffect hook to fetch property details when the component mounts
     useEffect(() => {
         fetchPropertyDetails();
+        fetchReviews();
     }, [id]);
 
 
@@ -141,6 +173,14 @@ function PropertyPage({ getToken }) {
         navigate("/");  //Wont navigate I didn't understand why
         return null;
     }
+
+    const handleNext = () => {
+        setCurrentSlide(currentSlide === review.length - 1 ? 0 : currentSlide + 1);
+    };
+
+    const handlePrev = () => {
+        setCurrentSlide(currentSlide === 0 ? review.length - 1 : currentSlide - 1);
+    };
 
     // Render property details once fetched
     return (
@@ -167,6 +207,28 @@ function PropertyPage({ getToken }) {
                         <button className="btn btn-success mt-3" onClick={() => setShowModal(true)}>Reserve Property</button>
                     </div>
                 </div>
+
+                <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                    <div className="carousel-inner">
+                        {review.map((review, index) => (
+                            <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
+                                <div>
+                                    <h3>{review.userScore}</h3>
+                                    <p>{review.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                        <span className="carousel-control-prev-icon" aria-hidden="false"></span>
+                        <span className="visually-visible">Previous</span>
+                    </button>
+                    <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                        <span className="carousel-control-next-icon" aria-hidden="false"></span>
+                        <span className="visually-visible">Next</span>
+                    </button>
+                </div>
+
                 {showModal && (
                     <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                         <div className="modal-dialog" role="document">
