@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import '../Styles/Pop-up.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import '../Styles/review.css';
 
 function PropertyPage({ getToken }) {
     const navigate = useNavigate();
@@ -115,8 +116,7 @@ function PropertyPage({ getToken }) {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json; charset=UTF-8'
                 }
             });
 
@@ -170,7 +170,6 @@ function PropertyPage({ getToken }) {
 
 
     if (!property) {
-        navigate("/");  //Wont navigate I didn't understand why
         return null;
     }
 
@@ -208,26 +207,41 @@ function PropertyPage({ getToken }) {
                     </div>
                 </div>
 
-                <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
-                    <div className="carousel-inner">
-                        {review.map((review, index) => (
-                            <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
-                                <div>
-                                    <h3>{review.userScore}</h3>
-                                    <p>{review.description}</p>
+                {review.length>0 && <div style={{ position: 'relative' }}>
+                    {/* Carousel */}
+                    <div id="carouselExampleControls" className="carousel slide p-3" style={{ border: '2px solid black', marginTop: '20px' }} data-bs-ride="carousel">
+                        {/* Carousel Inner Container */}
+                        <div className="carousel-inner">
+                            {/* Mapping Reviews */}
+                            {review.map((review, index) => (
+                                <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
+                                    <div>
+                                        <h3>User Score: {review.userScore}</h3>
+                                        <p>Review: {review.description}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                        <span className="carousel-control-prev-icon" aria-hidden="false"></span>
-                        <span className="visually-visible">Previous</span>
-                    </button>
-                    <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                        <span className="carousel-control-next-icon" aria-hidden="false"></span>
-                        <span className="visually-visible">Next</span>
-                    </button>
-                </div>
+                    {/* Carousel Controls */}
+                    <div style={{ position: 'absolute', left: '-135px', right: '-180px', bottom: '55px', display: 'flex', justifyContent: 'center' }}>
+                        {review.length > 1 && (
+                            <>
+                                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev" style={{ zIndex: '1' }}>
+                                    <span className="carousel-control-prev-icon" aria-hidden="false"></span>
+                                    <span className="visually-visible">Previous</span>
+                                </button>
+                                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next" style={{ zIndex: '1' }}>
+                                    <span className="carousel-control-next-icon" aria-hidden="false"></span>
+                                    <span className="visually-visible">Next</span>
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                </div>}
+
+
 
                 {showModal && (
                     <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>

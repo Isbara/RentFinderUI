@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link } from 'react-router-dom';
 import Header from '../Components/Header';
 
 function MainPage({ getToken }) {
@@ -7,8 +7,6 @@ function MainPage({ getToken }) {
     const isLoggedIn = token;
 
     const [allProperties, setAllProperties] = useState([]);
-
-
 
     const fetchAllProperties = async () => {
         try {
@@ -29,7 +27,7 @@ function MainPage({ getToken }) {
         }
     };
 
-    useEffect(() => { // Will run only once
+    useEffect(() => {
         fetchAllProperties();
     }, []);
 
@@ -56,14 +54,22 @@ function MainPage({ getToken }) {
                                         {property.image && (
                                             <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px' }} />
                                         )}
-                                        </div>
-
+                                    </div>
                                 </Link>
                             ))}
                         </ul>
                     </div>
                 </div>
             </div>
+            <style>
+                {`
+                    .list-group-item {
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                `}
+            </style>
         </div>
     );
 }
