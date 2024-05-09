@@ -87,7 +87,7 @@ function PropertyPage({ getToken }) {
 
     const fetchPropertyDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/property/getPropertyDetails/${id}`, {
+            const response = await fetch('http://localhost:8080/property/getPropertyDetails/'+id, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -218,6 +218,7 @@ function PropertyPage({ getToken }) {
                                     <div>
                                         <h3>User Score: {review.userScore}</h3>
                                         <p>Review: {review.description}</p>
+                                        <p>Respond: {review.respond}</p>
                                     </div>
                                 </div>
                             ))}
