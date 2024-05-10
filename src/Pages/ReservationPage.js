@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Header from '../Components/Header';
 import Rating from '../Components/Rating';
 import App from '../App';
+import { useNavigate } from 'react-router-dom';
 
 function ReservationPage({ getToken }) {
+    let navigate = useNavigate()
     const token = getToken();
     const isLoggedIn = token;
     const [reservations, setReservations] = useState([]);
@@ -22,6 +24,13 @@ function ReservationPage({ getToken }) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if(!response.ok){
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
+                throw new Error("Failed to fetch user reservations.")
+            }
             const data = await response.json();
             setReservations(data);
         } catch (error) {
@@ -66,6 +75,10 @@ function ReservationPage({ getToken }) {
             if (response.ok) {
                 fetchUserReservations();
             } else {
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 console.error('Failed to add comment');
             }
         } catch (error) {

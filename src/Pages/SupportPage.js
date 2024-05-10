@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
+import App from '../App';
 
 function SupportPage({ getToken }) {
     const token = getToken();
@@ -49,6 +50,10 @@ function SupportPage({ getToken }) {
                 }
             });
             if (!result.ok) {
+                if(result.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 // const errorResponse = await result.json();
             } else {
                  const resultInJson = await result.json();

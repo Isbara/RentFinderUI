@@ -4,6 +4,7 @@ import Header from '../Components/Header';
 import '../Styles/Pop-up.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../Styles/review.css';
+import App from '../App';
 
 function PropertyPage({ getToken }) {
     const navigate = useNavigate();
@@ -138,7 +139,7 @@ function PropertyPage({ getToken }) {
 
     const connectReservation = async () => {
         try {
-            const result = await fetch(`http://localhost:8080/reservation/makeReservation/${id}`, {
+            const result = await fetch('http://localhost:8080/reservation/makeReservation/'+id, {
                 method: 'POST',
                 body: JSON.stringify(reservationDetails),
                 headers: {
@@ -150,6 +151,10 @@ function PropertyPage({ getToken }) {
 
             if (!result.ok) {
                 // const errorResponse = await result.json();
+                if(result.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
             } else {
                 const resultInJson = await result.json();
                 console.log(resultInJson);
