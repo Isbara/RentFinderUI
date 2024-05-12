@@ -152,7 +152,7 @@ function ProfilePage({ getToken }) {
             console.log(IDLink)
             console.log("here")
 
-            const result = await fetchWithToken(`http://localhost:8080/property/deleteProperty/${IDLink}`, null, 'DELETE', token);
+            const result = await fetchWithToken('http://localhost:8080/property/deleteProperty/'+IDLink, null, 'DELETE', token);
 
             if (!result.ok) {
                 console.log("ıts not ok")
@@ -614,6 +614,7 @@ function ProfilePage({ getToken }) {
                                     <div className="form-group">
                                         <label htmlFor="image">Image:</label>
                                         <input
+                                            id="image"
                                             type="file"
                                             accept="image/jpeg, image/jpg, image/png"
                                             onChange={handleImageChange}
@@ -700,6 +701,7 @@ function ProfilePage({ getToken }) {
                                     <div className="form-group">
                                         <label htmlFor="image">Image:</label>
                                         <input
+                                            id="image"
                                             type="file"
                                             accept="image/jpeg, image/jpg, image/png"
                                             onChange={handleImageChange}

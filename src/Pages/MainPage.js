@@ -7,6 +7,7 @@ function MainPage({ getToken }) {
     const isLoggedIn = token;
 
     const [allProperties, setAllProperties] = useState([]);
+    const [error, setError] = useState(null); // State to store fetch error
 
     const fetchAllProperties = async () => {
         try {
@@ -24,6 +25,7 @@ function MainPage({ getToken }) {
             setAllProperties(data);
         } catch (error) {
             console.error('Error:', error.message);
+            setError(error.message); // Set error state
         }
     };
 
@@ -38,6 +40,12 @@ function MainPage({ getToken }) {
                 <div className="row">
                     <div className="col-md-8">
                         <h2 className="mb-4">All Properties</h2>
+                        {error && <p className="text-danger">{error}</p>} {/* Display error message */}
+                        {allProperties.length === 0 && !error && (
+                            <div className="alert alert-warning" role="alert">
+                                No properties available
+                            </div>
+                        )} {/* Display message when no properties exist */}
                         <ul className="list-group">
                             {allProperties.map(property => (
                                 <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item">
@@ -63,15 +71,16 @@ function MainPage({ getToken }) {
             </div>
             <style>
                 {`
-                    .list-group-item {
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-                `}
+                .list-group-item {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+            `}
             </style>
         </div>
     );
+
 }
 
 export default MainPage;

@@ -2,6 +2,7 @@ import React from 'react';
 import LoginPage from "../Pages/LoginPage"
 import { render, fireEvent ,waitFor,screen} from '@testing-library/react';
 import { renderWithRouter } from './renderWithRouter';
+import { act } from 'react-dom/test-utils';
 
 
 describe('LoginPage Component', () => {
@@ -35,9 +36,12 @@ describe('LoginPage Component', () => {
         const passwordInput = getByLabelText('Password:');
         const submitButton = getByRole('button');
 
-        fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-        fireEvent.change(passwordInput, { target: { value: 'password123' } });
-        fireEvent.click(submitButton); //Submits the form
+
+        act(() => { // Wrap all async actions in the same act() call
+            fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+            fireEvent.change(passwordInput, { target: { value: 'password123' } });
+            fireEvent.click(submitButton);
+        });
 
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/user/login', { //Now we are saying this fetch operation should give the output of global.fetch
@@ -58,21 +62,24 @@ describe('LoginPage Component', () => {
         const { getByText, getByRole } = renderWithRouter(<LoginPage />);
         const submitButton = getByRole('button');
 
-        fireEvent.click(submitButton);
-
+        act(() => {
+            fireEvent.click(submitButton);
+        });
         // Wait for error message
         await waitFor(() => {
             const errorMessage = getByText('Email or password is wrong.');
             expect(errorMessage).toBeInTheDocument();
         });
 
-        // Assert fetch was called with correct data
-        expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/user/login', {
-            method: 'POST',
-            body: JSON.stringify({ email: '', password: '' }), // Assuming empty email and password for simplicity
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8' },
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/user/login', {
+                method: 'POST',
+                body: JSON.stringify({email: '', password: ''}), // Assuming empty email and password for simplicity
+                headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8'},
+            });
         });
+
     });
-    
+
 
 });

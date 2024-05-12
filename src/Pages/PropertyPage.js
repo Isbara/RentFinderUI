@@ -87,7 +87,7 @@ function PropertyPage({ getToken }) {
 
     const fetchPropertyDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/property/getPropertyDetails/${id}`, {
+            const response = await fetch('http://localhost:8080/property/getPropertyDetails/'+id, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -112,7 +112,7 @@ function PropertyPage({ getToken }) {
 
     const fetchReviews = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/review/${id}`, {
+            const response = await fetch('http://localhost:8080/review/'+id, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -138,7 +138,7 @@ function PropertyPage({ getToken }) {
 
     const connectReservation = async () => {
         try {
-            const result = await fetch(`http://localhost:8080/reservation/makeReservation/${id}`, {
+            const result = await fetch('http://localhost:8080/reservation/makeReservation/'+id, {
                 method: 'POST',
                 body: JSON.stringify(reservationDetails),
                 headers: {
