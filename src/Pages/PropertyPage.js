@@ -4,6 +4,7 @@ import Header from '../Components/Header';
 import '../Styles/Pop-up.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../Styles/review.css';
+import App from '../App';
 
 function PropertyPage({ getToken }) {
     const navigate = useNavigate();
@@ -150,6 +151,10 @@ function PropertyPage({ getToken }) {
 
             if (!result.ok) {
                 // const errorResponse = await result.json();
+                if(result.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
             } else {
                 const resultInJson = await result.json();
                 console.log(resultInJson);
@@ -218,6 +223,7 @@ function PropertyPage({ getToken }) {
                                     <div>
                                         <h3>User Score: {review.userScore}</h3>
                                         <p>Review: {review.description}</p>
+                                        <p>Respond: {review.respond}</p>
                                     </div>
                                 </div>
                             ))}

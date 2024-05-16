@@ -82,6 +82,10 @@ function ProfilePage({ getToken }) {
 
             if (!response.ok) {
                 // Handle non-successful response
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 throw new Error('Failed to fetch data');
             }
 
@@ -154,6 +158,7 @@ function ProfilePage({ getToken }) {
 
             const result = await fetchWithToken('http://localhost:8080/property/deleteProperty/'+IDLink, null, 'DELETE', token);
 
+
             if (!result.ok) {
                 console.log("ıts not ok")
             } else {
@@ -183,6 +188,10 @@ function ProfilePage({ getToken }) {
             });
 
             if (!response.ok) {
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 throw new Error('Failed to fetch property reservations');
             }
             const propertyReservations = await response.json();
@@ -208,6 +217,10 @@ function ProfilePage({ getToken }) {
             });
 
             if (!response.ok) {
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 throw new Error('Failed to fetch property reservations');
             }
             console.log(response)
@@ -231,6 +244,10 @@ function ProfilePage({ getToken }) {
             });
 
             if (!response.ok) {
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 throw new Error('Failed to fetch property reservations');
             }
             console.log(response)
@@ -256,6 +273,10 @@ function ProfilePage({ getToken }) {
             });
 
             if (!result.ok) {
+                if(result.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 setShowEmailInUsePopup(true);
             } else {
                 const resultInJson = await result.text();
@@ -775,6 +796,7 @@ function ProfilePage({ getToken }) {
                                                                 <p>Number of people: {reservation.numberOfPeople}</p>
                                                                 <p>Start date: {formatDate(reservation.startDate)}</p>
                                                                 <p>End date: {formatDate(reservation.endDate)}</p>
+                                                                <p>Reserver phone number: {reservation.phoneNumber}</p>
                                                                 <p>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</p>
                                                                 <p>Status: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</p>
                                                                 {reservation.approval == null && (

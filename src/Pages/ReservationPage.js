@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../Components/Header';
 import Rating from '../Components/Rating';
+import App from '../App';
+import { useNavigate } from 'react-router-dom';
 
 function ReservationPage({ getToken }) {
+    let navigate = useNavigate()
     const token = getToken();
     const isLoggedIn = token;
     const [reservations, setReservations] = useState([]);
@@ -21,6 +24,13 @@ function ReservationPage({ getToken }) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if(!response.ok){
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
+                throw new Error("Failed to fetch user reservations.")
+            }
             const data = await response.json();
             setReservations(data);
         } catch (error) {
@@ -49,20 +59,26 @@ function ReservationPage({ getToken }) {
         console.log(reservationID);
         console.log(description);
         console.log(userScore); // Log the rating value
+        const token = App.getToken();
+        const bearer = "Bearer " + token;
 
         try {
-            const response = await fetch(`http://localhost:8080/review/${propertyID}/${reservationID}`, {
+            const response = await fetch("http://localhost:8080/review/" + propertyID + "/" + reservationID, {
                 method: 'POST',
                 body: JSON.stringify({ description, userScore }), // Include rating in the request body
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': bearer
                 }
             });
             if (response.ok) {
                 fetchUserReservations();
             } else {
+                if(response.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
                 console.error('Failed to add comment');
             }
         } catch (error) {
