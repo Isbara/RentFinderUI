@@ -7,6 +7,8 @@ function MainPage({ getToken }) {
     const isLoggedIn = token;
 
     const [allProperties, setAllProperties] = useState([]);
+    const [filteredProperties, setFilteredProperties] = useState([]); // State to store filtered properties
+    const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [error, setError] = useState(null); // State to store fetch error
 
     const fetchAllProperties = async () => {
@@ -23,6 +25,7 @@ function MainPage({ getToken }) {
             }
             const data = await response.json();
             setAllProperties(data);
+            setFilteredProperties(data); // Initialize filtered properties with all properties
         } catch (error) {
             console.error('Error:', error.message);
             setError(error.message); // Set error state
@@ -33,6 +36,14 @@ function MainPage({ getToken }) {
         fetchAllProperties();
     }, []);
 
+    const handleSearch = () => { //when the seaerch button is clicked
+        const filtered = allProperties.filter(property => //finds the specific property from all properties
+                property.address.toLowerCase().includes(searchQuery.toLowerCase()) ||  // case insensitive
+                property.description.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProperties(filtered);
+    };
+
     return (
         <div>
             <Header isLoggedIn={isLoggedIn}/>
@@ -41,13 +52,25 @@ function MainPage({ getToken }) {
                     <div className="col-md-8">
                         <h2 className="mb-4">All Properties</h2>
                         {error && <p className="text-danger">{error}</p>} {/* Display error message */}
-                        {allProperties.length === 0 && !error && (
-                            <div className="alert alert-warning" role="alert">
-                                No properties available
+                        <div className="input-group mb-3">
+                            <input
+                                type="text"
+                                placeholder="Search properties by address or description"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="form-control"
+                            />
+                            <div className="input-group-append">
+                                <button className="btn btn-primary" type="button" onClick={handleSearch}>Search</button>
                             </div>
-                        )} {/* Display message when no properties exist */}
+                        </div>
+                        {filteredProperties.length === 0 && !error && (
+                            <div className="alert alert-warning" role="alert">
+                                No properties match your search
+                            </div>
+                        )} {/* Display message when no properties match search */}
                         <ul className="list-group">
-                            {allProperties.map(property => (
+                            {filteredProperties.map(property => (
                                 <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item">
                                     <div className="card-body">
                                         <h5 className="card-title">Property Details</h5>
