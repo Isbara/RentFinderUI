@@ -82,8 +82,8 @@ function MainPage({ getToken }) {
                                             <li className="list-group-item"><strong>Price:</strong> {property.price}</li>
                                             <li className="list-group-item"><strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</li>
                                         </ul>
-                                        {property.image && (
-                                            <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px' }} />
+                                        {property.images && property.images.length > 0 && (
+                                            <img src={`data:image/jpeg;base64,${property.images[0].data}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px' }} />
                                         )}
                                     </div>
                                 </Link>

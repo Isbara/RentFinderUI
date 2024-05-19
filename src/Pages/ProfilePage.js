@@ -51,7 +51,7 @@ function ProfilePage({ getToken }) {
         description: '',
         price: '',
         placeOffers: '',
-        image:''
+        images: []
     });
 
     const [currentReservationID, setCurrentReservationID] = useState(null);
@@ -110,24 +110,27 @@ function ProfilePage({ getToken }) {
         try {
             const properties = await fetchWithToken("http://localhost:8080/property/getUserProperties",  null, 'GET', token);
             setuserProperties(properties);
+            console.log("Image URL:", properties[0].images[0]);
         } catch (error) {
             console.error('Error:', error.message);
         }
     };
 
 
-        const connectProperty=async()=>{
-        const token=App.getToken();
-        try{
+
+    const connectProperty = async () => {
+        const token = App.getToken();
+        try {
             const requestData = {
                 ...propertyDetails,
-                image: propertyDetails.image.split(',')[1]
+                images: propertyDetails.images.map(image => image.split(',')[1])
             };
-            const result = await fetchWithToken("http://localhost:8080/property/addProperty",JSON.stringify(requestData),'POST',token);
+            const result = await fetchWithToken("http://localhost:8080/property/addProperty", JSON.stringify(requestData), 'POST', token);
         } catch (error) {
             console.error('Error:', error.message);
         }
-        }
+    };
+
 
 
     const connectUpdateProperty = async () => {
@@ -135,12 +138,11 @@ function ProfilePage({ getToken }) {
         try {
             const requestData = {
                 ...propertyDetails,
-                image: propertyDetails.image.split(',')[1] // Remove the data URI prefix
+                images: propertyDetails.images.map(image => image.split(',')[1])
             };
             const IDLink = propertyID;
             const result = await fetchWithToken('http://localhost:8080/property/updateProperty/' + IDLink, JSON.stringify(requestData), 'PUT', token);
-            // Handle successful response
-            console.log(result);
+            console.log("BAK",result);
         } catch (error) {
             console.error('Error:', error.message);
         }
@@ -289,34 +291,29 @@ function ProfilePage({ getToken }) {
     };
 
     const handleImageChange = (event) => {
-        const file = event.target.files[0]; // Get the first selected file
+        const files = Array.from(event.target.files);
 
-        // Check if a file is selected
-        if (file) {
-            // Check if the selected file type is allowed
-            if (
-                file.type === "image/jpeg" ||
-                file.type === "image/jpg" ||
-                file.type === "image/png"
-            ) {
-                console.log("hey")
+        const validFiles = files.filter(file =>
+            file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png"
+        );
+
+        if (validFiles.length > 0) {
+            validFiles.forEach(file => {
                 const reader = new FileReader();
 
-                // Set up the onload callback function to read the file as a Data URL
                 reader.onload = () => {
                     const imageDataUrl = reader.result;
-                    console.log(imageDataUrl);
-
-                    // Update propertyDetails state with the Data URL
-                    setPropertyDetails({ ...propertyDetails, image: imageDataUrl });
+                    setPropertyDetails(prevDetails => ({
+                        ...prevDetails,
+                        images: [...prevDetails.images, imageDataUrl]
+                    }));
+                    {console.log(imageDataUrl)}
                 };
-
-                // Read the selected file as Data URL
+                console.log(propertyDetails)
                 reader.readAsDataURL(file);
-            } else {
-                // File type not allowed, handle accordingly (e.g., display an error message)
-                console.log("Only JPEG, JPG, and PNG images are allowed.");
-            }
+            });
+        } else {
+            console.log("Only JPEG, JPG, and PNG images are allowed.");
         }
     };
 
@@ -563,19 +560,20 @@ function ProfilePage({ getToken }) {
                                             <p className="mb-1">Place Offers: {property.placeOffers}</p>
                                             <p className="mb-1">Price: {property.price}</p>
                                             <p className="mb-1">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
-                                            {property.image && (
+                                            {property.images && property.images.length > 0 && (
                                                 <div>
-                                                    <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid" style={{ maxWidth: '300px' }} />
+                                                    <img src={`data:image/jpeg;base64,${property.images[0].data}`} alt="Property" className="img-fluid" style={{ maxWidth: '300px' }} />
                                                 </div>
                                             )}
+
                                             <div className="mt-3">
                                                 <button type="button" className="btn btn-primary mx-1" onClick={() => {handleUpdate(property.propertyID); setPropertyDetails(property)}}>Update</button>
                                                 <button type="button" className="btn btn-danger mx-1" onClick={() => handleDelete(property.propertyID)}>Delete</button>
                                                 <button type="button" className="btn btn-secondary mx-1" onClick={() => handleReservation(property.propertyID)}>Reservations</button>
                                             </div>
                                         </li>
-
                                     ))}
+
                                 </ul>
                             </div>
                         </div>
@@ -633,27 +631,32 @@ function ProfilePage({ getToken }) {
                                         {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="image">Image:</label>
+                                        <label htmlFor="images">Images:</label>
                                         <input
-                                            id="image"
+                                            id="images"
                                             type="file"
                                             accept="image/jpeg, image/jpg, image/png"
                                             onChange={handleImageChange}
+                                            multiple // Allow multiple file selection
                                             required
-                                            onInvalid={(e) => e.target.setCustomValidity("Please select an image")}
+                                            onInvalid={(e) => e.target.setCustomValidity("Please select images")}
                                             onInput={(e) => e.target.setCustomValidity("")}
                                         />
-                                        {/* Error message for image validation */}
-                                        {popUpErrors.image && <div className="invalid-feedback d-block">{popUpErrors.image}</div>}
 
-                                        {/* Preview the uploaded image */}
-                                        {propertyDetails.image && (
+                                        {/* Error message for image validation */}
+                                        {popUpErrors.images && <div className="invalid-feedback d-block">{popUpErrors.images}</div>}
+
+                                        {/* Preview the uploaded images */}
+                                        {propertyDetails.images.length > 0 && (
                                             <div>
-                                                <h2>Preview:</h2>
-                                                <img src={propertyDetails.image} alt="" style={{ maxWidth: '100%' }} />
+                                                <h2>Previews:</h2>
+                                                {propertyDetails.images.map((image, index) => (
+                                                    <img key={index} src={image} alt="" style={{ maxWidth: '100%' }} />
+                                                ))}
                                             </div>
                                         )}
                                     </div>
+
 
                                     {/* Submit Button */}
                                     <button type="submit" className="btn btn-primary">Submit</button>
@@ -720,27 +723,32 @@ function ProfilePage({ getToken }) {
                                     </div>
                                     {/* Image */}
                                     <div className="form-group">
-                                        <label htmlFor="image">Image:</label>
+                                        <label htmlFor="images">Images:</label>
                                         <input
-                                            id="image"
+                                            id="images"
                                             type="file"
                                             accept="image/jpeg, image/jpg, image/png"
                                             onChange={handleImageChange}
+                                            multiple // Allow multiple file selection
                                             required
-                                            onInvalid={(e) => e.target.setCustomValidity("Please select an image")}
+                                            onInvalid={(e) => e.target.setCustomValidity("Please select images")}
                                             onInput={(e) => e.target.setCustomValidity("")}
                                         />
-                                        {/* Error message for image validation */}
-                                        {popUpErrors.image && <div className="invalid-feedback d-block">{popUpErrors.image}</div>}
 
-                                        {/* Preview the uploaded image */}
-                                        {propertyDetails.image && (
+                                        {/* Error message for image validation */}
+                                        {popUpErrors.images && <div className="invalid-feedback d-block">{popUpErrors.images}</div>}
+
+                                        {/* Preview the uploaded images */}
+                                        {propertyDetails.images.length > 0 && (
                                             <div>
-                                                <h2>Preview:</h2>
-                                                <img src={propertyDetails.image} alt="" style={{ maxWidth: '100%' }} />
+                                                <h2>Previews:</h2>
+                                                {propertyDetails.images.map((image, index) => (
+                                                    <img key={index} src={image} alt="" style={{ maxWidth: '100%' }} />
+                                                ))}
                                             </div>
                                         )}
                                     </div>
+
                                     <button type="submit" className="btn btn-primary">Submit</button>
                                 </form>
                             </div>

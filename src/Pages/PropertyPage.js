@@ -15,6 +15,8 @@ function PropertyPage({ getToken }) {
     const [showModal, setShowModal] = useState(false);
     const { id } = useParams();
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+
 
     // State for reservation details
     const [reservationDetails, setReservationDetails] = useState({
@@ -46,7 +48,13 @@ function PropertyPage({ getToken }) {
             setShowModal(false);
         }
     };
+    const handleImageClick = (index) => {
+        setSelectedImageIndex(index);
+    };
 
+    const handleCloseImage = () => {
+        setSelectedImageIndex(null);
+    };
     // Function to validate the reservation form
     const validateReservationForm = () => {
         let isValid = true;
@@ -203,9 +211,37 @@ function PropertyPage({ getToken }) {
                                 <p className="card-text">Place Offers: {property.placeOffers}</p>
                                 <p className="card-text">Price: {property.price}</p>
                                 <p className="card-text">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
-                                {property.image && (
-                                    <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid" style={{ maxWidth: '100%' }} />
+                                {property.images && property.images.length > 0 && (
+                                    <div id="propertyCarousel" className="carousel slide mt-3" data-bs-ride="carousel" style={{ maxWidth: '100%', aspectRatio: '16/9' }}>
+                                        <div className="carousel-inner">
+                                            {property.images.map((image, index) => (
+                                                <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                                    <img
+                                                        src={`data:image/jpeg;base64,${image.data}`}
+                                                        alt={`Property Image ${index}`}
+                                                        className="d-block w-100 img-fluid"
+                                                        style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
+                                                        onClick={() => handleImageClick(index)}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {property.images.length > 1 && (
+                                            <>
+                                                <button className="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                                                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span className="visually-hidden">Previous</span>
+                                                </button>
+                                                <button className="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                                                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span className="visually-hidden">Next</span>
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 )}
+
+
                             </div>
                         </div>
                         <button className="btn btn-success mt-3" onClick={() => setShowModal(true)}>Reserve Property</button>
@@ -284,6 +320,26 @@ function PropertyPage({ getToken }) {
                     </div>
                 )}
             </div>
+            {selectedImageIndex !== null && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog modal-xl" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" onClick={handleCloseImage}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body text-center">
+                                <img
+                                    src={`data:image/jpeg;base64,${property.images[selectedImageIndex].data}`}
+                                    alt={`Property Image ${selectedImageIndex}`}
+                                    className="img-fluid"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
