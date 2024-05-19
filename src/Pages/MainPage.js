@@ -5,6 +5,8 @@ import Header from '../Components/Header';
 function MainPage({ getToken }) {
     const token = getToken();
     const isLoggedIn = token;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     const [allProperties, setAllProperties] = useState([]);
 
@@ -30,6 +32,9 @@ function MainPage({ getToken }) {
     useEffect(() => {
         fetchAllProperties();
     }, []);
+    const indexOfLastProperty = currentPage * itemsPerPage;
+    const indexOfFirstProperty = indexOfLastProperty - itemsPerPage;
+    const currentProperties = allProperties.slice(indexOfFirstProperty, indexOfLastProperty);
 
     return (
         <div>
@@ -39,7 +44,7 @@ function MainPage({ getToken }) {
                     <div className="col-md-8">
                         <h2 className="mb-4">All Properties</h2>
                         <ul className="list-group">
-                            {allProperties.map(property => (
+                            {currentProperties.map(property => (
                                 <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item">
                                     <div className="card-body">
                                         <h5 className="card-title">Property Details</h5>
@@ -58,6 +63,10 @@ function MainPage({ getToken }) {
                                 </Link>
                             ))}
                         </ul>
+                        <div className="text-center mt-4">
+                            <button className="btn btn-success mr-2" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
+                            <button className="btn btn-success" onClick={() => setCurrentPage(currentPage + 1)} disabled={indexOfLastProperty >= allProperties.length}>Next</button>
+                        </div>
                     </div>
                 </div>
             </div>
