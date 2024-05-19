@@ -291,6 +291,12 @@ function ProfilePage({ getToken }) {
     };
 
     const handleImageChange = (event) => {
+
+        setPropertyDetails(prevDetails => ({
+            ...prevDetails,
+            images: []
+        }));
+
         const files = Array.from(event.target.files);
 
         const validFiles = files.filter(file =>
