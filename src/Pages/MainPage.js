@@ -9,6 +9,9 @@ function MainPage({ getToken }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
     const [allProperties, setAllProperties] = useState([]);
+    const [filteredProperties, setFilteredProperties] = useState([]); // State to store filtered properties
+    const [searchQuery, setSearchQuery] = useState(''); // State to store search query
+    const [error, setError] = useState(null); // State to store fetch error
 
     const fetchAllProperties = async () => {
         try {
@@ -24,8 +27,10 @@ function MainPage({ getToken }) {
             }
             const data = await response.json();
             setAllProperties(data);
+            setFilteredProperties(data); // Initialize filtered properties with all properties
         } catch (error) {
             console.error('Error:', error.message);
+            setError(error.message); // Set error state
         }
     };
 
@@ -36,6 +41,14 @@ function MainPage({ getToken }) {
     const indexOfFirstProperty = indexOfLastProperty - itemsPerPage;
     const currentProperties = allProperties.slice(indexOfFirstProperty, indexOfLastProperty);
 
+    const handleSearch = () => { //when the seaerch button is clicked
+        const filtered = allProperties.filter(property => //finds the specific property from all properties
+                property.address.toLowerCase().includes(searchQuery.toLowerCase()) ||  // case insensitive
+                property.description.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProperties(filtered);
+    };
+
     return (
         <div>
             <Header isLoggedIn={isLoggedIn}/>
@@ -43,6 +56,24 @@ function MainPage({ getToken }) {
                 <div className="row">
                     <div className="col-md-8">
                         <h2 className="mb-4">All Properties</h2>
+                        {error && <p className="text-danger">{error}</p>} {/* Display error message */}
+                        <div className="input-group mb-3">
+                            <input
+                                type="text"
+                                placeholder="Search properties by address or description"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="form-control"
+                            />
+                            <div className="input-group-append">
+                                <button className="btn btn-primary" type="button" onClick={handleSearch}>Search</button>
+                            </div>
+                        </div>
+                        {filteredProperties.length === 0 && !error && (
+                            <div className="alert alert-warning" role="alert">
+                                No properties match your search
+                            </div>
+                        )} {/* Display message when no properties match search */}
                         <ul className="list-group">
                             {currentProperties.map(property => (
                                 <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item">
@@ -56,8 +87,8 @@ function MainPage({ getToken }) {
                                             <li className="list-group-item"><strong>Price:</strong> {property.price}</li>
                                             <li className="list-group-item"><strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</li>
                                         </ul>
-                                        {property.image && (
-                                            <img src={`data:image/jpeg;base64,${property.image}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px' }} />
+                                        {property.images && property.images.length > 0 && (
+                                            <img src={`data:image/jpeg;base64,${property.images[0].data}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px' }} />
                                         )}
                                     </div>
                                 </Link>
@@ -72,12 +103,12 @@ function MainPage({ getToken }) {
             </div>
             <style>
                 {`
-                    .list-group-item {
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-                `}
+                .list-group-item {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+            `}
             </style>
         </div>
     );
