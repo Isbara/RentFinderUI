@@ -10,7 +10,7 @@ function ProfilePage({ getToken }) {
 
     const token = getToken();
     const isLoggedIn = token;
-    const [respond, setRespond] = useState("");
+    const [responses, setResponses] = useState("");
     //User
     const [userDetails, setUserDetails] = useState(null);
     const [userProperties, setuserProperties] = useState([]);
@@ -153,7 +153,7 @@ function ProfilePage({ getToken }) {
         const bearerToken = "Bearer " + token;
         try {
             const IDLink = reviewID;
-            const result = await fetch('http://localhost:8080/review/response/' + IDLink, {method: "POST", body: JSON.stringify({"description": respond}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': bearerToken}});
+            const result = await fetch('http://localhost:8080/review/response/' + IDLink, {method: "POST", body: JSON.stringify({"description": responses[reviewID]}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': bearerToken}});
             if (!result.ok) {
                 if(result.status === 403){
                     App.removeToken()
@@ -551,6 +551,12 @@ function ProfilePage({ getToken }) {
         return isValid;
     };
 
+    const handleRespondChange = (commentID, value) => {
+            setResponses(prevResponses => ({
+                ...prevResponses,
+                [commentID]: value,
+            }));
+        };
 
     return (
         <div>
@@ -852,8 +858,8 @@ function ProfilePage({ getToken }) {
                                                                             className="form-control mt-2"
                                                                             rows="3"
                                                                             placeholder="Write your respond..."
-                                                                            value={respond}
-                                                                            onChange={(e) => setRespond(e.target.value)}
+                                                                            value={responses[reservation.review.commentID] || ''}
+                                                                            onChange={(e) => handleRespondChange(reservation.review.commentID, e.target.value)}
                                                                         ></textarea>
                                                                         <button className="btn btn-success" onClick={() => {submitRespond(reservation.review.commentID)}}>Submit</button>
                                                                     </div>

@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Main page pagination added.">
+    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Karma point integration completed, respond integration completed, pagination made fit with search.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ProfilePage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +242,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716156388823</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Karma point integration completed, respond integration completed, pagination made fit with search.">
+      <created>1716164948133</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1716164948133</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,6 +270,7 @@
     <MESSAGE value="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)" />
     <MESSAGE value="some fixes" />
     <MESSAGE value="Main page pagination added." />
-    <option name="LAST_COMMIT_MESSAGE" value="Main page pagination added." />
+    <MESSAGE value="Karma point integration completed, respond integration completed, pagination made fit with search." />
+    <option name="LAST_COMMIT_MESSAGE" value="Karma point integration completed, respond integration completed, pagination made fit with search." />
   </component>
 </project>
