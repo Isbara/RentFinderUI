@@ -258,8 +258,11 @@ function PropertyPage({ getToken }) {
                                 <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
                                     <div>
                                         <h3>Reviewer: {review.reviewerName} <p> Reviewer karma point: {review.reviewerKarma}</p><p>User Score: {review.userScore}</p></h3>
+                                        <p>Our algorithm says {review.algoResult ? (<span style={{color: 'green', fontWeight: 'bold', fontSize: '1.2em'}}>GENUINE</span>) : (<span style={{color: 'red', fontWeight: 'bold', fontSize: '1.2em'}}>FAKE</span>)} for this review</p>
                                         <p>Review: {review.description}</p>
-                                        <p>Respond: {review.respondList[0].description}</p>
+                                        {review.respondList && review.respondList.length > 0 ? (
+                                            <p>Respond: {review.respondList[0].description}</p>
+                                        ) : null}
                                     </div>
                                 </div>
                             ))}

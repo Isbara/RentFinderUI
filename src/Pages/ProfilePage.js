@@ -164,6 +164,7 @@ function ProfilePage({ getToken }) {
             else{
                 const resultInJson = await result.json();
                 console.log(resultInJson);
+                window.location.reload();
             }
         } catch (error) {
             console.error('Error:', error.message);
@@ -852,7 +853,7 @@ function ProfilePage({ getToken }) {
                                                                 {reservation.status === true && reservation.status === true && reservation.review !== null && (
                                                                     <p>Review: {reservation.review.description}</p>
                                                                 )}
-                                                                {reservation.status === true && reservation.status === true && reservation.review !== null &&(
+                                                                {reservation.status === true && reservation.review !== null && reservation.review.respondList.length < 1 ?(
                                                                     <div>
                                                                         <textarea
                                                                             className="form-control mt-2"
@@ -863,7 +864,7 @@ function ProfilePage({ getToken }) {
                                                                         ></textarea>
                                                                         <button className="btn btn-success" onClick={() => {submitRespond(reservation.review.commentID)}}>Submit</button>
                                                                     </div>
-                                                                )}
+                                                                ):null}
                                                             </ul>
                                                         </div>
                                                     </div>
