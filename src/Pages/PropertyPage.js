@@ -257,9 +257,9 @@ function PropertyPage({ getToken }) {
                             {review.map((review, index) => (
                                 <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
                                     <div>
-                                        <h3>User Score: {review.userScore}</h3>
+                                        <h3>Reviewer: {review.reviewerName} <p> Reviewer karma point: {review.reviewerKarma}</p><p>User Score: {review.userScore}</p></h3>
                                         <p>Review: {review.description}</p>
-                                        <p>Respond: {review.respond}</p>
+                                        <p>Respond: {review.respondList[0].description}</p>
                                     </div>
                                 </div>
                             ))}

@@ -39,7 +39,7 @@ function MainPage({ getToken }) {
     }, []);
     const indexOfLastProperty = currentPage * itemsPerPage;
     const indexOfFirstProperty = indexOfLastProperty - itemsPerPage;
-    const currentProperties = allProperties.slice(indexOfFirstProperty, indexOfLastProperty);
+    const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
 
     const handleSearch = () => { //when the seaerch button is clicked
         const filtered = allProperties.filter(property => //finds the specific property from all properties
@@ -47,6 +47,7 @@ function MainPage({ getToken }) {
                 property.description.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredProperties(filtered);
+        setCurrentPage(1);
     };
 
     return (
@@ -96,7 +97,7 @@ function MainPage({ getToken }) {
                         </ul>
                         <div className="text-center mt-4">
                             <button className="btn btn-success mr-2" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
-                            <button className="btn btn-success" onClick={() => setCurrentPage(currentPage + 1)} disabled={indexOfLastProperty >= allProperties.length}>Next</button>
+                            <button className="btn btn-success" onClick={() => setCurrentPage(currentPage + 1)} disabled={indexOfLastProperty >= filteredProperties.length}>Next</button>
                         </div>
                     </div>
                 </div>

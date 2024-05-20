@@ -10,7 +10,7 @@ function ProfilePage({ getToken }) {
 
     const token = getToken();
     const isLoggedIn = token;
-
+    const [respond, setRespond] = useState("");
     //User
     const [userDetails, setUserDetails] = useState(null);
     const [userProperties, setuserProperties] = useState([]);
@@ -148,7 +148,27 @@ function ProfilePage({ getToken }) {
         }
     };
 
-
+    const submitRespond = async (reviewID) => {
+        const token = App.getToken();
+        const bearerToken = "Bearer " + token;
+        try {
+            const IDLink = reviewID;
+            const result = await fetch('http://localhost:8080/review/response/' + IDLink, {method: "POST", body: JSON.stringify({"description": respond}), headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8', 'Authorization': bearerToken}});
+            if (!result.ok) {
+                if(result.status === 403){
+                    App.removeToken()
+                    navigate("/login");
+                }
+                throw new Error('Failed to fetch data');
+            }
+            else{
+                const resultInJson = await result.json();
+                console.log(resultInJson);
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
 
 
     const connectDeleteProperty = async () => {
@@ -822,6 +842,21 @@ function ProfilePage({ getToken }) {
                                                                     <button className={`btn btn-success mx-3 ${reservation.approval === null ? 'disabled' : ''}`} onClick={() => handleStatusClick(reservation.reservationID)} disabled={reservation.approval === null}>
                                                                         Status
                                                                     </button>
+                                                                )}
+                                                                {reservation.status === true && reservation.status === true && reservation.review !== null && (
+                                                                    <p>Review: {reservation.review.description}</p>
+                                                                )}
+                                                                {reservation.status === true && reservation.status === true && reservation.review !== null &&(
+                                                                    <div>
+                                                                        <textarea
+                                                                            className="form-control mt-2"
+                                                                            rows="3"
+                                                                            placeholder="Write your respond..."
+                                                                            value={respond}
+                                                                            onChange={(e) => setRespond(e.target.value)}
+                                                                        ></textarea>
+                                                                        <button className="btn btn-success" onClick={() => {submitRespond(reservation.review.commentID)}}>Submit</button>
+                                                                    </div>
                                                                 )}
                                                             </ul>
                                                         </div>
