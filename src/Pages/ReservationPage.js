@@ -96,6 +96,7 @@ function ReservationPage({ getToken }) {
                         const approve = reservation.approval;
                         const status = reservation.status;
                         const hasReview = reservation.review !== null;
+                        const lowKarma = reservation.reserverKarma < 80;
 
                         if (approve == null) {
                             return (
@@ -164,23 +165,27 @@ function ReservationPage({ getToken }) {
                                                     <p className="card-text">Review: {reservation.review.description}</p>
                                                     <p className="card-text">Algo Result: {reservation.review.algoResult ? "Genuine" : "Fake"}</p>
                                                 </div>
-                                            ) : (
-                                                <div>
-                                                    <Rating value={reservation.userScore || 0} onChange={(value) => handleUserScoreChange(index, value)} />
-                                                    <textarea
-                                                        className="form-control mt-2"
-                                                        rows="3"
-                                                        placeholder="Write your comment..."
-                                                        value={reservation.description || ''}
-                                                        onChange={(e) => handleDescriptionChange(index, e.target.value)}
-                                                    ></textarea>
-                                                    <button
-                                                        className="btn btn-primary mt-2"
-                                                        onClick={() => handleSubmitDescription(reservation.propertyID, reservation.reservationID, reservation.description, reservation.userScore)}
-                                                    >
-                                                        Add Comment
-                                                    </button>
-                                                </div>
+                                            ) : (lowKarma ? (
+                                                    <div>
+                                                    <p className="card-text"> Your karma is too low! You can not write reviews!</p>
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                         <Rating value={reservation.userScore || 0} onChange={(value) => handleUserScoreChange(index, value)} />
+                                                         <textarea
+                                                             className="form-control mt-2"
+                                                             rows="3"
+                                                             placeholder="Write your comment..."
+                                                             value={reservation.description || ''}
+                                                             onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                                                         ></textarea>
+                                                         <button
+                                                             className="btn btn-primary mt-2"
+                                                             onClick={() => handleSubmitDescription(reservation.propertyID, reservation.reservationID, reservation.description, reservation.userScore)}
+                                                         >
+                                                             Add Comment
+                                                         </button>
+                                                    </div>)
                                             )}
                                         </div>
                                     </div>
