@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/rent-finder-ui-2.iml" filepath="$PROJECT_DIR$/.idea/rent-finder-ui-2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/RentFinderUI.iml" filepath="$PROJECT_DIR$/.idea/RentFinderUI.iml" />
     </modules>
   </component>
 </project>

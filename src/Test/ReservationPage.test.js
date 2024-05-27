@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor,screen } from '@testing-library/react';
 import ReservationPage from "../Pages/ReservationPage";
 import { renderWithRouter } from './renderWithRouter';
 
@@ -9,16 +9,38 @@ describe('ReservationPage Component', () => {
         renderWithRouter(<ReservationPage getToken={() => null} />);
     });
     it('fetches user reservations when page is opened', async () => {
+        const mockReservation = {
+            reservationID: 1,
+            numberOfPeople: 2,
+            startDate: '01-06-2024',
+            endDate: '10-06-2024',
+            status: true,
+            approval: true,
+            reserver: {
+                id: 1,
+                name: 'Canberk Diner',
+                phoneNumber: '5338727035',
+                karmaPoint: 100
+            },
+            reserved: {
+                propertyID: 1
+            }
+        };
+
         global.fetch = jest.fn().mockResolvedValueOnce({
             ok: true,
-            json: () => Promise.resolve([]),
+            json: () => Promise.resolve([mockReservation]), // Return the mockReservation
         });
 
         renderWithRouter(<ReservationPage getToken={() => null} />);
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/reservation/getAllUserReservations', expect.any(Object));
         });
+
+        // Assert that the rendered page contains the reservation information
+        // Add similar assertions for other reservation details
     });
+
 
 
     /*it('renders textarea for adding comment when reservation status and approval are true', async () => {
