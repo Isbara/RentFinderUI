@@ -26,7 +26,7 @@ describe('RegisterPage Component', () => {
         fireEvent.change(passwordInput, { target: { value: 'DeliceBirDeli0' } });
        fireEvent.change(phoneNumberInput, { target: { value: '5338727035' } });
        fireEvent.change(dateOfBirthInput,{ target: { value: '2001-02-11' } });
-        
+
         expect(nameInput.value).toBe('Canberk');
        expect(surnameInput.value).toBe('Diner');
        expect(emailInput.value).toBe('canberkdiner@hotmail.com');
@@ -72,10 +72,9 @@ describe('RegisterPage Component', () => {
 
 
     it('submits the form with correct data', async () => {
-        const mockRegisterResponse = {}; // Placeholder response for successful registration
-        global.fetch = jest.fn().mockResolvedValueOnce({ // Mock the fetch call
+        global.fetch = jest.fn().mockResolvedValueOnce({
             ok: true,
-            json: () => Promise.resolve(mockRegisterResponse),
+            json: () => Promise.resolve({}),
         });
 
         const { getByLabelText, getByRole } =  renderWithRouter(<RegisterPage getToken={() => null} />);

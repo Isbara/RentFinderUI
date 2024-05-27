@@ -120,22 +120,18 @@ describe('ProfilePage Component', () => {
     });
 */
 
-    
+
     it('displays and submits property addition form properly', async () => {
-        // Render the component
         const { getByText, getByLabelText, queryByText, queryByTestId } = renderWithRouter(<ProfilePage getToken={() => null} />);
-        // Check that the property addition modal is initially hidden or closed
+
         expect(queryByText('Submit')).not.toBeInTheDocument();
 
-        // Trigger the action that displays the property addition modal
         fireEvent.click(getByText('Add New Property'));
 
-        // Check that the property addition modal is visible
         await waitFor(() => {
             expect(getByText('Submit')).toBeInTheDocument();
         });
 
-        // Simulate property addition action (e.g., changing input value and submitting the form)
         fireEvent.change(getByLabelText('Property Type:'), { target: { value: 'A' } });
         fireEvent.change(getByLabelText('Flat No:'), { target: { value: '101' } });
         fireEvent.change(getByLabelText('Address:'), { target: { value: '123 Main St Road Beatles' } });
@@ -143,27 +139,27 @@ describe('ProfilePage Component', () => {
         fireEvent.change(getByLabelText('Price:'), { target: { value: '10000' } });
         fireEvent.change(getByLabelText('Place Offers:'), { target: { value: 'Test offers Test offers Test offers' } });
 
-        // Simulate file selection
-        const fileInput = getByLabelText('Image:');
+        const fileInput = getByLabelText('Images:');
         const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
         fireEvent.change(fileInput, { target: { files: [file] } });
 
-        // Wait for the form submission to complete
         fireEvent.click(getByText('Submit'));
+
+        // Assuming the submission process is asynchronous
         await waitFor(() => {
-            // Assert that the modal is still open because of errors
             expect(queryByText('Submit')).not.toBeInTheDocument();
-            expect(queryByTestId('propertyType-error')).not.toBeInTheDocument();
-            expect(queryByTestId('flatNo-error')).not.toBeInTheDocument();
-            expect(queryByTestId('address-error')).not.toBeInTheDocument();
-            expect(queryByTestId('description-error')).not.toBeInTheDocument();
-            expect(queryByTestId('price-error')).not.toBeInTheDocument();
-            expect(queryByTestId('placeOffers-error')).not.toBeInTheDocument();
-            expect(queryByTestId('image-error')).not.toBeInTheDocument();
         });
 
-        // Optionally, you can check for additional assertions after the form submission
+        expect(queryByTestId('propertyType-error')).not.toBeInTheDocument();
+        expect(queryByTestId('flatNo-error')).not.toBeInTheDocument();
+        expect(queryByTestId('address-error')).not.toBeInTheDocument();
+        expect(queryByTestId('description-error')).not.toBeInTheDocument();
+        expect(queryByTestId('price-error')).not.toBeInTheDocument();
+        expect(queryByTestId('placeOffers-error')).not.toBeInTheDocument();
+        expect(queryByTestId('image-error')).not.toBeInTheDocument();
     });
+
+
 
 
 

@@ -4,10 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="added the low karma review prevention.">
+    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Fixed a textarea bug.">
+      <change afterPath="$PROJECT_DIR$/src/Test/IntegrationRegister.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/RentFinderUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RentFinderUI.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ProfilePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Test/LoginPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/LoginPage.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Test/MainPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/MainPage.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Test/ProfilePage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/ProfilePage.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Test/RegisterPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/RegisterPage.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Test/ReservationPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/ReservationPage.test.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,6 +111,19 @@
       <option name="OPTIONS" value="" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="RentFinderUI" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="RentFinderUI" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
       <module name="RentFinderUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -162,19 +184,6 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="RentFinderUI" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="RentFinderUI" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -221,6 +230,7 @@
       <workItem from="1714728218235" duration="13024000" />
       <workItem from="1714814553118" duration="10749000" />
       <workItem from="1714990435089" duration="19160000" />
+      <workItem from="1716749725613" duration="5895000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>
@@ -257,14 +267,7 @@
       <option name="project" value="LOCAL" />
       <updated>1716167102991</updated>
     </task>
-    <task id="LOCAL-00006" summary="added the low karma review prevention.">
-      <created>1716168696849</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1716168696849</updated>
-    </task>
-    <option name="localTasksCounter" value="7" />
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,7 +290,6 @@
     <MESSAGE value="Main page pagination added." />
     <MESSAGE value="Karma point integration completed, respond integration completed, pagination made fit with search." />
     <MESSAGE value="Fixed a textarea bug." />
-    <MESSAGE value="added the low karma review prevention." />
-    <option name="LAST_COMMIT_MESSAGE" value="added the low karma review prevention." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed a textarea bug." />
   </component>
 </project>

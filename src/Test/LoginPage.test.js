@@ -59,12 +59,19 @@ describe('LoginPage Component', () => {
             json: () => Promise.resolve(mockErrorResponse),
         });
 
-        const { getByText, getByRole } = renderWithRouter(<LoginPage />);
+        const { getByLabelText, getByText, getByRole } = renderWithRouter(<LoginPage />);
+        const emailInput = getByLabelText('Email:');
+        const passwordInput = getByLabelText('Password:');
         const submitButton = getByRole('button');
+
+        // Fill in email and password inputs with invalid values
+        fireEvent.change(emailInput, { target: { value: 'test' } });
+        fireEvent.change(passwordInput, { target: { value: '123' } });
 
         act(() => {
             fireEvent.click(submitButton);
         });
+
         // Wait for error message
         await waitFor(() => {
             const errorMessage = getByText('Email or password is wrong.');
@@ -74,12 +81,12 @@ describe('LoginPage Component', () => {
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/user/login', {
                 method: 'POST',
-                body: JSON.stringify({email: '', password: ''}), // Assuming empty email and password for simplicity
-                headers: {'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8'},
+                body: JSON.stringify({ email: 'test', password: '123' }),
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json; charset=UTF-8' },
             });
         });
-
     });
+
 
 
 });

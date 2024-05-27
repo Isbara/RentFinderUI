@@ -248,43 +248,75 @@ function PropertyPage({ getToken }) {
                     </div>
                 </div>
 
-                {review.length>0 && <div style={{ position: 'relative' }}>
-                    {/* Carousel */}
-                    <div id="carouselExampleControls" className="carousel slide p-3" style={{ border: '2px solid black', marginTop: '20px' }} data-bs-ride="carousel">
-                        {/* Carousel Inner Container */}
-                        <div className="carousel-inner">
-                            {/* Mapping Reviews */}
-                            {review.map((review, index) => (
-                                <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
-                                    <div>
-                                        <h3>Reviewer: {review.reviewerName} <p> Reviewer karma point: {review.reviewerKarma}</p><p>User Score: {review.userScore}</p></h3>
-                                        <p>Our algorithm says {review.algoResult ? (<span style={{color: 'green', fontWeight: 'bold', fontSize: '1.2em'}}>GENUINE</span>) : (<span style={{color: 'red', fontWeight: 'bold', fontSize: '1.2em'}}>FAKE</span>)} for this review</p>
-                                        <p>Review: {review.description}</p>
-                                        {review.respondList && review.respondList.length > 0 ? (
-                                            <p>Respond: {review.respondList[0].description}</p>
-                                        ) : null}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    {/* Carousel Controls */}
-                    <div style={{ position: 'absolute', left: '-135px', right: '-180px', bottom: '55px', display: 'flex', justifyContent: 'center' }}>
-                        {review.length > 1 && (
-                            <>
-                                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev" style={{ zIndex: '1' }}>
-                                    <span className="carousel-control-prev-icon" aria-hidden="false"></span>
-                                    <span className="visually-visible">Previous</span>
-                                </button>
-                                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next" style={{ zIndex: '1' }}>
-                                    <span className="carousel-control-next-icon" aria-hidden="false"></span>
-                                    <span className="visually-visible">Next</span>
-                                </button>
-                            </>
-                        )}
-                    </div>
+                <div className="container" style={{ position: 'relative' }}>
+                    {/* Headline */}
+                    <h2 className="my-4">User Reviews</h2>
 
-                </div>}
+                    {/* Display genuine reviews */}
+                    {review
+                        .filter(reviewItem => reviewItem.fakeResult !== false) // Filtering genuine reviews
+                        .map((reviewItem, index) => (
+                            <div key={index} className="comment mb-3 p-3 border">
+                                <h3>Reviewer: {reviewItem.reviewerName}</h3>
+                                <p>Reviewer Karma Points: {reviewItem.reviewerKarma}</p>
+                                <p>User Score: {reviewItem.userScore}</p>
+                                <p>
+                                    Our algorithm says&nbsp;
+                                    <span
+                                        style={{
+                                            color: reviewItem.fakeResult ? 'green' : 'red',
+                                            fontWeight: 'bold',
+                                            fontSize: '1.2em'
+                                        }}
+                                    >
+                            {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
+                        </span>
+                                    &nbsp;for this review
+                                </p>
+                                <p>Review: {reviewItem.description}</p>
+                                {reviewItem.respondList && reviewItem.respondList.length > 0 && (
+                                    <p>Respond: {reviewItem.respondList[0].description}</p>
+                                )}
+                            </div>
+                        ))}
+
+                    {/* Display fake reviews with faded style */}
+                    {review
+                        .filter(reviewItem => reviewItem.fakeResult === false) // Filtering fake reviews
+                        .map((reviewItem, index) => (
+                            <div
+                                key={index}
+                                className="comment mb-3 p-3 border"
+                                style={{
+                                    color: 'rgba(0, 0, 0, 0.3)', // Faded text color
+                                    backgroundColor: 'rgba(255, 255, 255, 0.5)' // Faded background color
+                                }}
+                            >
+                                <h3>Reviewer: {reviewItem.reviewerName}</h3>
+                                <p>Reviewer Karma Points: {reviewItem.reviewerKarma}</p>
+                                <p>User Score: {reviewItem.userScore}</p>
+                                <p>
+                                    Our algorithm says&nbsp;
+                                    <span
+                                        style={{
+                                            color: reviewItem.fakeResult ? 'green' : 'red',
+                                            fontWeight: 'bold',
+                                            fontSize: '1.2em'
+                                        }}
+                                    >
+                            {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
+                        </span>
+                                    &nbsp;for this review
+                                </p>
+                                <p>Review: {reviewItem.description}</p>
+                                {reviewItem.respondList && reviewItem.respondList.length > 0 && (
+                                    <p>Respond: {reviewItem.respondList[0].description}</p>
+                                )}
+                            </div>
+                        ))}
+                </div>
+
+
 
 
 
