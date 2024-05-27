@@ -559,6 +559,35 @@ function ProfilePage({ getToken }) {
             }));
         };
 
+    const deleteProfile = async() => {
+        const token=App.getToken();
+        const bearerToken = "Bearer " + token;
+        try {
+            const result = await fetch('http://localhost:8080/user/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': bearerToken
+                }
+            });
+
+            if (!result.ok) {
+                // const errorResponse = await result.json();
+                if(result.status === 403){
+                    App.removeToken();
+                    navigate("/login");
+                }
+            }
+            else {
+                App.removeToken();
+                navigate("/");
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
     return (
         <div>
             <Header isLoggedIn={isLoggedIn}/>
@@ -575,6 +604,7 @@ function ProfilePage({ getToken }) {
                                     <li className="list-group-item">Phone Number: {userDetails?.phoneNumber}</li>
                                 </ul>
                                 <button className="btn btn-primary mt-3" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
+                                <button className="btn btn-danger mt-3" onClick={deleteProfile}>Delete Profile</button>
                             </div>
                         </div>
                     </div>
