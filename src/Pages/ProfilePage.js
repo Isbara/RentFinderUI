@@ -55,7 +55,7 @@ function ProfilePage({ getToken }) {
     });
 
     const [currentReservationID, setCurrentReservationID] = useState(null);
-
+    const [inputChanged, setInputChanged] = useState(false);
 
 
     useEffect(() => { //Works just one time
@@ -125,6 +125,7 @@ function ProfilePage({ getToken }) {
                 ...propertyDetails,
                 images: propertyDetails.images.map(image => image.split(',')[1])
             };
+            console.log(propertyDetails.images[0])
             const result = await fetchWithToken("http://localhost:8080/property/addProperty", JSON.stringify(requestData), 'POST', token);
         } catch (error) {
             console.error('Error:', error.message);
@@ -312,7 +313,7 @@ function ProfilePage({ getToken }) {
     };
 
     const handleImageChange = (event) => {
-
+        setInputChanged(true);
         setPropertyDetails(prevDetails => ({
             ...prevDetails,
             images: []
@@ -603,8 +604,8 @@ function ProfilePage({ getToken }) {
                                     <li className="list-group-item">Email: {userDetails?.email}</li>
                                     <li className="list-group-item">Phone Number: {userDetails?.phoneNumber}</li>
                                 </ul>
-                                <button className="btn btn-primary mt-3" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
-                                <button className="btn btn-danger mt-3" onClick={deleteProfile}>Delete Profile</button>
+                                <button className="btn btn-primary mx-1" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
+                                <button className="btn btn-danger mx-1" onClick={deleteProfile}>Delete Profile</button>
                             </div>
                         </div>
                     </div>
@@ -714,7 +715,22 @@ function ProfilePage({ getToken }) {
                                             <div>
                                                 <h2>Previews:</h2>
                                                 {propertyDetails.images.map((image, index) => (
-                                                    <img key={index} src={image} alt="" style={{ maxWidth: '100%' }} />
+                                                    (() => {
+                                                        console.log('Index:', index);
+                                                        console.log('Image:', image);
+                                                        return (
+                                                            <img
+                                                                key={index}
+                                                                src={image}
+                                                                alt=""
+                                                                style={{ maxWidth: '100%' }}
+                                                                onError={(e) => {
+                                                                    console.error('Failed to load image:', e.target.src);
+                                                                    e.target.style.display = 'none'; // Hide the image if loading fails
+                                                                }}
+                                                            />
+                                                        );
+                                                    })()
                                                 ))}
                                             </div>
                                         )}
@@ -800,14 +816,42 @@ function ProfilePage({ getToken }) {
 
                                         {/* Error message for image validation */}
                                         {popUpErrors.images && <div className="invalid-feedback d-block">{popUpErrors.images}</div>}
-
                                         {/* Preview the uploaded images */}
                                         {propertyDetails.images.length > 0 && (
                                             <div>
                                                 <h2>Previews:</h2>
-                                                {propertyDetails.images.map((image, index) => (
-                                                    <img key={index} src={image} alt="" style={{ maxWidth: '100%' }} />
-                                                ))}
+                                                {propertyDetails.images.length > 0 && (
+                                                    <div>
+                                                        {inputChanged ? (
+                                                            propertyDetails.images.map((image, index) => (
+                                                                <img
+                                                                    key={index}
+                                                                    src={image}
+                                                                    alt=""
+                                                                    style={{ maxWidth: '100%' }}
+                                                                    onError={(e) => {
+                                                                        console.error('Failed to load image:', e.target.src);
+                                                                        e.target.style.display = 'none'; // Hide the image if loading fails
+                                                                    }}
+                                                                />
+                                                            ))
+                                                        ) : (
+                                                            propertyDetails.images.map((image, index) => (
+                                                                <img
+                                                                    key={index}
+                                                                    src={`data:image/png;base64,${image.data}`}
+                                                                    alt=""
+                                                                    style={{ maxWidth: '100%' }}
+                                                                    onError={(e) => {
+                                                                        console.error('Failed to load image:', e.target.src);
+                                                                        e.target.style.display = 'none'; // Hide the image if loading fails
+                                                                    }}
+                                                                />
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                )}
+
                                             </div>
                                         )}
                                     </div>
