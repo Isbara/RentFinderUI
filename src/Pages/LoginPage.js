@@ -8,6 +8,8 @@ function LoginPage({ onLogin }) {
     let navigate = useNavigate();
     const [response, setResponse] = useState("");
     const [trigger,setTrigger] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
     useEffect(() => {
         if(trigger){
             console.log(response);
@@ -28,7 +30,13 @@ function LoginPage({ onLogin }) {
             [name]: value
         });
     };
+    const handleClick = () => {
+        navigate('/register');
+    };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     const handleSubmit = async(e) => {
         e.preventDefault();
         setError('');
@@ -83,20 +91,43 @@ function LoginPage({ onLogin }) {
                                             required
                                         />
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group pb-3">
                                         <label htmlFor="password">Password:</label>
-                                        <input
-                                            type="password"
-                                            className="form-control"
-                                            id="password"
-                                            name="password"
-                                            value={loginData.password}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
+                                        <div className="input-group">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                className="form-control"
+                                                id="password"
+                                                name="password"
+                                                value={loginData.password}
+                                                onChange={handleInputChange}
+                                                required
+                                            />
+                                            <div className="input-group-append">
+                                                <button
+                                                    className="btn btn-outline-secondary"
+                                                    type="button"
+                                                    onClick={togglePasswordVisibility}
+                                                >
+                                                    <img
+                                                        src={showPassword ?  'open_eye.png':'closed_eye.png'}
+                                                        alt={showPassword ? 'Hide' : 'Show'}
+                                                        style={{width: '40px', height: '20px'}}
+                                                    />                                                </button>
+                                            </div>
+                                        </div>
+                                        {error && <div className="invalid-feedback d-block">{error}</div>}
                                     </div>
-                                    {error && <div className="invalid-feedback d-block">{error}</div>}
-                                    <button type="submit" className="btn btn-primary btn-block mt-3">Login</button>
+                                    <p>
+                                        Don't have an account?{' '}
+                                        <span
+                                            onClick={handleClick}
+                                            style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+                                        >
+                                             Click here!
+                                        </span>
+                                    </p>
+                                    <button type="submit" className="btn btn-primary btn-block">Login</button>
                                 </form>
                             </div>
                         </div>

@@ -25,6 +25,8 @@ const RegisterPage = ({ getToken }) => {
         dateOfBirth: '',
         unique:''
     });
+    const [showPassword, setShowPassword] = useState(false);
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -45,6 +47,14 @@ const RegisterPage = ({ getToken }) => {
         if (validateForm()) {
             connectRegister();
         }
+    };
+
+    const handleClick = () => {
+        navigate('/login');
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     const connectRegister = async () => {
@@ -176,33 +186,53 @@ const RegisterPage = ({ getToken }) => {
                                         {errors.email && <div className="invalid-feedback d-block">{errors.email}</div>}
                                         {errors.unique && <div className="invalid-feedback d-block">{errors.unique}</div>}
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group pb-3">
                                         <label htmlFor="password">Password:</label>
-                                        <input
-                                            type="password"
-                                            className="form-control"
-                                            id="password"
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
+                                        <div className="input-group">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                className="form-control"
+                                                id="password"
+                                                name="password"
+                                                value={formData.password}
+                                                onChange={handleInputChange}
+                                                required
+                                            />
+                                            <div className="input-group-append">
+                                                <button
+                                                    className="btn btn-outline-secondary"
+                                                    type="button"
+                                                    onClick={togglePasswordVisibility}
+                                                >
+                                                    <img
+                                                        src={showPassword ?  'open_eye.png':'closed_eye.png'}
+                                                        alt={showPassword ? 'Hide' : 'Show'}
+                                                        style={{width: '40px', height: '20px'}}
+                                                    />
+                                                </button>
+                                            </div>
+                                        </div>
                                         {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="phoneNumber">Phone number:</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="phoneNumber"
-                                            name="phoneNumber"
-                                            value={formData.phoneNumber}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
+                                        <div className="input-group">
+                                            <div className="input-group-prepend">
+                                                <span className="input-group-text">+90</span>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                id="phoneNumber"
+                                                name="phoneNumber"
+                                                value={formData.phoneNumber}
+                                                onChange={handleInputChange}
+                                                required
+                                            />
+                                        </div>
                                         {errors.phoneNumber && <div className="invalid-feedback d-block">{errors.phoneNumber}</div>}
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group pb-3">
                                         <label htmlFor="dateOfBirth">Date of birth:</label>
                                         <input
                                             type="date"
@@ -215,7 +245,16 @@ const RegisterPage = ({ getToken }) => {
                                         />
                                         {errors.dateOfBirth && <div className="invalid-feedback d-block">{errors.dateOfBirth}</div>}
                                     </div>
-                                    <button type="submit" className="btn btn-primary btn-block mt-3" >Register</button>
+                                    <p>
+                                        Already have an account?{' '}
+                                        <span
+                                            onClick={handleClick}
+                                            style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+                                        >
+                                             Click here!
+                                        </span>
+                                    </p>
+                                    <button type="submit" className="btn btn-primary btn-block" >Register</button>
                                 </form>
                             </div>
                         </div>
