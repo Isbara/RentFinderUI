@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Fixed a textarea bug.">
-      <change afterPath="$PROJECT_DIR$/public/closed_eye.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/open_eye.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/LoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/LoginPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ProfilePage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/RegisterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/RegisterPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +59,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/LENOVO/Desktop/ReactApp/rent-finder-ui-2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Turgut/Documents/GitHub/RentFinder&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -132,7 +131,13 @@
       <workItem from="1714990435089" duration="19160000" />
       <workItem from="1716749725613" duration="5895000" />
       <workItem from="1716901715767" duration="6601000" />
-      <workItem from="1716971569440" duration="9390000" />
+      <workItem from="1716971569440" duration="10094000" />
+      <workItem from="1717002262773" duration="604000" />
+      <workItem from="1717010331881" duration="1225000" />
+      <workItem from="1717060776957" duration="492000" />
+      <workItem from="1717061297349" duration="1707000" />
+      <workItem from="1717063032602" duration="140000" />
+      <workItem from="1717063232197" duration="4996000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>

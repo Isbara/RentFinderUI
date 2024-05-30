@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import '../Styles/Pop-up.css';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+//import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../Styles/review.css';
 import App from '../App';
 
@@ -174,13 +174,16 @@ function PropertyPage({ getToken }) {
         }
     };
 
+    const fetchData = async () => {
+        await Promise.all([fetchPropertyDetails(), fetchReviews()]);
+        setIsLoading(false);
+    };
 
 
     useEffect(() => {
-        const fetchData = async () => {
-                await Promise.all([fetchPropertyDetails(), fetchReviews()]);
-                setIsLoading(false); // Set isLoading to false when both fetches are completed
-        };
+        setIsLoading(true);
+
+
 
         fetchData();
     }, [id]);
@@ -190,6 +193,7 @@ function PropertyPage({ getToken }) {
         return null;
     }
 
+    /*
     const handleNext = () => {
         setCurrentSlide(currentSlide === review.length - 1 ? 0 : currentSlide + 1);
     };
@@ -197,6 +201,8 @@ function PropertyPage({ getToken }) {
     const handlePrev = () => {
         setCurrentSlide(currentSlide === 0 ? review.length - 1 : currentSlide - 1);
     };
+    */
+
 
     // Render property details once fetched
     return (
@@ -204,8 +210,12 @@ function PropertyPage({ getToken }) {
             <Header isLoggedIn={isLoggedIn} />
             <div className="container">
                 {isLoading ? (
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="sr-only">Loading...</span>
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>
                     </div>
                 ) : (
                     <div className="row">
