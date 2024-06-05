@@ -16,6 +16,8 @@ function PropertyPage({ getToken }) {
     const { id } = useParams();
     const [currentSlide, setCurrentSlide] = useState(0);
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+    const [errorMsg, setErrorMsg] = useState("");
+    const [showErrorModal, setShowErrorModal] = useState(false);
 
 
     // State for reservation details
@@ -159,15 +161,18 @@ function PropertyPage({ getToken }) {
             });
 
             if (!result.ok) {
-                // const errorResponse = await result.json();
+                const errorResponse = await result.json();
                 if(result.status === 403){
                     App.removeToken()
                     navigate("/login");
                 }
+                else if(result.status === 500){
+                    setErrorMsg(errorResponse.msg);
+                    setShowErrorModal(true);
+                }
             } else {
                 const resultInJson = await result.json();
                 console.log(resultInJson);
-                // Handle successful response, e.g., navigate to another page
             }
         } catch (error) {
             console.error('Error:', error.message);
@@ -365,6 +370,27 @@ function PropertyPage({ getToken }) {
                                         </div>
                                         <button type="submit" className="btn btn-primary">Reserve</button>
                                     </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {showErrorModal && (
+                    <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Reservation Page</h5>
+                                    <button type="button" className="close" onClick={() => setShowErrorModal(false)}>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    <div>
+                                        <p>{errorMsg}</p>
+                                    </div>
+                                    <button type="button" className="btn btn-danger" onClick={() => setShowErrorModal(false)}>Close</button>
                                 </div>
                             </div>
                         </div>
