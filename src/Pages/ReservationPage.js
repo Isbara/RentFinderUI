@@ -163,8 +163,8 @@ function ReservationPage({ getToken }) {
                                                 <div>
                                                     <p className="card-text">User score: {reservation.review.userScore}</p> {/* Add this line */}
                                                     <p className="card-text">Review: {reservation.review.description}</p>
-                                                    <p className="card-text">Algo Result: {reservation.review.fakeResult ? "Fake" : "Genuine"}</p>
-                                                    <p className="card-text">Algo Result: {reservation.review.sentimentResult ? "Negative" : "Positive"}</p>
+                                                    <p className="card-text">Fake Review Detection Result: {reservation.review.fakeResult ? "Genuine" : "Fake"}</p>
+                                                    <p className="card-text">Sentiment Analysis Result: {reservation.review.sentimentResult ? "Positive" : "Negative"}</p>
                                                 </div>
                                             ) : (lowKarma ? (
                                                     <div>

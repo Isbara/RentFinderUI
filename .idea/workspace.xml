@@ -4,19 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Fixed a textarea bug.">
-      <change afterPath="$PROJECT_DIR$/src/Test/IntegrationRegister.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/RentFinderUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RentFinderUI.iml" afterDir="false" />
+    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Delete profile functionality added.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Test/LoginPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/LoginPage.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Test/MainPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/MainPage.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Test/ProfilePage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/ProfilePage.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Test/RegisterPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/RegisterPage.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Test/ReservationPage.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test/ReservationPage.test.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,9 +33,6 @@
   &quot;lastFilter&quot;: {
   }
 }</component>
-  <component name="GithubDefaultAccount">
-    <option name="defaultAccountId" value="d47643d6-2342-482f-a26f-c86e3039eb5d" />
-  </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/App.js" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -111,19 +98,6 @@
       <option name="OPTIONS" value="" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="RentFinderUI" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="RentFinderUI" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
       <module name="RentFinderUI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -183,6 +157,19 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="RentFinderUI" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="RentFinderUI" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
