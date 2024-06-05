@@ -38,7 +38,9 @@ function ProfilePage({ getToken }) {
         description: '',
         price: '',
         placeOffers: '',
-        image:''
+        image:'',
+        type:'',
+        size:''
     });
 
     //Property
@@ -55,14 +57,20 @@ function ProfilePage({ getToken }) {
     });
 
     const [currentReservationID, setCurrentReservationID] = useState(null);
+    const [inputChanged, setInputChanged] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isReservationLoading,setIsReservationLoading]=useState(false);
 
 
 
-    useEffect(() => { //Works just one time
-        connectUserDetails(token);
-        fetchProperties(token);
-    },[]);
+    useEffect(() => {
+        const fetchData = async () => {
+            await Promise.all([connectUserDetails(token), fetchProperties(token)]);
+            setIsLoading(false); // Set isLoading to false when both fetches are completed
+        };
 
+        fetchData();
+    }, []);
 
 
     const fetchWithToken = async (url,body,method, token = null) => {
@@ -125,6 +133,7 @@ function ProfilePage({ getToken }) {
                 ...propertyDetails,
                 images: propertyDetails.images.map(image => image.split(',')[1])
             };
+            console.log(propertyDetails.images[0])
             const result = await fetchWithToken("http://localhost:8080/property/addProperty", JSON.stringify(requestData), 'POST', token);
         } catch (error) {
             console.error('Error:', error.message);
@@ -312,7 +321,7 @@ function ProfilePage({ getToken }) {
     };
 
     const handleImageChange = (event) => {
-
+        setInputChanged(true);
         setPropertyDetails(prevDetails => ({
             ...prevDetails,
             images: []
@@ -320,29 +329,72 @@ function ProfilePage({ getToken }) {
 
         const files = Array.from(event.target.files);
 
+        if (files.length === 0) {
+            setpopUpErrors(prevErrors => ({
+                ...prevErrors,
+                image: 'Please select at least one image.'
+            }));
+            return;
+        } else {
+            setpopUpErrors(prevErrors => ({
+                ...prevErrors,
+                image: ''
+            }));
+        }
+
         const validFiles = files.filter(file =>
-            file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png"
+            (file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png") &&
+            file.size <= 1.5 * 1024 * 1024 // 1.5 MB in bytes
         );
 
-        if (validFiles.length > 0) {
-            validFiles.forEach(file => {
-                const reader = new FileReader();
+        const typeErrors = files.some(file =>
+            file.type !== "image/jpeg" && file.type !== "image/jpg" && file.type !== "image/png"
+        );
 
-                reader.onload = () => {
-                    const imageDataUrl = reader.result;
-                    setPropertyDetails(prevDetails => ({
-                        ...prevDetails,
-                        images: [...prevDetails.images, imageDataUrl]
-                    }));
-                    {console.log(imageDataUrl)}
-                };
-                console.log(propertyDetails)
-                reader.readAsDataURL(file);
-            });
-        } else {
-            console.log("Only JPEG, JPG, and PNG images are allowed.");
+        const sizeErrors = files.some(file =>
+            file.size > 1.5 * 1024 * 1024
+        );
+
+        if (typeErrors) {
+            setpopUpErrors(prevErrors => ({
+                ...prevErrors,
+                type: 'Only JPEG, JPG, and PNG images are allowed.',
+                size: ''
+            }));
+            return;
         }
+
+        if (sizeErrors) {
+            setpopUpErrors(prevErrors => ({
+                ...prevErrors,
+                type: '',
+                size: 'Each image must be smaller than 1.5 MB.'
+            }));
+            return;
+        }
+
+        setpopUpErrors(prevErrors => ({
+            ...prevErrors,
+            type: '',
+            size: ''
+        }));
+
+        validFiles.forEach(file => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                const imageDataUrl = reader.result;
+                setPropertyDetails(prevDetails => ({
+                    ...prevDetails,
+                    images: [...prevDetails.images, imageDataUrl]
+                }));
+                console.log(imageDataUrl);
+            };
+            reader.readAsDataURL(file);
+        });
     };
+
+
 
 
     //Input change
@@ -482,10 +534,12 @@ function ProfilePage({ getToken }) {
     }
 
 
-    const handleReservation = (key) => {
+    const handleReservation = async (key) => {
+        setIsReservationLoading(true)
         setPropertyID(key);
-        connectPropertyReservations(key);
         setShowReservationModal(true);
+        await connectPropertyReservations(key);
+        setIsReservationLoading(false)
     }
 
 
@@ -518,10 +572,11 @@ function ProfilePage({ getToken }) {
             updatedErrors.placeOffers = 'Place Offers should have at least 10 characters';
             isValid = false;
         }
-        if(!propertyDetails.image)
+        if (popUpErrors.image || popUpErrors.type || popUpErrors.size)
         {
-            updatedErrors.image='Please add an image'
+            isValid=false;
         }
+
 
         setpopUpErrors(updatedErrors);
         return isValid;
@@ -589,9 +644,17 @@ function ProfilePage({ getToken }) {
     }
 
     return (
+
         <div>
             <Header isLoggedIn={isLoggedIn}/>
             <div className="container">
+                {isLoading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <div className="spinner-border" role="status" style={{ color: 'darkgreen' }}>
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                ) : (
                 <div className="row">
                     <div className="col-md-4">
                         <div className="card">
@@ -603,8 +666,8 @@ function ProfilePage({ getToken }) {
                                     <li className="list-group-item">Email: {userDetails?.email}</li>
                                     <li className="list-group-item">Phone Number: {userDetails?.phoneNumber}</li>
                                 </ul>
-                                <button className="btn btn-primary mt-3" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
-                                <button className="btn btn-danger mt-3" onClick={deleteProfile}>Delete Profile</button>
+                                <button className="btn btn-primary mx-1" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
+                                <button className="btn btn-danger mx-1" onClick={deleteProfile}>Delete Profile</button>
                             </div>
                         </div>
                     </div>
@@ -643,8 +706,8 @@ function ProfilePage({ getToken }) {
                         <button className="btn btn-success mt-3" onClick={() => setShowModal(true)}>Add New Property</button>
                     </div>
                 </div>
-            </div>
 
+                     )}
             {showModal && (
                 <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <div className="modal-dialog" role="document">
@@ -660,7 +723,7 @@ function ProfilePage({ getToken }) {
                                     <div className="form-group">
                                         <label
                                             htmlFor="propertyType">Property Type:</label>
-                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required lang="en">
+                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} lang="en">
                                             <option value="E">Select Property Type</option>
                                             <option value="R">Apartment Room</option>
                                             <option value="A">Apartment</option>
@@ -670,27 +733,27 @@ function ProfilePage({ getToken }) {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="flatNo">Flat No:</label>
-                                        <input type="number" className={`form-control ${popUpErrors.flatNo && 'is-invalid'}`} id="flatNo" name="flatNo" value={propertyDetails.flatNo} onChange={handleInputChange} required />
+                                        <input type="number" className={`form-control ${popUpErrors.flatNo && 'is-invalid'}`} id="flatNo" name="flatNo" value={propertyDetails.flatNo} onChange={handleInputChange}  />
                                         {popUpErrors.flatNo && <div className="invalid-feedback d-block">{popUpErrors.flatNo}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="address">Address:</label>
-                                        <input type="text" className={`form-control ${popUpErrors.address && 'is-invalid'}`} id="address" name="address" value={propertyDetails.address} onChange={handleInputChange} required />
+                                        <input type="text" className={`form-control ${popUpErrors.address && 'is-invalid'}`} id="address" name="address" value={propertyDetails.address} onChange={handleInputChange} />
                                         {popUpErrors.address && <div className="invalid-feedback d-block">{popUpErrors.address}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="description">Description:</label>
-                                        <textarea className={`form-control ${popUpErrors.description && 'is-invalid'}`} id="description" name="description" value={propertyDetails.description} onChange={handleInputChange} required />
+                                        <textarea className={`form-control ${popUpErrors.description && 'is-invalid'}`} id="description" name="description" value={propertyDetails.description} onChange={handleInputChange} />
                                         {popUpErrors.description && <div className="invalid-feedback d-block">{popUpErrors.description}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="price">Price:</label>
-                                        <input type="number" className={`form-control ${popUpErrors.price && 'is-invalid'}`} id="price" name="price" value={propertyDetails.price} onChange={handleInputChange} required />
+                                        <input type="number" className={`form-control ${popUpErrors.price && 'is-invalid'}`} id="price" name="price" value={propertyDetails.price} onChange={handleInputChange} />
                                         {popUpErrors.price && <div className="invalid-feedback d-block">{popUpErrors.price}</div>}
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="placeOffers">Place Offers:</label>
-                                        <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} required />
+                                        <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} />
                                         {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
                                     </div>
                                     <div className="form-group">
@@ -708,13 +771,30 @@ function ProfilePage({ getToken }) {
 
                                         {/* Error message for image validation */}
                                         {popUpErrors.images && <div className="invalid-feedback d-block">{popUpErrors.images}</div>}
+                                        {popUpErrors.size && <div className="invalid-feedback d-block">{popUpErrors.size}</div>}
+                                        {popUpErrors.type && <div className="invalid-feedback d-block">{popUpErrors.type}</div>}
 
                                         {/* Preview the uploaded images */}
                                         {propertyDetails.images.length > 0 && (
                                             <div>
                                                 <h2>Previews:</h2>
                                                 {propertyDetails.images.map((image, index) => (
-                                                    <img key={index} src={image} alt="" style={{ maxWidth: '100%' }} />
+                                                    (() => {
+                                                        console.log('Index:', index);
+                                                        console.log('Image:', image);
+                                                        return (
+                                                            <img
+                                                                key={index}
+                                                                src={image}
+                                                                alt=""
+                                                                style={{ maxWidth: '100%' }}
+                                                                onError={(e) => {
+                                                                    console.error('Failed to load image:', e.target.src);
+                                                                    e.target.style.display = 'none'; // Hide the image if loading fails
+                                                                }}
+                                                            />
+                                                        );
+                                                    })()
                                                 ))}
                                             </div>
                                         )}
@@ -746,7 +826,7 @@ function ProfilePage({ getToken }) {
                                     {/* Property Type */}
                                     <div className="form-group">
                                         <label htmlFor="propertyType">Property Type:</label>
-                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} required>
+                                        <select className={`form-control ${popUpErrors.propertyType && 'is-invalid'}`} id="propertyType" name="propertyType" value={propertyDetails.propertyType} onChange={handleInputChange} >
                                             <option value="E">Select Property Type</option>
                                             <option value="R">Apartment Room</option>
                                             <option value="A">Apartment</option>
@@ -757,31 +837,31 @@ function ProfilePage({ getToken }) {
                                     {/* Flat No */}
                                     <div className="form-group">
                                         <label htmlFor="flatNo">Flat No:</label>
-                                        <input type="number" className={`form-control ${popUpErrors.flatNo && 'is-invalid'}`} id="flatNo" name="flatNo" value={propertyDetails.flatNo} onChange={handleInputChange} required />
+                                        <input type="number" className={`form-control ${popUpErrors.flatNo && 'is-invalid'}`} id="flatNo" name="flatNo" value={propertyDetails.flatNo} onChange={handleInputChange}  />
                                         {popUpErrors.flatNo && <div className="invalid-feedback d-block">{popUpErrors.flatNo}</div>}
                                     </div>
                                     {/* Address */}
                                     <div className="form-group">
                                         <label htmlFor="address">Address:</label>
-                                        <input type="text" className={`form-control ${popUpErrors.address && 'is-invalid'}`} id="address" name="address" value={propertyDetails.address} onChange={handleInputChange} required />
+                                        <input type="text" className={`form-control ${popUpErrors.address && 'is-invalid'}`} id="address" name="address" value={propertyDetails.address} onChange={handleInputChange}  />
                                         {popUpErrors.address && <div className="invalid-feedback d-block">{popUpErrors.address}</div>}
                                     </div>
                                     {/* Description */}
                                     <div className="form-group">
                                         <label htmlFor="description">Description:</label>
-                                        <textarea className={`form-control ${popUpErrors.description && 'is-invalid'}`} id="description" name="description" value={propertyDetails.description} onChange={handleInputChange} required />
+                                        <textarea className={`form-control ${popUpErrors.description && 'is-invalid'}`} id="description" name="description" value={propertyDetails.description} onChange={handleInputChange}  />
                                         {popUpErrors.description && <div className="invalid-feedback d-block">{popUpErrors.description}</div>}
                                     </div>
                                     {/* Price */}
                                     <div className="form-group">
                                         <label htmlFor="price">Price:</label>
-                                        <input type="number" className={`form-control ${popUpErrors.price && 'is-invalid'}`} id="price" name="price" value={propertyDetails.price} onChange={handleInputChange} required />
+                                        <input type="number" className={`form-control ${popUpErrors.price && 'is-invalid'}`} id="price" name="price" value={propertyDetails.price} onChange={handleInputChange}  />
                                         {popUpErrors.price && <div className="invalid-feedback d-block">{popUpErrors.price}</div>}
                                     </div>
                                     {/* Place Offers */}
                                     <div className="form-group">
                                         <label htmlFor="placeOffers">Place Offers:</label>
-                                        <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange} required />
+                                        <input type="text" className={`form-control ${popUpErrors.placeOffers && 'is-invalid'}`} id="placeOffers" name="placeOffers" value={propertyDetails.placeOffers} onChange={handleInputChange}  />
                                         {popUpErrors.placeOffers && <div className="invalid-feedback d-block">{popUpErrors.placeOffers}</div>}
                                     </div>
                                     {/* Image */}
@@ -793,21 +873,53 @@ function ProfilePage({ getToken }) {
                                             accept="image/jpeg, image/jpg, image/png"
                                             onChange={handleImageChange}
                                             multiple // Allow multiple file selection
-                                            required
                                             onInvalid={(e) => e.target.setCustomValidity("Please select images")}
                                             onInput={(e) => e.target.setCustomValidity("")}
                                         />
 
+
                                         {/* Error message for image validation */}
                                         {popUpErrors.images && <div className="invalid-feedback d-block">{popUpErrors.images}</div>}
+                                        {popUpErrors.size && <div className="invalid-feedback d-block">{popUpErrors.size}</div>}
+                                        {popUpErrors.type && <div className="invalid-feedback d-block">{popUpErrors.type}</div>}
+
 
                                         {/* Preview the uploaded images */}
                                         {propertyDetails.images.length > 0 && (
                                             <div>
                                                 <h2>Previews:</h2>
-                                                {propertyDetails.images.map((image, index) => (
-                                                    <img key={index} src={image} alt="" style={{ maxWidth: '100%' }} />
-                                                ))}
+                                                {propertyDetails.images.length > 0 && (
+                                                    <div>
+                                                        {inputChanged ? (
+                                                            propertyDetails.images.map((image, index) => (
+                                                                <img
+                                                                    key={index}
+                                                                    src={image}
+                                                                    alt=""
+                                                                    style={{ maxWidth: '100%' }}
+                                                                    onError={(e) => {
+                                                                        console.error('Failed to load image:', e.target.src);
+                                                                        e.target.style.display = 'none'; // Hide the image if loading fails
+                                                                    }}
+                                                                />
+                                                            ))
+                                                        ) : (
+                                                            propertyDetails.images.map((image, index) => (
+                                                                <img
+                                                                    key={index}
+                                                                    src={`data:image/png;base64,${image.data}`}
+                                                                    alt=""
+                                                                    style={{ maxWidth: '100%' }}
+                                                                    onError={(e) => {
+                                                                        console.error('Failed to load image:', e.target.src);
+                                                                        e.target.style.display = 'none'; // Hide the image if loading fails
+                                                                    }}
+                                                                />
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                )}
+
                                             </div>
                                         )}
                                     </div>
@@ -842,7 +954,7 @@ function ProfilePage({ getToken }) {
                 </div>
             )}
 
-            {showReservationModel&& (
+            {showReservationModel && (
                 <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
@@ -853,38 +965,45 @@ function ProfilePage({ getToken }) {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col-md-12">{reservations && reservations.length > 0 ? (
-                                            // Map over reservations if there are any
-                                            Object.keys(reservations).map(reservationID => {
-                                                const reservation = reservations[reservationID];
-                                                return (
-                                                    <div className="card mb-5" key={reservationID}>
-                                                        <h5 className="card-title">Reservation {reservation.reservationID}</h5>
-                                                        <div className="card-body">
-                                                            <ul>
-                                                                <p>Number of people: {reservation.numberOfPeople}</p>
-                                                                <p>Start date: {formatDate(reservation.startDate)}</p>
-                                                                <p>End date: {formatDate(reservation.endDate)}</p>
-                                                                <p>Reserver phone number: {reservation.phoneNumber}</p>
-                                                                <p>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</p>
-                                                                <p>Status: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</p>
-                                                                {reservation.approval == null && (
-                                                                    <button className="btn btn-success" onClick={() => handleApprovalClick(reservation.reservationID)}>
-                                                                        Approval
-                                                                    </button>
-                                                                )}
-                                                                {reservation.status == null && reservation.approval !== false && (
-                                                                    <button className={`btn btn-success mx-3 ${reservation.approval === null ? 'disabled' : ''}`} onClick={() => handleStatusClick(reservation.reservationID)} disabled={reservation.approval === null}>
-                                                                        Status
-                                                                    </button>
-                                                                )}
-                                                                {reservation.status === true && reservation.status === true && reservation.review !== null && (
-                                                                    <p>Review: {reservation.review.description}</p>
-                                                                )}
-                                                                {reservation.status === true && reservation.review !== null && reservation.review.respondList.length < 1 ?(
-                                                                    <div>
+                                {isReservationLoading ? (
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                                        <div className="spinner-border" role="status" style={{ color: 'darkblue' }}>
+                                            <span className="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-md-12">{reservations && reservations.length > 0 ? (
+                                                // Map over reservations if there are any
+                                                Object.keys(reservations).map(reservationID => {
+                                                    const reservation = reservations[reservationID];
+                                                    return (
+                                                        <div className="card mb-5" key={reservationID}>
+                                                            <h5 className="card-title">Reservation {reservation.reservationID}</h5>
+                                                            <div className="card-body">
+                                                                <ul>
+                                                                    <p>Number of people: {reservation.numberOfPeople}</p>
+                                                                    <p>Start date: {formatDate(reservation.startDate)}</p>
+                                                                    <p>End date: {formatDate(reservation.endDate)}</p>
+                                                                    <p>Reserver phone number: {reservation.phoneNumber}</p>
+                                                                    <p>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</p>
+                                                                    <p>Status: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</p>
+                                                                    {reservation.approval == null && (
+                                                                        <button className="btn btn-success" onClick={() => handleApprovalClick(reservation.reservationID)}>
+                                                                            Approval
+                                                                        </button>
+                                                                    )}
+                                                                    {reservation.status == null && reservation.approval !== false && (
+                                                                        <button className={`btn btn-success mx-3 ${reservation.approval === null ? 'disabled' : ''}`} onClick={() => handleStatusClick(reservation.reservationID)} disabled={reservation.approval === null}>
+                                                                            Status
+                                                                        </button>
+                                                                    )}
+                                                                    {reservation.status === true && reservation.status === true && reservation.review !== null && (
+                                                                        <p>Review: {reservation.review.description}</p>
+                                                                    )}
+                                                                    {reservation.status === true && reservation.review !== null && reservation.review.respondList.length < 1 ?(
+                                                                        <div>
                                                                         <textarea
                                                                             className="form-control mt-2"
                                                                             rows="3"
@@ -892,31 +1011,32 @@ function ProfilePage({ getToken }) {
                                                                             value={responses[reservation.review.commentID] || ''}
                                                                             onChange={(e) => handleRespondChange(reservation.review.commentID, e.target.value)}
                                                                         ></textarea>
-                                                                        <button className="btn btn-success" onClick={() => {submitRespond(reservation.review.commentID)}}>Submit</button>
-                                                                    </div>
-                                                                ):null}
-                                                            </ul>
+                                                                            <button className="btn btn-success" onClick={() => {submitRespond(reservation.review.commentID)}}>Submit</button>
+                                                                        </div>
+                                                                    ):null}
+                                                                </ul>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                );
-                                            })
-                                        ) : (
-                                            // Show a message if there are no reservations
-                                            <p>There are no reservations for this property.</p>
-                                        )}
+                                                    );
+                                                })
+                                            ) : (
+                                                // Show a message if there are no reservations
+                                                <p>There are no reservations for this property.</p>
+                                            )}
 
 
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
-
                         </div>
                     </div>
                 </div>
             )}
 
-            {showEditModal && (
+
+                {showEditModal && (
                 <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
@@ -1042,7 +1162,7 @@ function ProfilePage({ getToken }) {
                 </div>
             )}
 
-
+            </div>
         </div>
     );
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Components/Header';
 import '../Styles/Pop-up.css';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+//import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../Styles/review.css';
 import App from '../App';
 
@@ -31,6 +31,7 @@ function PropertyPage({ getToken }) {
         startDate: '',
         endDate: ''
     });
+    const [isLoading, setIsLoading] = useState(true);
 
     // Function to handle changes in the reservation form inputs
     const handleReservationInputChange = (e) => {
@@ -173,12 +174,18 @@ function PropertyPage({ getToken }) {
         }
     };
 
+    const fetchData = async () => {
+        await Promise.all([fetchPropertyDetails(), fetchReviews()]);
+        setIsLoading(false);
+    };
 
 
-    // useEffect hook to fetch property details when the component mounts
     useEffect(() => {
-        fetchPropertyDetails();
-        fetchReviews();
+        setIsLoading(true);
+
+
+
+        fetchData();
     }, [id]);
 
 
@@ -186,6 +193,7 @@ function PropertyPage({ getToken }) {
         return null;
     }
 
+    /*
     const handleNext = () => {
         setCurrentSlide(currentSlide === review.length - 1 ? 0 : currentSlide + 1);
     };
@@ -193,64 +201,76 @@ function PropertyPage({ getToken }) {
     const handlePrev = () => {
         setCurrentSlide(currentSlide === 0 ? review.length - 1 : currentSlide - 1);
     };
+    */
+
 
     // Render property details once fetched
     return (
         <div>
             <Header isLoggedIn={isLoggedIn} />
             <div className="container">
-                <div className="row">
-                    <div className="col-md-8 mx-auto">
-                        <div className="card mt-4">
-                            <div className="card-body">
-                                <h2 className="card-title">Property Details</h2>
-                                <p className="card-text">Property ID: {property.propertyID}</p>
-                                <p className="card-text">Address: {property.address}</p>
-                                <p className="card-text">Description: {property.description}</p>
-                                <p className="card-text">Flat No: {property.flatNo}</p>
-                                <p className="card-text">Place Offers: {property.placeOffers}</p>
-                                <p className="card-text">Price: {property.price}</p>
-                                <p className="card-text">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
-                                {property.images && property.images.length > 0 && (
-                                    <div id="propertyCarousel" className="carousel slide mt-3" data-bs-ride="carousel" style={{ maxWidth: '100%', aspectRatio: '16/9' }}>
-                                        <div className="carousel-inner">
-                                            {property.images.map((image, index) => (
-                                                <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                                                    <img
-                                                        src={`data:image/jpeg;base64,${image.data}`}
-                                                        alt={`Property Image ${index}`}
-                                                        className="d-block w-100 img-fluid"
-                                                        style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
-                                                        onClick={() => handleImageClick(index)}
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                        {property.images.length > 1 && (
-                                            <>
-                                                <button className="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
-                                                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                    <span className="visually-hidden">Previous</span>
-                                                </button>
-                                                <button className="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
-                                                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                                    <span className="visually-hidden">Next</span>
-                                                </button>
-                                            </>
-                                        )}
-                                    </div>
-                                )}
-
-
+                {isLoading ? (
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="sr-only">Loading...</span>
                             </div>
                         </div>
-                        <button className="btn btn-success mt-3" onClick={() => setShowModal(true)}>Reserve Property</button>
                     </div>
-                </div>
+                ) : (
+                    <div className="row">
+                        <div className="col-md-8 mx-auto">
+                            <div className="card mt-4">
+                                <div className="card-body">
+                                    <h2 className="card-title">Property Details</h2>
+                                    <p className="card-text">Property ID: {property.propertyID}</p>
+                                    <p className="card-text">Address: {property.address}</p>
+                                    <p className="card-text">Description: {property.description}</p>
+                                    <p className="card-text">Flat No: {property.flatNo}</p>
+                                    <p className="card-text">Place Offers: {property.placeOffers}</p>
+                                    <p className="card-text">Price: {property.price}</p>
+                                    <p className="card-text">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
+                                    {property.images && property.images.length > 0 && (
+                                        <div id="propertyCarousel" className="carousel slide mt-3" data-bs-ride="carousel" style={{ maxWidth: '100%', aspectRatio: '16/9' }}>
+                                            <div className="carousel-inner">
+                                                {property.images.map((image, index) => (
+                                                    <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                                        <img
+                                                            src={`data:image/jpeg;base64,${image.data}`}
+                                                            alt={`Property Image ${index}`}
+                                                            className="d-block w-100 img-fluid"
+                                                            style={{ objectFit: 'cover', maxHeight: '100%', maxWidth: '100%' }}
+                                                            onClick={() => handleImageClick(index)}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {property.images.length > 1 && (
+                                                <>
+                                                    <button className="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                                                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                        <span className="visually-hidden">Previous</span>
+                                                    </button>
+                                                    <button className="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                                        <span className="visually-hidden">Next</span>
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <button className="btn btn-success mt-3" onClick={() => setShowModal(true)}>Reserve Property</button>
+                        </div>
+                    </div>
+                )}
 
                 <div className="container" style={{ position: 'relative' }}>
                     {/* Headline */}
-                    <h2 className="my-4">User Reviews</h2>
+                    {review.length > 0 && (
+                        <h2 className="my-4">User Reviews</h2>
+                    )}
 
                     {/* Display genuine reviews */}
                     {review
@@ -269,8 +289,8 @@ function PropertyPage({ getToken }) {
                                             fontSize: '1.2em'
                                         }}
                                     >
-                            {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
-                        </span>
+                                    {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
+                                </span>
                                     &nbsp;for this review
                                 </p>
                                 <p>Review: {reviewItem.description}</p>
@@ -304,8 +324,8 @@ function PropertyPage({ getToken }) {
                                             fontSize: '1.2em'
                                         }}
                                     >
-                            {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
-                        </span>
+                                    {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
+                                </span>
                                     &nbsp;for this review
                                 </p>
                                 <p>Review: {reviewItem.description}</p>
@@ -315,10 +335,6 @@ function PropertyPage({ getToken }) {
                             </div>
                         ))}
                 </div>
-
-
-
-
 
                 {showModal && (
                     <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>

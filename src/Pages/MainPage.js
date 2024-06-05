@@ -12,6 +12,8 @@ function MainPage({ getToken }) {
     const [filteredProperties, setFilteredProperties] = useState([]); // State to store filtered properties
     const [searchQuery, setSearchQuery] = useState(''); // State to store search query
     const [error, setError] = useState(null); // State to store fetch error
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const fetchAllProperties = async () => {
         try {
@@ -35,7 +37,11 @@ function MainPage({ getToken }) {
     };
 
     useEffect(() => {
-        fetchAllProperties();
+        const fetchData = async () => {
+            await Promise.all([fetchAllProperties()]);
+            setIsLoading(false); // Set isLoading to false when both fetches are completed
+        };
+        fetchData();
     }, []);
     const indexOfLastProperty = currentPage * itemsPerPage;
     const indexOfFirstProperty = indexOfLastProperty - itemsPerPage;
@@ -54,6 +60,13 @@ function MainPage({ getToken }) {
         <div>
             <Header isLoggedIn={isLoggedIn}/>
             <div className="container mt-5">
+                {isLoading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                ) : (
                 <div className="row">
                     <div className="col-md-8">
                         <h2 className="mb-4">All Properties</h2>
@@ -101,7 +114,9 @@ function MainPage({ getToken }) {
                         </div>
                     </div>
                 </div>
+                )}
             </div>
+
             <style>
                 {`
                 .list-group-item {
