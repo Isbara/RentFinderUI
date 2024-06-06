@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Fixed a textarea bug.">
-      <change afterPath="$PROJECT_DIR$/src/Components/ReviewStats.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Pages/OwnedReservationPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ProfilePage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -142,7 +143,7 @@
       <workItem from="1717661880539" duration="989000" />
       <workItem from="1717664411303" duration="6961000" />
       <workItem from="1717676257243" duration="12000" />
-      <workItem from="1717676282057" duration="2894000" />
+      <workItem from="1717676282057" duration="9383000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>

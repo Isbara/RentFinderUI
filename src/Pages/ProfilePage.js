@@ -986,7 +986,7 @@ function ProfilePage({ getToken }) {
                                                                     <p>Number of people: {reservation.numberOfPeople}</p>
                                                                     <p>Start date: {formatDate(reservation.startDate)}</p>
                                                                     <p>End date: {formatDate(reservation.endDate)}</p>
-                                                                    <p>Reserver phone number: {reservation.phoneNumber}</p>
+                                                                    <p>Reserver phone number: +90{reservation.phoneNumber}</p>
                                                                     <p>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</p>
                                                                     <p>Status: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</p>
                                                                     {reservation.approval == null && (

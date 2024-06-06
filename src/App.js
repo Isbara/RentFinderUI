@@ -8,6 +8,7 @@ import ProfilePage from "./Pages/ProfilePage";
 import SupportPage from "./Pages/SupportPage";
 import PropertyPage from "./Pages/PropertyPage";
 import ReservationPage from "./Pages/ReservationPage"
+import OwnedReservationPage from "./Pages/OwnedReservationPage";
 
 
 function App() {
@@ -42,6 +43,8 @@ function App() {
             <Route exact path="/profile" element={isLoggedIn ? <ProfilePage getToken={getToken}/> : <Navigate to='/login'/>}/>
             <Route exact path="/reservation" element={isLoggedIn ? <ReservationPage getToken={getToken}/> : <Navigate to='/login'/>}/>
             <Route exact path="/property/:id" element={<PropertyPage getToken={getToken}/>}/>
+            <Route exact path="/ownedreservation" element={isLoggedIn ? <OwnedReservationPage getToken={getToken}/> : <Navigate to='/login'/>}/>
+
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
 

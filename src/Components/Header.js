@@ -35,12 +35,15 @@ function Header({ isLoggedIn }) {
                                     <Link to="/profile" className="nav-link">Profile Page</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to="/support" className="nav-link">Contact Support</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link to="/reservation" className="nav-link">Reservations</Link>
+                                    <Link to="/reservation" className="nav-link">My Reservations</Link>
                                 </li>
 
+                                <li className="nav-item">
+                                    <Link to="/ownedreservation" className="nav-link">Reservation Requests</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/support" className="nav-link">Contact Support</Link>
+                                </li>
                                 <li className="nav-item">
                                     <Link to="/">
                                         <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>

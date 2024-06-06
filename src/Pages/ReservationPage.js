@@ -118,7 +118,7 @@ function ReservationPage({ getToken }) {
                                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                                             <div className="card">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
+                                                    <h5 className="card-title">Reservation ID: {reservation.reserved.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                                     <p>Status: Waiting for approval from the property owner.</p>
@@ -170,7 +170,7 @@ function ReservationPage({ getToken }) {
                                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                                             <div className="card">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
+                                                    <h5 className="card-title">Reservation Adress: {reservation.adress}</h5>
                                                     <p className="card-text">Number of People: {reservation.numberOfPeople}</p>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
