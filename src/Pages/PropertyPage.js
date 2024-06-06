@@ -5,6 +5,7 @@ import '../Styles/Pop-up.css';
 //import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import '../Styles/review.css';
 import App from '../App';
+import ReviewStats from "../Components/ReviewStats";
 
 function PropertyPage({ getToken }) {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ function PropertyPage({ getToken }) {
     const [property, setProperty] = useState(null);
     const [review, setReview] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [successModal,setsuccessModal]=useState(false);
     const { id } = useParams();
     const [currentSlide, setCurrentSlide] = useState(0);
     const [selectedImageIndex, setSelectedImageIndex] = useState(null);
@@ -49,6 +51,7 @@ function PropertyPage({ getToken }) {
             connectReservation();
             setReservationDetails({});
             setShowModal(false);
+
         }
     };
     const handleImageClick = (index) => {
@@ -58,6 +61,9 @@ function PropertyPage({ getToken }) {
     const handleCloseImage = () => {
         setSelectedImageIndex(null);
     };
+    const handleCloseSuccess=()=>{
+        setsuccessModal(false);
+    }
     // Function to validate the reservation form
     const validateReservationForm = () => {
         let isValid = true;
@@ -172,6 +178,7 @@ function PropertyPage({ getToken }) {
                 }
             } else {
                 const resultInJson = await result.json();
+                setsuccessModal(true);
                 console.log(resultInJson);
             }
         } catch (error) {
@@ -228,13 +235,28 @@ function PropertyPage({ getToken }) {
                             <div className="card mt-4">
                                 <div className="card-body">
                                     <h2 className="card-title">Property Details</h2>
-                                    <p className="card-text">Property ID: {property.propertyID}</p>
-                                    <p className="card-text">Address: {property.address}</p>
-                                    <p className="card-text">Description: {property.description}</p>
-                                    <p className="card-text">Flat No: {property.flatNo}</p>
-                                    <p className="card-text">Place Offers: {property.placeOffers}</p>
-                                    <p className="card-text">Price: {property.price}</p>
-                                    <p className="card-text">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
+                                    <ReviewStats positiveReviews={property.positiveReviews} negativeReviews={property.negativeReviews} />
+                                    <p className="card-text">
+                                        <strong>Property ID:</strong> {property.propertyID}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Address:</strong> {property.address}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Description:</strong> {property.description}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Flat No:</strong> {property.flatNo}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Place Offers:</strong> {property.placeOffers}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Price:</strong> {property.price}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}
+                                    </p>
                                     {property.images && property.images.length > 0 && (
                                         <div id="propertyCarousel" className="carousel slide mt-3" data-bs-ride="carousel" style={{ maxWidth: '100%', aspectRatio: '16/9' }}>
                                             <div className="carousel-inner">
@@ -280,13 +302,19 @@ function PropertyPage({ getToken }) {
                     {/* Display genuine reviews */}
                     {review
                         .filter(reviewItem => reviewItem.fakeResult !== false) // Filtering genuine reviews
+                        .sort((a, b) => b.reviewerKarma - a.reviewerKarma) // Sort by karma points in descending order
                         .map((reviewItem, index) => (
                             <div key={index} className="comment mb-3 p-3 border">
-                                <h3>Reviewer: {reviewItem.reviewerName}</h3>
+                                <h3>
+                                    Reviewer: {reviewItem.reviewerName}
+                                    {reviewItem.reviewerKarma > 120 && (
+                                        <span className="text-warning ml-2" style={{ fontSize: '2em' }}>  &#9733;</span>
+                                    )}
+                                </h3>
                                 <p>Reviewer Karma Points: {reviewItem.reviewerKarma}</p>
                                 <p>User Score: {reviewItem.userScore}</p>
                                 <p>
-                                    Our algorithm says&nbsp;
+                                    Our Fake Review Detection algorithm says this review is &nbsp;
                                     <span
                                         style={{
                                             color: reviewItem.fakeResult ? 'green' : 'red',
@@ -294,9 +322,21 @@ function PropertyPage({ getToken }) {
                                             fontSize: '1.2em'
                                         }}
                                     >
-                                    {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
-                                </span>
-                                    &nbsp;for this review
+                {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
+            </span>
+                                </p>
+                                <p>
+                                    Our Sentiment Analysis algorithm says this review is &nbsp;
+                                    <span
+                                        style={{
+                                            color: reviewItem.sentimentResult ? 'green' : 'red',
+                                            fontWeight: 'bold',
+                                            fontSize: '1.2em'
+                                        }}
+                                    >
+                {reviewItem.sentimentResult ? 'POSITIVE' : 'NEGATIVE'}
+            </span>
+
                                 </p>
                                 <p>Review: {reviewItem.description}</p>
                                 {reviewItem.respondList && reviewItem.respondList.length > 0 && (
@@ -321,17 +361,28 @@ function PropertyPage({ getToken }) {
                                 <p>Reviewer Karma Points: {reviewItem.reviewerKarma}</p>
                                 <p>User Score: {reviewItem.userScore}</p>
                                 <p>
-                                    Our algorithm says&nbsp;
+                                    Our Fake Review Detection algorithm says this review is &nbsp;
                                     <span
                                         style={{
-                                            color: reviewItem.fakeResult ? 'green' : 'red',
+                                            color: reviewItem.fakeResult ? 'rgba(0, 128, 0, 0.5)' : 'rgba(255, 0, 0, 0.5)', // Faded green or red
                                             fontWeight: 'bold',
                                             fontSize: '1.2em'
                                         }}
                                     >
-                                    {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
-                                </span>
-                                    &nbsp;for this review
+                    {reviewItem.fakeResult ? 'GENUINE' : 'FAKE'}
+                </span>
+                                </p>
+                                <p>
+                                    Our Sentiment Analysis algorithm says this review is &nbsp;
+                                    <span
+                                        style={{
+                                            color: reviewItem.sentimentResult ? 'rgba(0, 128, 0, 0.5)' : 'rgba(255, 0, 0, 0.5)', // Faded green or red
+                                            fontWeight: 'bold',
+                                            fontSize: '1.2em'
+                                        }}
+                                    >
+                    {reviewItem.sentimentResult ? 'POSITIVE' : 'NEGATIVE'}
+                </span>
                                 </p>
                                 <p>Review: {reviewItem.description}</p>
                                 {reviewItem.respondList && reviewItem.respondList.length > 0 && (
@@ -339,6 +390,7 @@ function PropertyPage({ getToken }) {
                                 )}
                             </div>
                         ))}
+
                 </div>
 
                 {showModal && (
@@ -395,6 +447,26 @@ function PropertyPage({ getToken }) {
                             </div>
                         </div>
                     </div>
+                )}
+                {successModal && (
+                <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Reservation Success</h5>
+                                <button type="button" className="close" onClick={handleCloseSuccess}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Reservation request successfully sent to the owner.</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={handleCloseSuccess}>Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 )}
             </div>
             {selectedImageIndex !== null && (

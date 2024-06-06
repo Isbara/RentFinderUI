@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Delete profile functionality added.">
+    <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Fixed a textarea bug.">
+      <change afterPath="$PROJECT_DIR$/src/Components/ReviewStats.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,6 +36,9 @@
   &quot;lastFilter&quot;: {
   }
 }</component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="d47643d6-2342-482f-a26f-c86e3039eb5d" />
+  </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/App.js" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -53,7 +59,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/LENOVO/Desktop/ReactApp/rent-finder-ui-2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Turgut/Documents/GitHub/RentFinder&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -65,6 +71,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -73,104 +80,10 @@
       <recent name="C:\Users\Turgut\Documents\GitHub\RentFinderUI\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Turgut\Documents\GitHub\RentFinderUI\public" />
       <recent name="C:\Users\Turgut\Documents\GitHub\RentFinderUI\src\Styles" />
       <recent name="C:\Users\Turgut\Documents\GitHub\RentFinderUI\src\Pages" />
     </key>
-  </component>
-  <component name="RunManager">
-    <configuration default="true" type="DjangoTestsConfigurationType">
-      <module name="RentFinderUI" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="TARGET" value="" />
-      <option name="SETTINGS_FILE" value="" />
-      <option name="CUSTOM_SETTINGS" value="false" />
-      <option name="USE_OPTIONS" value="false" />
-      <option name="OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
-      <module name="RentFinderUI" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="RentFinderUI" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="Python.FlaskServer">
-      <module name="RentFinderUI" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="launchJavascriptDebuger" value="false" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="Tox" factoryName="Tox">
-      <module name="RentFinderUI" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="RentFinderUI" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="RentFinderUI" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -218,6 +131,18 @@
       <workItem from="1714814553118" duration="10749000" />
       <workItem from="1714990435089" duration="19160000" />
       <workItem from="1716749725613" duration="5895000" />
+      <workItem from="1716901715767" duration="6601000" />
+      <workItem from="1716971569440" duration="10094000" />
+      <workItem from="1717002262773" duration="604000" />
+      <workItem from="1717010331881" duration="1225000" />
+      <workItem from="1717060776957" duration="492000" />
+      <workItem from="1717061297349" duration="1707000" />
+      <workItem from="1717063032602" duration="140000" />
+      <workItem from="1717063232197" duration="4996000" />
+      <workItem from="1717661880539" duration="989000" />
+      <workItem from="1717664411303" duration="6961000" />
+      <workItem from="1717676257243" duration="12000" />
+      <workItem from="1717676282057" duration="2894000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>

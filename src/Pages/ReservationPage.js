@@ -174,6 +174,7 @@ function ReservationPage({ getToken }) {
                                                     <p className="card-text">Number of People: {reservation.numberOfPeople}</p>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
+                                                    {/*<p className="card-text">Property Adress: {reservation.reserved.description}</p>*/}
                                                     {hasReview ? (
                                                         <div>
                                                             <p className="card-text">User score: {reservation.review.userScore}</p>
