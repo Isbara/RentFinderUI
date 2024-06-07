@@ -126,29 +126,62 @@ function MainPage({ getToken }) {
                                     <option value="descendingPrice">Descending Price</option>
                                 </select>
                             </div>
-
                             <ul className="list-group">
-                                {currentProperties.map(property => (
-                                    <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item mb-4" style={{ background: '#f5f5f5' }}>
-                                        <div className="card">
-                                            <div className="card-body">
-                                                <h5 className="card-title">Property Details</h5>
-                                                <ul className="list-group list-group-flush">
-                                                    <li className="list-group-item"><strong>Address:</strong> {property.address}</li>
-                                                    <li className="list-group-item"><strong>Description:</strong> {property.description}</li>
-                                                    <li className="list-group-item"><strong>Flat No:</strong> {property.flatNo}</li>
-                                                    <li className="list-group-item"><strong>Place Offers:</strong> {property.placeOffers}</li>
-                                                    <li className="list-group-item"><strong>Price:</strong> {property.price}</li>
-                                                    <li className="list-group-item"><strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</li>
-                                                </ul>
-                                                {property.images && property.images.length > 0 && (
-                                                    <img src={`data:image/jpeg;base64,${property.images[0].data}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px', borderRadius: '5px' }} />
-                                                )}
+                                {currentProperties.map(property => {
+                                    // Calculate sentiment rating
+                                    const sentimentRating = property.positiveReviews / (property.positiveReviews + property.negativeReviews) * 10;
+
+                                    // Define background color based on sentiment rating with faded opacity
+                                    let cardBackgroundColor, liBackgroundColor;
+                                    if (property.positiveReviews + property.negativeReviews === 0) {
+                                        cardBackgroundColor = '#e0e0e0'; // Gray when no reviews
+                                        liBackgroundColor = 'rgba(224, 224, 224, 0)'; // Faded gray for <li> elements
+                                    } else if (sentimentRating >= 8) {
+                                        cardBackgroundColor = 'rgba(76, 175, 80, 0.3)'; // Green with faded opacity
+                                        liBackgroundColor = 'rgba(76, 175, 80, 0)'; // Faded green for <li> elements
+                                    } else if (sentimentRating >= 3) {
+                                        cardBackgroundColor = 'rgba(255, 193, 7, 0.3)'; // Orange with faded opacity
+                                        liBackgroundColor = 'rgba(255, 193, 7, 0)'; // Faded orange for <li> elements
+                                    } else {
+                                        cardBackgroundColor = 'rgba(255, 87, 34, 0.3)'; // Red with faded opacity
+                                        liBackgroundColor = 'rgba(255, 87, 34, 0)'; // Faded red for <li> elements
+                                    }
+
+                                    return (
+                                        <Link key={property.propertyID} to={`/property/${property.propertyID}`} className="list-group-item mb-4" style={{ background: '#f5f5f5' }}>
+                                            <div className="card" style={{ backgroundColor: cardBackgroundColor }}>
+                                                <div className="card-body">
+                                                    <h5 className="card-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                        <span>Property Details</span>
+                                                        <span>
+                                {property.positiveReviews + property.negativeReviews === 0 ?
+                                    "No genuine reviews yet" :
+                                    `Sentiment Rating: ${sentimentRating.toFixed(1)}`}
+                            </span>
+                                                    </h5>
+                                                    <ul className="list-group list-group-flush">
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Address:</strong> {property.address}</li>
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Description:</strong> {property.description}</li>
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Flat No:</strong> {property.flatNo}</li>
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Place Offers:</strong> {property.placeOffers}</li>
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Price:</strong> {property.price}</li>
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</li>
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Property Owners Name:</strong> {property.ownerName} {property.ownerSurname}</li>
+                                                    </ul>
+                                                    {property.images && property.images.length > 0 && (
+                                                        <img src={`data:image/jpeg;base64,${property.images[0].data}`} alt="Property" className="img-fluid mt-3" style={{ maxWidth: '300px', borderRadius: '5px' }} />
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                ))}
+                                        </Link>
+                                    );
+                                })}
                             </ul>
+
+
+
+
+
                             <div className="text-center mt-4">
                                 <button className="btn btn-success mr-2" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
                                 <button className="btn btn-success" onClick={() => setCurrentPage(currentPage + 1)} disabled={indexOfLastProperty >= filteredProperties.length}>Next</button>

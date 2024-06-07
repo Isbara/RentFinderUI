@@ -5,16 +5,17 @@ import App from '../App';
 import { useNavigate } from 'react-router-dom';
 
 function ReservationPage({ getToken }) {
-    let navigate = useNavigate()
+    let navigate = useNavigate();
     const token = getToken();
-    const isLoggedIn = token;
+    const isLoggedIn = !!token;
     const [reservations, setReservations] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [reviewErrors, setReviewErrors] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
-            await Promise.all([fetchUserReservations()]);
-            setIsLoading(false); // Set isLoading to false when both fetches are completed
+            await fetchUserReservations();
+            setIsLoading(false); // Set isLoading to false when fetch is completed
         };
         fetchData();
     }, []);
@@ -29,12 +30,12 @@ function ReservationPage({ getToken }) {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if(!response.ok){
-                if(response.status === 403){
-                    App.removeToken()
+            if (!response.ok) {
+                if (response.status === 403) {
+                    App.removeToken();
                     navigate("/login");
                 }
-                throw new Error("Failed to fetch user reservations.")
+                throw new Error("Failed to fetch user reservations.");
             }
             const data = await response.json();
             setReservations(data);
@@ -43,12 +44,16 @@ function ReservationPage({ getToken }) {
         }
     };
 
-    const handleDescriptionChange = (index, value) => {
+    const handleDescriptionChange = (index, value, reservationID) => {
         setReservations(prevState => {
             const updatedReservations = [...prevState];
             updatedReservations[index].description = value;
             return updatedReservations;
         });
+        setReviewErrors(prevErrors => ({
+            ...prevErrors,
+            [reservationID]: null,
+        }));
     };
 
     const handleUserScoreChange = (index, value) => {
@@ -60,17 +65,21 @@ function ReservationPage({ getToken }) {
     };
 
     const handleSubmitDescription = async (propertyID, reservationID, description, userScore) => {
-        console.log(propertyID);
-        console.log(reservationID);
-        console.log(description);
-        console.log(userScore); // Log the rating value
+        if (!description || description.length < 50) {
+            setReviewErrors(prevErrors => ({
+                ...prevErrors,
+                [reservationID]: 'Response must be at least 50 characters long.'
+            }));
+            return;
+        }
+
         const token = App.getToken();
         const bearer = "Bearer " + token;
 
         try {
-            const response = await fetch("http://localhost:8080/review/" + propertyID + "/" + reservationID, {
+            const response = await fetch(`http://localhost:8080/review/${propertyID}/${reservationID}`, {
                 method: 'POST',
-                body: JSON.stringify({ description, userScore }), // Include rating in the request body
+                body: JSON.stringify({ description, userScore }),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -80,8 +89,8 @@ function ReservationPage({ getToken }) {
             if (response.ok) {
                 fetchUserReservations();
             } else {
-                if(response.status === 403){
-                    App.removeToken()
+                if (response.status === 403) {
+                    App.removeToken();
                     navigate("/login");
                 }
                 console.error('Failed to add comment');
@@ -96,11 +105,9 @@ function ReservationPage({ getToken }) {
             <Header isLoggedIn={isLoggedIn} />
             <div className="container mt-4">
                 {isLoading ? (
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                            <div className="spinner-border text-danger" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <div className="spinner-border text-danger" role="status">
+                            <span className="sr-only">Loading...</span>
                         </div>
                     </div>
                 ) : (
@@ -118,7 +125,7 @@ function ReservationPage({ getToken }) {
                                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                                             <div className="card">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Reservation ID: {reservation.reserved.adress}</h5>
+                                                    <h5 className="card-title">Reservation Adress: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                                     <p>Status: Waiting for approval from the property owner.</p>
@@ -131,10 +138,10 @@ function ReservationPage({ getToken }) {
                                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                                             <div className="card">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
+                                                    <h5 className="card-title">Reservation Address: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
-                                                    <p>Status: Property owner rejected your request! </p>
+                                                    <p>Status: Property owner rejected your request!</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -144,7 +151,7 @@ function ReservationPage({ getToken }) {
                                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                                             <div className="card">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
+                                                    <h5 className="card-title">Reservation Address: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                                     <p>Status: Property owner rejects that you stayed at their property</p>
@@ -157,7 +164,7 @@ function ReservationPage({ getToken }) {
                                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                                             <div className="card">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Reservation ID: {reservation.reservationID}</h5>
+                                                    <h5 className="card-title">Reservation Address: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
                                                     <p>Status: Waiting for property owner's confirmation for writing request</p>
@@ -170,11 +177,10 @@ function ReservationPage({ getToken }) {
                                         <div key={reservation.reservationID} className="col-md-4 mb-4">
                                             <div className="card">
                                                 <div className="card-body">
-                                                    <h5 className="card-title">Reservation Adress: {reservation.adress}</h5>
+                                                    <h5 className="card-title">Reservation Address: {reservation.adress}</h5>
                                                     <p className="card-text">Number of People: {reservation.numberOfPeople}</p>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
-                                                    {/*<p className="card-text">Property Adress: {reservation.reserved.description}</p>*/}
                                                     {hasReview ? (
                                                         <div>
                                                             <p className="card-text">User score: {reservation.review.userScore}</p>
@@ -182,9 +188,10 @@ function ReservationPage({ getToken }) {
                                                             <p className="card-text">Sentiment Analysis Result: {reservation.review.sentimentResult ? "Positive" : "Negative"}</p>
                                                             <p className="card-text">Fake Review Analysis Result: {reservation.review.fakeResult ? "Genuine" : "Fake"}</p>
                                                         </div>
-                                                    ) : (lowKarma ? (
+                                                    ) : (
+                                                        lowKarma ? (
                                                             <div>
-                                                                <p className="card-text"> Your karma is too low! You can not write reviews!</p>
+                                                                <p className="card-text">Your karma is too low! You cannot write reviews!</p>
                                                             </div>
                                                         ) : (
                                                             <div>
@@ -194,8 +201,13 @@ function ReservationPage({ getToken }) {
                                                                     rows="3"
                                                                     placeholder="Write your comment..."
                                                                     value={reservation.description || ''}
-                                                                    onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                                                                    onChange={(e) => handleDescriptionChange(index, e.target.value, reservation.reservationID)}
                                                                 ></textarea>
+                                                                {reviewErrors[reservation.reservationID] && (
+                                                                    <div className="text-danger mt-1">
+                                                                        {reviewErrors[reservation.reservationID]}
+                                                                    </div>
+                                                                )}
                                                                 <button
                                                                     className="btn btn-primary mt-2"
                                                                     onClick={() => handleSubmitDescription(reservation.propertyID, reservation.reservationID, reservation.description, reservation.userScore)}

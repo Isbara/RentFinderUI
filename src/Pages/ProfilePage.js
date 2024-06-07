@@ -20,6 +20,7 @@ function ProfilePage({ getToken }) {
         email: '',
         phoneNumber: ''
     });
+    const [respondError,setRespondError]=useState(false);
 
     //Modal
     const [showModal, setShowModal] = useState(false);
@@ -157,7 +158,17 @@ function ProfilePage({ getToken }) {
         }
     };
 
-    const submitRespond = async (reviewID) => {
+    const submitRespond = async (reviewID,description) => {
+
+
+        if (!description || description.length < 15) {
+            setRespondError(prevErrors => ({
+                ...prevErrors,
+                [reviewID]: 'Response must be at least 15 characters long.'
+            }));
+            return;
+        }
+
         const token = App.getToken();
         const bearerToken = "Bearer " + token;
         try {
@@ -612,6 +623,10 @@ function ProfilePage({ getToken }) {
                 ...prevResponses,
                 [commentID]: value,
             }));
+        setRespondError(prevErrors => ({
+            ...prevErrors,
+            [commentID]: null,
+        }));
         };
 
     const deleteProfile = async() => {
@@ -1011,7 +1026,12 @@ function ProfilePage({ getToken }) {
                                                                             value={responses[reservation.review.commentID] || ''}
                                                                             onChange={(e) => handleRespondChange(reservation.review.commentID, e.target.value)}
                                                                         ></textarea>
-                                                                            <button className="btn btn-success" onClick={() => {submitRespond(reservation.review.commentID)}}>Submit</button>
+                                                                            {respondError[reservation.review.commentID] && (
+                                                                                <div className="text-danger mt-1">
+                                                                                    {respondError[reservation.review.commentID]}
+                                                                                </div>
+                                                                            )}
+                                                                            <button className="btn btn-success" onClick={() => {submitRespond(reservation.review.commentID,responses[reservation.review.commentID])}}>Submit</button>
                                                                         </div>
                                                                     ):null}
                                                                 </ul>

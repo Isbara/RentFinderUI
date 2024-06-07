@@ -237,9 +237,6 @@ function PropertyPage({ getToken }) {
                                     <h2 className="card-title">Property Details</h2>
                                     <ReviewStats positiveReviews={property.positiveReviews} negativeReviews={property.negativeReviews} />
                                     <p className="card-text">
-                                        <strong>Property ID:</strong> {property.propertyID}
-                                    </p>
-                                    <p className="card-text">
                                         <strong>Address:</strong> {property.address}
                                     </p>
                                     <p className="card-text">
@@ -256,6 +253,9 @@ function PropertyPage({ getToken }) {
                                     </p>
                                     <p className="card-text">
                                         <strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}
+                                    </p>
+                                    <p className="card-text">
+                                        <strong>Property Owners Name:</strong> {property.ownerName} {property.ownerSurname}
                                     </p>
                                     {property.images && property.images.length > 0 && (
                                         <div id="propertyCarousel" className="carousel slide mt-3" data-bs-ride="carousel" style={{ maxWidth: '100%', aspectRatio: '16/9' }}>

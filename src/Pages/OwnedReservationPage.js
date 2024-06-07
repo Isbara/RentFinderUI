@@ -11,6 +11,7 @@ function OwnedReservationPage({ getToken }) {
     const [currentReservationID, setCurrentReservationID] = useState(null);
     const [showApprovalDecision,setshowApprovalDecision]=useState(false);
     const [showStatusDecision,setshowStatusDecision]=useState(false);
+    const [responseErrors,setResponseErrors]=useState(false);
 
     const token = getToken();
     const isLoggedIn = !!token;
@@ -98,6 +99,15 @@ function OwnedReservationPage({ getToken }) {
     };
 
     const submitRespond = async (reviewID) => {
+
+        const responseText = responses[reviewID];
+        if (!responseText || responseText.length < 15) {
+            setResponseErrors(prevErrors => ({
+                ...prevErrors,
+                [reviewID]: 'Response must be at least 15 characters long.'
+            }));
+            return;
+        }
         const token = App.getToken();
         const bearerToken = "Bearer " + token;
         try {
@@ -196,6 +206,10 @@ function OwnedReservationPage({ getToken }) {
             ...prevResponses,
             [commentID]: value,
         }));
+        setResponseErrors(prevErrors => ({
+            ...prevErrors,
+            [commentID]: null,
+        }));
     };
 
     const handleStatusClick = (reservationID) => {
@@ -211,7 +225,7 @@ function OwnedReservationPage({ getToken }) {
 
                 {isReservationLoading ? (
                     <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                        <div className="spinner-border text-primary" role="status">
+                        <div className="spinner-border" role="status" style={{ color: 'purple' }}>
                             <span className="sr-only">Loading...</span>
                         </div>
                     </div>
@@ -222,7 +236,7 @@ function OwnedReservationPage({ getToken }) {
                                 <div className="col-md-4 mb-4" key={reservation.reservationID}>
                                     <div className="card">
                                         <div className="card-body">
-                                            <h5 className="card-title">Reservation {reservation.reservationID}</h5>
+                                            <h5 className="card-title">Reservation Adress: {reservation.adress}</h5>
                                             <ul className="list-unstyled">
                                                 <li>Number of people: {reservation.numberOfPeople}</li>
                                                 <li>Start date: {formatDate(reservation.startDate)}</li>
@@ -260,6 +274,11 @@ function OwnedReservationPage({ getToken }) {
                                                     value={responses[reservation.review.commentID] || ''}
                                                     onChange={(e) => handleRespondChange(reservation.review.commentID, e.target.value)}
                                                 ></textarea>
+                                                    {responseErrors[reservation.review.commentID] && (
+                                                        <div className="text-danger mt-1">
+                                                            {responseErrors[reservation.review.commentID]}
+                                                        </div>
+                                                    )}
                                                     <button className="btn btn-success mt-2" onClick={() => submitRespond(reservation.review.commentID)}>Submit</button>
                                                 </div>
                                             )}
