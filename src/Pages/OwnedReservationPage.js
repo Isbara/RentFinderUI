@@ -245,7 +245,7 @@ function OwnedReservationPage({ getToken }) {
                                                 <li>Reservers Name: {reservation.userName} {reservation.userSurname}</li>
                                                 <li>Reservers Karma Point: {reservation.karmaPoint}</li>
                                                 <li>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</li>
-                                                <li>Status: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</li>
+                                                <li>Stay: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</li>
                                             </ul>
                                             {reservation.approval === null && (
                                                 <button className="btn btn-success" onClick={() => handleApprovalClick(reservation.reservationID)}>
@@ -254,10 +254,11 @@ function OwnedReservationPage({ getToken }) {
                                             )}
                                             {reservation.status === null && reservation.approval !== false && (
                                                 <button className="btn btn-success mx-3" onClick={() => handleStatusClick(reservation.reservationID)} disabled={reservation.approval === null}>
-                                                    Status
+                                                    Stay
                                                 </button>
                                             )}
                                             {reservation.status === true && reservation.review !== null && reservation.review.respondList.length > 0 && (
+
                                                 <div>
                                                     <p>Review: {reservation.review.description}</p>
                                                     {reservation.review.respondList[0] && (
@@ -267,7 +268,9 @@ function OwnedReservationPage({ getToken }) {
                                             )}
                                             {reservation.status === true && reservation.review !== null && reservation.review.respondList.length < 1 && (
                                                 <div>
-                                                <textarea
+                                                    <p>Review: {reservation.review.description}</p>
+
+                                                    <textarea
                                                     className="form-control mt-2"
                                                     rows="3"
                                                     placeholder="Write your response..."

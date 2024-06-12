@@ -8,8 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/OwnedReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/OwnedReservationPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/ProfilePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ProfilePage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/PropertyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PropertyPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -68,9 +66,9 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/Turgut/Documents/GitHub/RentFinderUI/node_modules/react-scripts&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -144,7 +142,12 @@
       <workItem from="1717664411303" duration="6961000" />
       <workItem from="1717676257243" duration="12000" />
       <workItem from="1717676282057" duration="9586000" />
-      <workItem from="1717757363660" duration="4792000" />
+      <workItem from="1717757363660" duration="12838000" />
+      <workItem from="1717840474661" duration="81000" />
+      <workItem from="1717840578981" duration="2241000" />
+      <workItem from="1718131566374" duration="1998000" />
+      <workItem from="1718181874186" duration="5749000" />
+      <workItem from="1718214706639" duration="9000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>

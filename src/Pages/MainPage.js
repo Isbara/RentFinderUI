@@ -49,8 +49,8 @@ function MainPage({ getToken }) {
         const sortedProperties = [...filteredProperties];
         sortedProperties.sort((a, b) => {
             if (sortOption === 'positiveNegativePercentage') {
-                const positiveNegativePercentageA = (a.positiveReviews - a.negativeReviews) / (a.positiveReviews + a.negativeReviews) * 100 || -Infinity;
-                const positiveNegativePercentageB = (b.positiveReviews - b.negativeReviews) / (b.positiveReviews + b.negativeReviews) * 100 || -Infinity;
+                const positiveNegativePercentageA = (a.positiveReviews ) / (a.positiveReviews + a.negativeReviews) * 100 || -Infinity;
+                const positiveNegativePercentageB = (b.positiveReviews ) / (b.positiveReviews + b.negativeReviews) * 100 || -Infinity;
                 // If both properties have no positive or negative reviews, maintain their order
                 if (isNaN(positiveNegativePercentageA) && isNaN(positiveNegativePercentageB)) return 0;
                 // If only property A has no positive or negative reviews, move it to the end

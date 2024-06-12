@@ -128,7 +128,7 @@ function ReservationPage({ getToken }) {
                                                     <h5 className="card-title">Reservation Adress: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
-                                                    <p>Status: Waiting for approval from the property owner.</p>
+                                                    <p>Stay: Waiting for approval from the property owner.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -141,7 +141,7 @@ function ReservationPage({ getToken }) {
                                                     <h5 className="card-title">Reservation Address: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
-                                                    <p>Status: Property owner rejected your request!</p>
+                                                    <p>Stay: Property owner rejected your request!</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -154,7 +154,7 @@ function ReservationPage({ getToken }) {
                                                     <h5 className="card-title">Reservation Address: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
-                                                    <p>Status: Property owner rejects that you stayed at their property</p>
+                                                    <p>Stay: Property owner rejects that you stayed at their property</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -167,7 +167,7 @@ function ReservationPage({ getToken }) {
                                                     <h5 className="card-title">Reservation Address: {reservation.adress}</h5>
                                                     <p className="card-text">Start date: {formatDate(reservation.startDate)}</p>
                                                     <p className="card-text">End date: {formatDate(reservation.endDate)}</p>
-                                                    <p>Status: Waiting for property owner's confirmation for writing request</p>
+                                                    <p>Stay: Waiting for property owner's confirmation for writing request</p>
                                                 </div>
                                             </div>
                                         </div>
