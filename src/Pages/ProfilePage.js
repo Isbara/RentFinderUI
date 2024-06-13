@@ -680,6 +680,7 @@ function ProfilePage({ getToken }) {
                                     <li className="list-group-item">Surname: {userDetails?.surname}</li>
                                     <li className="list-group-item">Email: {userDetails?.email}</li>
                                     <li className="list-group-item">Phone Number: {userDetails?.phoneNumber}</li>
+                                    <li className="list-group-item">Karma Point: {userDetails?.karmaPoint}</li>
                                 </ul>
                                 <button className="btn btn-primary mx-1" onClick={() => {setShowEditModal(true)}}>Edit Details</button>
                                 <button className="btn btn-danger mx-1" onClick={deleteProfile}>Delete Profile</button>
