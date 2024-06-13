@@ -420,6 +420,7 @@ function PropertyPage({ getToken }) {
                                             <input type="number" className={`form-control ${reservationErrors.numberOfPeople && 'is-invalid'}`} id="numberOfPeople" name="numberOfPeople" value={reservationDetails.numberOfPeople} onChange={handleReservationInputChange} required />
                                             {reservationErrors.numberOfPeople && <div className="invalid-feedback d-block">{reservationErrors.numberOfPeople}</div>}
                                         </div>
+
                                         <button type="submit" className="btn btn-primary">Reserve</button>
                                     </form>
                                 </div>

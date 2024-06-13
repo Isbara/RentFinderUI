@@ -164,7 +164,7 @@ function MainPage({ getToken }) {
                                                         <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Description:</strong> {property.description}</li>
                                                         <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Flat No:</strong> {property.flatNo}</li>
                                                         <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Place Offers:</strong> {property.placeOffers}</li>
-                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Price:</strong> {property.price}</li>
+                                                        <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Price:</strong> {property.price}₺</li>
                                                         <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Property Type:</strong> {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</li>
                                                         <li className="list-group-item" style={{ backgroundColor: liBackgroundColor }}><strong>Property Owners Name:</strong> {property.ownerName} {property.ownerSurname}</li>
                                                     </ul>

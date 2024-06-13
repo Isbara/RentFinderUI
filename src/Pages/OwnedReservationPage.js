@@ -217,6 +217,20 @@ function OwnedReservationPage({ getToken }) {
         setshowStatusDecision(true);
     };
 
+
+    function calculateDays(startDateString, endDateString) {
+        const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+        const startDate = new Date(startDateString);
+        const endDate = new Date(endDateString);
+
+        if (isNaN(startDate) || isNaN(endDate)) {
+            return 'Invalid date';
+        }
+
+        const diffDays = Math.round(Math.abs((endDate - startDate) / oneDay));
+        return diffDays;
+    }
+
     return (
         <div>
             <Header isLoggedIn={isLoggedIn} />
@@ -246,6 +260,8 @@ function OwnedReservationPage({ getToken }) {
                                                 <li>Reservers Karma Point: {reservation.karmaPoint}</li>
                                                 <li>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</li>
                                                 <li>Stay: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</li>
+                                                <li>Price: {calculateDays(reservation.startDate, reservation.endDate)*reservation.price}₺</li>
+
                                             </ul>
                                             {reservation.approval === null && (
                                                 <button className="btn btn-success" onClick={() => handleApprovalClick(reservation.reservationID)}>

@@ -65,10 +65,10 @@ function ReservationPage({ getToken }) {
     };
 
     const handleSubmitDescription = async (propertyID, reservationID, description, userScore) => {
-        if (!description || description.length < 50) {
+        if (!description || description.length < 80) {
             setReviewErrors(prevErrors => ({
                 ...prevErrors,
-                [reservationID]: 'Response must be at least 50 characters long.'
+                [reservationID]: 'Response must be at least 80 characters long.'
             }));
             return;
         }

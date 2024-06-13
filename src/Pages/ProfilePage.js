@@ -331,6 +331,14 @@ function ProfilePage({ getToken }) {
         }
     };
 
+    function calculatePrice(startDate, endDate, numberOfPeople) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const days = (end - start) / (1000 * 60 * 60 * 24);
+        const pricePerDayPerPerson = 100; // example price per day per person
+        return days * numberOfPeople * pricePerDayPerPerson;
+    }
+
     const handleImageChange = (event) => {
         setInputChanged(true);
         setPropertyDetails(prevDetails => ({
@@ -383,6 +391,7 @@ function ProfilePage({ getToken }) {
             }));
             return;
         }
+
 
         setpopUpErrors(prevErrors => ({
             ...prevErrors,
@@ -700,7 +709,7 @@ function ProfilePage({ getToken }) {
                                             </div>
                                             <p className="mb-1">Description: {property.description}</p>
                                             <p className="mb-1">Place Offers: {property.placeOffers}</p>
-                                            <p className="mb-1">Price: {property.price}</p>
+                                            <p className="mb-1">Price: {property.price}₺</p>
                                             <p className="mb-1">Property Type: {property.propertyType === 'H' ? 'House' : (property.propertyType === 'R' ? 'Apartment Room' : 'Apartment')}</p>
                                             {property.images && property.images.length > 0 && (
                                                 <div>
@@ -1003,6 +1012,7 @@ function ProfilePage({ getToken }) {
                                                                     <p>Start date: {formatDate(reservation.startDate)}</p>
                                                                     <p>End date: {formatDate(reservation.endDate)}</p>
                                                                     <p>Reserver phone number: +90{reservation.phoneNumber}</p>
+                                                                    <p>Price: {reservation.startDate && reservation.endDate ? calculatePrice(reservation.startDate, reservation.endDate, reservation.numberOfPeople) : 'Please select start and end dates'}₺</p>
                                                                     <p>Approval: {reservation.approval === null ? 'Not specified' : (reservation.approval ? 'Approved' : 'Not Approved')}</p>
                                                                     <p>Status: {reservation.status === null ? 'Not specified' : (reservation.status ? 'Stayed' : 'Not Stayed')}</p>
                                                                     {reservation.approval == null && (
