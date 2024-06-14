@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4047de79-47c6-4b6b-8e99-6a815568ac02" name="Changes" comment="Fixed a textarea bug.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/MainPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/OwnedReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/OwnedReservationPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/ReservationPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/ReservationPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,6 +145,10 @@
       <workItem from="1718131566374" duration="1998000" />
       <workItem from="1718181874186" duration="5749000" />
       <workItem from="1718214706639" duration="9000" />
+      <workItem from="1718214724500" duration="3174000" />
+      <workItem from="1718221923045" duration="1109000" />
+      <workItem from="1718272051045" duration="3209000" />
+      <workItem from="1718383257825" duration="530000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt to add reservation view page per property (There's a bug that I can not solve which causes reservation cards not to render.)">
       <created>1711160276783</created>
